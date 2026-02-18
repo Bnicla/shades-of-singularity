@@ -1,0 +1,40 @@
+---
+import EssayLayout from '../../layouts/EssayLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const essays = await getCollection('essays');
+  essays.sort((a, b) => a.data.number - b.data.number);
+
+  return essays.map((essay, index) => ({
+    params: { slug: essay.data.slug },
+    props: {
+      essay,
+      prevEssay: index > 0
+        ? { numeral: essays[index - 1].data.numeral, title: essays[index - 1].data.title, slug: essays[index - 1].data.slug }
+        : null,
+      nextEssay: index < essays.length - 1
+        ? { numeral: essays[index + 1].data.numeral, title: essays[index + 1].data.title, slug: essays[index + 1].data.slug }
+        : null,
+    },
+  }));
+}
+
+const { essay, prevEssay, nextEssay } = Astro.props;
+const { Content } = await render(essay);
+
+const wordCount = essay.body ? essay.body.split(/\s+/).length : 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / 230));
+---
+
+<EssayLayout
+  numeral={essay.data.numeral}
+  title={essay.data.title}
+  subtitle={essay.data.subtitle}
+  description={essay.data.description}
+  readingTime={readingTime}
+  prevEssay={prevEssay}
+  nextEssay={nextEssay}
+>
+  <Content />
+</EssayLayout>

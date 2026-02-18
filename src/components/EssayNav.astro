@@ -1,0 +1,37 @@
+---
+interface EssayLink {
+  numeral: string;
+  title: string;
+  slug: string;
+}
+
+interface Props {
+  prevEssay?: EssayLink | null;
+  nextEssay?: EssayLink | null;
+}
+
+const { prevEssay, nextEssay } = Astro.props;
+---
+
+{(prevEssay || nextEssay) && (
+  <nav class="essay-nav" aria-label="Essay navigation">
+    {prevEssay ? (
+      <a href={`/essays/${prevEssay.slug}/`} class="essay-nav-link essay-nav-link--prev">
+        <span class="essay-nav-label">&larr; Previous</span>
+        <span class="essay-nav-title">{prevEssay.numeral}. {prevEssay.title}</span>
+      </a>
+    ) : <div />}
+
+    {nextEssay ? (
+      <a href={`/essays/${nextEssay.slug}/`} class="essay-nav-link essay-nav-link--next">
+        <span class="essay-nav-label">Next &rarr;</span>
+        <span class="essay-nav-title">{nextEssay.numeral}. {nextEssay.title}</span>
+      </a>
+    ) : (
+      <a href="/appendix/" class="essay-nav-link essay-nav-link--next">
+        <span class="essay-nav-label">Next &rarr;</span>
+        <span class="essay-nav-title">The Singularity Scenarios</span>
+      </a>
+    )}
+  </nav>
+)}

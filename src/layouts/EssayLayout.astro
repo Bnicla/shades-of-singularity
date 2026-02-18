@@ -1,0 +1,60 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
+import EssayNav from '../components/EssayNav.astro';
+import '../styles/essay.css';
+
+interface EssayLink {
+  numeral: string;
+  title: string;
+  slug: string;
+}
+
+interface Props {
+  numeral: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  readingTime: number;
+  prevEssay?: EssayLink | null;
+  nextEssay?: EssayLink | null;
+}
+
+const { numeral, title, subtitle, description, readingTime, prevEssay, nextEssay } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: description,
+  author: {
+    '@type': 'Person',
+    name: 'Boris Schiapparelli',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Shades of the Singularity',
+  },
+  mainEntityOfPage: Astro.url.href,
+};
+---
+
+<BaseLayout title={title} description={description} ogType="article" jsonLd={jsonLd}>
+  <ReadingProgress />
+
+  <div class="content-column">
+    <header class="essay-header">
+      <p class="essay-numeral">Essay {numeral}</p>
+      <h1 class="essay-title">{title}</h1>
+      <p class="essay-subtitle">{subtitle}</p>
+      <p class="essay-meta">~{readingTime} min read</p>
+      <hr />
+    </header>
+
+    <article class="essay-body">
+      <slot />
+    </article>
+
+    <EssayNav prevEssay={prevEssay} nextEssay={nextEssay} />
+  </div>
+</BaseLayout>

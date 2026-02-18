@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EssayCard from '../components/EssayCard.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+
+const homeEntry = await getEntry('pages', 'home');
+const { Content: HomeContent } = await render(homeEntry);
+
+const essays = await getCollection('essays', ({ data }) => !data.draft);
+essays.sort((a, b) => a.data.number - b.data.number);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Shades of the Singularity',
+  description: homeEntry.data.description,
+  url: 'https://shadesofsingularity.com',
+};
+---
+
+<BaseLayout
+  title="Shades of the Singularity"
+  description={homeEntry.data.description}
+  jsonLd={jsonLd}
+>
+  <section class="home-hero">
+    <div class="content-column" style="text-align: center;">
+      <h1 class="home-title">Shades of the Singularity</h1>
+      <p class="home-subtitle">Eight Essays on the Futures We're Building<br />and the Ones We're Drifting Into</p>
+      <p class="home-author">by Boris Schiapparelli</p>
+    </div>
+  </section>
+
+  <section class="home-premise">
+    <div class="content-column">
+      <HomeContent />
+    </div>
+  </section>
+
+  <section class="home-essays">
+    <div class="content-column">
+      {essays.map((essay) => (
+        <EssayCard
+          numeral={essay.data.numeral}
+          title={essay.data.title}
+          subtitle={essay.data.subtitle}
+          slug={essay.data.slug}
+          description={essay.data.description}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .home-hero {
+    padding: var(--space-xl) 0 var(--space-lg);
+  }
+
+  .home-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.4em;
+  }
+
+  .home-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75em;
+    line-height: 1.5;
+  }
+
+  .home-author {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0;
+  }
+
+  .home-premise {
+    padding: var(--space-lg) 0;
+    border-top: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .home-essays {
+    padding: var(--space-lg) 0;
+  }
+</style>

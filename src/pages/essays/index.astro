@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EssayCard from '../../components/EssayCard.astro';
+import { getCollection } from 'astro:content';
+
+const essays = await getCollection('essays', ({ data }) => !data.draft);
+essays.sort((a, b) => a.data.number - b.data.number);
+---
+
+<BaseLayout title="The Essays" description="Eight essays. Eight angles on a future arriving whether we see it or not.">
+  <div class="content-column" style="padding-top: var(--space-xl);">
+    <header style="text-align: center; margin-bottom: var(--space-lg);">
+      <h1>The Essays</h1>
+      <p style="font-style: italic; color: var(--color-text-muted); margin-top: var(--space-sm);">
+        Eight essays. Eight angles on a future arriving whether we see it or not.
+      </p>
+    </header>
+
+    {essays.map((essay) => (
+      <EssayCard
+        numeral={essay.data.numeral}
+        title={essay.data.title}
+        subtitle={essay.data.subtitle}
+        slug={essay.data.slug}
+        description={essay.data.description}
+      />
+    ))}
+  </div>
+</BaseLayout>

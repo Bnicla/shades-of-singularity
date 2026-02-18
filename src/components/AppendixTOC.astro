@@ -1,0 +1,72 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+// Filter to h2 and h3 headings for the TOC
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+<!-- Desktop TOC -->
+<aside class="appendix-toc" aria-label="Table of contents">
+  <p class="appendix-toc-title">Contents</p>
+  <ol>
+    {tocHeadings.map((heading) => (
+      <li class={heading.depth === 2 ? 'toc-tier' : ''}>
+        {heading.depth === 2 ? (
+          <span>{heading.text}</span>
+        ) : (
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</aside>
+
+<!-- Mobile TOC -->
+<details class="appendix-toc-mobile">
+  <summary>Table of Contents</summary>
+  <ol>
+    {tocHeadings.map((heading) => (
+      <li class={heading.depth === 2 ? 'toc-tier' : ''}>
+        {heading.depth === 2 ? (
+          <span>{heading.text}</span>
+        ) : (
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</details>
+
+<script>
+  const tocLinks = document.querySelectorAll('.appendix-toc a');
+  const headingElements = document.querySelectorAll('.appendix-content h2, .appendix-content h3');
+
+  if (tocLinks.length > 0 && headingElements.length > 0) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(link => link.classList.remove('active'));
+          const activeLink = document.querySelector(
+            `.appendix-toc a[href="#${entry.target.id}"]`
+          );
+          if (activeLink) activeLink.classList.add('active');
+        }
+      });
+    }, {
+      rootMargin: '-80px 0px -60% 0px',
+      threshold: 0,
+    });
+
+    headingElements.forEach(section => observer.observe(section));
+  }
+</script>

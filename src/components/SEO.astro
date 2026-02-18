@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  canonicalURL?: string;
+  ogType?: string;
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description = 'Eight essays on the futures we\'re building and the ones we\'re drifting into.',
+  canonicalURL = Astro.url.href,
+  ogType = 'website',
+  ogImage = '/og-default.png',
+  jsonLd,
+} = Astro.props;
+
+const siteName = 'Shades of the Singularity';
+const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+const ogImageURL = new URL(ogImage, Astro.site).href;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageURL} />
+
+<!-- JSON-LD Structured Data -->
+{jsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+)}

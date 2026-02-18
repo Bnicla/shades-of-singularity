@@ -1,0 +1,205 @@
+/* ============================================
+   Appendix Page Styles
+   ============================================ */
+
+/* --- Two-Column Layout --- */
+
+.appendix-layout {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  gap: var(--space-lg);
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 var(--content-padding);
+}
+
+@media (max-width: 768px) {
+  .appendix-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* --- Sticky Table of Contents --- */
+
+.appendix-toc {
+  position: sticky;
+  top: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  padding-right: var(--space-sm);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+.appendix-toc::-webkit-scrollbar {
+  width: 3px;
+}
+
+.appendix-toc::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.appendix-toc::-webkit-scrollbar-thumb {
+  background: var(--color-rule);
+  border-radius: 3px;
+}
+
+.appendix-toc-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.appendix-toc ol {
+  list-style: none;
+  padding: 0;
+}
+
+.appendix-toc li {
+  margin-bottom: 0.35rem;
+}
+
+.appendix-toc .toc-tier {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.appendix-toc a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  display: block;
+  padding: 0.15rem 0 0.15rem 0.75rem;
+  border-left: 2px solid transparent;
+}
+
+.appendix-toc a:hover {
+  color: var(--color-text);
+}
+
+.appendix-toc a.active {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* Mobile TOC */
+.appendix-toc-mobile {
+  display: none;
+  margin-bottom: var(--space-md);
+}
+
+.appendix-toc-mobile summary {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: var(--space-xs) 0;
+}
+
+.appendix-toc-mobile[open] summary {
+  margin-bottom: var(--space-xs);
+}
+
+@media (max-width: 768px) {
+  .appendix-toc {
+    display: none;
+  }
+
+  .appendix-toc-mobile {
+    display: block;
+  }
+}
+
+/* --- Appendix Content --- */
+
+.appendix-header {
+  text-align: center;
+  padding: var(--space-xl) var(--content-padding) var(--space-lg);
+  max-width: var(--content-width);
+  margin: 0 auto;
+}
+
+.appendix-title {
+  font-size: var(--font-size-2xl);
+  margin-bottom: 0.5em;
+}
+
+.appendix-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.appendix-content {
+  max-width: var(--content-width);
+}
+
+.appendix-content h2 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-rule);
+}
+
+.appendix-content h3 {
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+/* --- Likelihood Badge --- */
+
+.likelihood-badge {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  background-color: var(--color-accent-muted);
+  color: var(--color-accent);
+  vertical-align: middle;
+}
+
+/* --- Outcome Scores --- */
+
+.appendix-content strong {
+  font-weight: 700;
+}
+
+/* --- Appendix Table --- */
+
+.appendix-content table {
+  font-size: var(--font-size-xs);
+}
+
+.appendix-content th {
+  background-color: var(--color-bg-secondary);
+  position: sticky;
+  top: 0;
+}
+
+@media (max-width: 768px) {
+  .appendix-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

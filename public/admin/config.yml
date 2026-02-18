@@ -1,0 +1,50 @@
+backend:
+  name: github
+  repo: "OWNER/REPO" # Replace with your actual GitHub repo (e.g., username/shades-of-singularity)
+  branch: main
+
+# No media uploads — the site has no images
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "essays"
+    label: "Essays"
+    folder: "content/essays"
+    create: false
+    slug: "{{fields.number | padStart(2, '0')}}-{{fields.slug}}"
+    sortable_fields: ["number"]
+    fields:
+      - { label: "Essay Number", name: "number", widget: "number", value_type: "int" }
+      - { label: "Roman Numeral", name: "numeral", widget: "string" }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Subtitle", name: "subtitle", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string" }
+      - { label: "SEO Description", name: "description", widget: "string" }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "pages"
+    label: "Pages"
+    files:
+      - file: "content/appendix.md"
+        label: "Appendix"
+        name: "appendix"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Subtitle", name: "subtitle", widget: "string", required: false }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - file: "content/about.md"
+        label: "About"
+        name: "about"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "string", required: false }
+          - { label: "Body", name: "body", widget: "markdown" }
+      - file: "content/home.md"
+        label: "Home Page"
+        name: "home"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "string", required: false }
+          - { label: "Body", name: "body", widget: "markdown" }

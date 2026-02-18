@@ -1,0 +1,154 @@
+/* ============================================
+   Essay Page Styles
+   ============================================ */
+
+/* --- Essay Header --- */
+
+.essay-header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+}
+
+.essay-numeral {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+
+.essay-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  line-height: 1.15;
+}
+
+.essay-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  color: var(--color-text-muted);
+  font-weight: 400;
+  margin-bottom: var(--space-sm);
+}
+
+.essay-meta {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+}
+
+.essay-header hr {
+  margin-top: var(--space-md);
+}
+
+/* --- Essay Body — Three-Movement Structure --- */
+
+.essay-body h2 {
+  font-family: var(--font-heading);
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.1em;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-rule);
+}
+
+.essay-body h3 {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-text);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.essay-body h4 {
+  font-family: var(--font-heading);
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+/* First paragraph after a section heading */
+.essay-body h2 + p {
+  margin-top: 0;
+}
+
+.essay-body h3 + p {
+  margin-top: 0;
+}
+
+/* --- Essay Navigation (Prev/Next) --- */
+
+.essay-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-rule);
+}
+
+.essay-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-decoration: none;
+  max-width: 50%;
+}
+
+.essay-nav-link:hover .essay-nav-title {
+  color: var(--color-accent);
+}
+
+.essay-nav-label {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.essay-nav-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  transition: color 0.15s ease;
+}
+
+.essay-nav-link--next {
+  text-align: right;
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .essay-nav {
+    flex-direction: column;
+  }
+
+  .essay-nav-link {
+    max-width: 100%;
+  }
+
+  .essay-nav-link--next {
+    text-align: left;
+  }
+}
