@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import '../../styles/appendix.css';
+
+export async function getStaticPaths() {
+  const scenarios = await getCollection('scenarios');
+  scenarios.sort((a, b) => a.data.number - b.data.number);
+
+  return scenarios.map((scenario, index) => ({
+    params: { slug: scenario.data.slug },
+    props: {
+      scenario,
+      prevScenario: index > 0 ? scenarios[index - 1] : null,
+      nextScenario: index < scenarios.length - 1 ? scenarios[index + 1] : null,
+    },
+  }));
+}
+
+const { scenario, prevScenario, nextScenario } = Astro.props;
+const { Content } = await render(scenario);
+---
+
+<BaseLayout
+  title={`Scenario ${scenario.data.number}: ${scenario.data.title}`}
+  description={scenario.data.summary}
+>
+  <div class="content-column" style="padding-top: var(--space-xl); padding-bottom: var(--space-lg);">
+    <a href="/appendix/" class="back-link">&larr; Back to all scenarios</a>
+
+    <header class="scenario-header">
+      <div class="scenario-header-meta">
+        <span class="scenario-number-lg">Scenario {scenario.data.number}</span>
+        <span class="likelihood-badge">{scenario.data.likelihood}</span>
+      </div>
+      <h1 class="scenario-title">{scenario.data.title}</h1>
+      <p class="scenario-tier">Tier {scenario.data.tier}: {scenario.data.tierLabel}</p>
+
+      <div class="scenario-scores-lg">
+        <div class="score-item">
+          <span class="score-label">Economic</span>
+          <span class="score-value">{scenario.data.economic}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Social</span>
+          <span class="score-value">{scenario.data.social}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Political</span>
+          <span class="score-value">{scenario.data.political}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-label">Existential</span>
+          <span class="score-value">{scenario.data.existential}</span>
+        </div>
+      </div>
+
+      <hr />
+    </header>
+
+    <article class="scenario-body">
+      <Content />
+    </article>
+
+    <nav class="essay-nav" aria-label="Scenario navigation">
+      {prevScenario ? (
+        <a href={`/appendix/${prevScenario.data.slug}/`} class="essay-nav-link essay-nav-link--prev">
+          <span class="essay-nav-label">&larr; Previous</span>
+          <span class="essay-nav-title">{prevScenario.data.number}. {prevScenario.data.title}</span>
+        </a>
+      ) : <div />}
+
+      {nextScenario ? (
+        <a href={`/appendix/${nextScenario.data.slug}/`} class="essay-nav-link essay-nav-link--next">
+          <span class="essay-nav-label">Next &rarr;</span>
+          <span class="essay-nav-title">{nextScenario.data.number}. {nextScenario.data.title}</span>
+        </a>
+      ) : (
+        <a href="/appendix/" class="essay-nav-link essay-nav-link--next">
+          <span class="essay-nav-label">Back &rarr;</span>
+          <span class="essay-nav-title">All Scenarios</span>
+        </a>
+      )}
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-link {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: var(--space-md);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .scenario-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .scenario-header-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+  }
+
+  .scenario-number-lg {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .scenario-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: 0.25em;
+  }
+
+  .scenario-tier {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .scenario-scores-lg {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .score-label {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .score-value {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .scenario-body {
+    margin-bottom: var(--space-lg);
+  }
+
+  .scenario-body p {
+    margin-bottom: 1.5em;
+  }
+
+  @media (max-width: 640px) {
+    .scenario-scores-lg {
+      gap: var(--space-sm);
+    }
+  }
+</style>

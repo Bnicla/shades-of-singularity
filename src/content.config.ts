@@ -14,6 +14,23 @@ const essays = defineCollection({
   }),
 });
 
+const scenarios = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/scenarios' }),
+  schema: z.object({
+    number: z.number(),
+    title: z.string(),
+    slug: z.string(),
+    tier: z.number(),
+    tierLabel: z.string(),
+    likelihood: z.string(),
+    economic: z.union([z.number(), z.string()]),
+    social: z.union([z.number(), z.string()]),
+    political: z.union([z.number(), z.string()]),
+    existential: z.union([z.number(), z.string()]),
+    summary: z.string(),
+  }),
+});
+
 const appendix = defineCollection({
   loader: glob({ pattern: 'appendix.md', base: './content', generateId: ({ entry }) => entry.replace(/\.md$/, '') }),
   schema: z.object({
@@ -30,4 +47,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { essays, appendix, pages };
+export const collections = { essays, appendix, scenarios, pages };
