@@ -7,15 +7,15 @@ slug: "public-mind"
 description: "How AI-generated content threatens the epistemic foundations of democratic governance."
 ---
 
-[DRAFT CONTENT — TO BE REPLACED]
+[DRAFT CONTENT - TO BE REPLACED]
 
 ## The Lens
 
-Democracy requires a shared factual reality. Citizens need not agree on values or priorities, but they must inhabit the same informational universe — the same basic set of facts about what is happening in the world. Without this, deliberation becomes impossible, compromise unimaginable, and self-governance a fiction.
+Democracy requires a shared factual reality. Citizens need not agree on values or priorities, but they must inhabit the same informational universe - the same basic set of facts about what is happening in the world. Without this, deliberation becomes impossible, compromise unimaginable, and self-governance a fiction.
 
 AI is dissolving this shared reality at an unprecedented pace. Generative models can produce synthetic text, images, audio, and video that are indistinguishable from authentic content. Recommendation algorithms optimize for engagement, not truth. The information environment is becoming a hall of mirrors in which every citizen can inhabit a personalized reality that confirms their priors and demonizes their opponents.
 
-This is not a problem of misinformation that can be solved with fact-checking. It is an epistemic crisis — a breakdown in the shared capacity to distinguish signal from noise, truth from fabrication, authentic from synthetic.
+This is not a problem of misinformation that can be solved with fact-checking. It is an epistemic crisis - a breakdown in the shared capacity to distinguish signal from noise, truth from fabrication, authentic from synthetic.
 
 ## The False Remedies
 
@@ -35,7 +35,7 @@ Technical solutions like content watermarking and provenance tracking are necess
 
 ### National
 
-Public investment in epistemic infrastructure — the institutions, technologies, and norms that sustain a shared factual reality. This includes publicly funded journalism, independent verification systems, and legal frameworks that hold platforms accountable for the epistemic environment they create. Not censorship, but a public commitment to the informational commons.
+Public investment in epistemic infrastructure - the institutions, technologies, and norms that sustain a shared factual reality. This includes publicly funded journalism, independent verification systems, and legal frameworks that hold platforms accountable for the epistemic environment they create. Not censorship, but a public commitment to the informational commons.
 
 ### Global
 

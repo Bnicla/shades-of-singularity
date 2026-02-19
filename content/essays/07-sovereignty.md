@@ -7,13 +7,13 @@ slug: "sovereignty"
 description: "How AI challenges national sovereignty through corporate power, transnational systems, and internal disruption."
 ---
 
-[DRAFT CONTENT — TO BE REPLACED]
+[DRAFT CONTENT - TO BE REPLACED]
 
 ## The Lens
 
 The nation-state is the fundamental unit of political organization. It claims sovereignty over a territory, a population, and the rules that govern both. AI challenges this sovereignty on three fronts simultaneously.
 
-From above: AI systems operate across borders, controlled by corporations more powerful than most governments, subject to no sovereign authority. From below: AI empowers individuals and small groups with capabilities once reserved for states — surveillance, propaganda, economic disruption. From within: AI reshapes the domestic economy, labor market, and information environment faster than any government can respond.
+From above: AI systems operate across borders, controlled by corporations more powerful than most governments, subject to no sovereign authority. From below: AI empowers individuals and small groups with capabilities once reserved for states - surveillance, propaganda, economic disruption. From within: AI reshapes the domestic economy, labor market, and information environment faster than any government can respond.
 
 The question is not whether nations will regulate AI. It is whether the nation-state as a form of political organization can survive the forces that AI unleashes.
 
@@ -21,7 +21,7 @@ The question is not whether nations will regulate AI. It is whether the nation-s
 
 ### *"National AI strategies"*
 
-Every major nation now has an AI strategy. Most are wish lists — aspirational goals combined with modest funding increases. They treat AI as a sector to be promoted rather than a force to be governed. A national AI strategy that does not address the sovereignty challenge is like a climate strategy that does not mention carbon.
+Every major nation now has an AI strategy. Most are wish lists - aspirational goals combined with modest funding increases. They treat AI as a sector to be promoted rather than a force to be governed. A national AI strategy that does not address the sovereignty challenge is like a climate strategy that does not mention carbon.
 
 ### *"Digital sovereignty through data localization"*
 
@@ -39,4 +39,4 @@ A reconceptualization of sovereignty for the digital age. This means building do
 
 ### Global
 
-New international institutions designed for the AI era — not extensions of existing bodies that were built for a different world, but purpose-built organizations with the technical expertise, enforcement authority, and legitimacy to govern a technology that respects no borders.
+New international institutions designed for the AI era - not extensions of existing bodies that were built for a different world, but purpose-built organizations with the technical expertise, enforcement authority, and legitimacy to govern a technology that respects no borders.

@@ -7,15 +7,15 @@ slug: "hollowing"
 description: "The existential risk of outsourcing human cognition, creativity, and struggle to machines."
 ---
 
-[DRAFT CONTENT — TO BE REPLACED]
+[DRAFT CONTENT - TO BE REPLACED]
 
 ## The Lens
 
-There is a subtler threat than job loss or economic disruption. It is the gradual erosion of the capacities that make human life meaningful — not because AI takes them away, but because we voluntarily surrender them.
+There is a subtler threat than job loss or economic disruption. It is the gradual erosion of the capacities that make human life meaningful - not because AI takes them away, but because we voluntarily surrender them.
 
 Every cognitive task we delegate to AI is a muscle we stop exercising. Every decision we outsource is a judgment we stop developing. Every creative act we automate is an experience we stop having. Individually, each delegation is rational. Collectively, they hollow out the human.
 
-The risk is not that AI becomes superhuman. It is that humans become subhuman — not in capability, but in the richness and depth of lived experience. We may build a world of maximum efficiency and minimum meaning, where everything works perfectly and nothing matters.
+The risk is not that AI becomes superhuman. It is that humans become subhuman - not in capability, but in the richness and depth of lived experience. We may build a world of maximum efficiency and minimum meaning, where everything works perfectly and nothing matters.
 
 ## The False Remedies
 
@@ -25,7 +25,7 @@ The distinction between tool and replacement is harder to maintain in practice t
 
 ### *"Human connection will remain"*
 
-The assumption that AI will handle the cognitive work while humans focus on relationships and connection ignores how deeply cognition is woven into human connection. The conversations that matter most — about meaning, values, and purpose — require the very cognitive capacities that AI threatens to atrophy.
+The assumption that AI will handle the cognitive work while humans focus on relationships and connection ignores how deeply cognition is woven into human connection. The conversations that matter most - about meaning, values, and purpose - require the very cognitive capacities that AI threatens to atrophy.
 
 ### *"People will choose wisely"*
 
@@ -35,8 +35,8 @@ The faith in individual choice ignores the structural incentives that drive adop
 
 ### National
 
-Cultural and educational institutions that actively cultivate the human capacities most threatened by AI — deep reading, sustained attention, independent reasoning, creative struggle. Not as luxuries or hobbies, but as essential infrastructure for a meaningful human future.
+Cultural and educational institutions that actively cultivate the human capacities most threatened by AI - deep reading, sustained attention, independent reasoning, creative struggle. Not as luxuries or hobbies, but as essential infrastructure for a meaningful human future.
 
 ### Global
 
-An international commitment to preserving domains of human experience that are not optimized, automated, or mediated by AI. Protected spaces — in education, art, governance, and daily life — where human beings engage directly with the difficulty and richness of unassisted existence.
+An international commitment to preserving domains of human experience that are not optimized, automated, or mediated by AI. Protected spaces - in education, art, governance, and daily life - where human beings engage directly with the difficulty and richness of unassisted existence.

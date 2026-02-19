@@ -7,7 +7,7 @@ slug: "democratization"
 description: "The paradox of universal access to intelligence and the hidden costs of cognitive abundance."
 ---
 
-[DRAFT CONTENT — TO BE REPLACED]
+[DRAFT CONTENT - TO BE REPLACED]
 
 ## The Lens
 
@@ -21,7 +21,7 @@ This essay examines the paradox of cognitive abundance: the possibility that giv
 
 ### *"People will find new ways to add value"*
 
-The optimistic response is that humans will move up the value chain, finding new forms of work and meaning that AI cannot replicate. This has been true in past technological transitions — but each transition has also left behind those who could not adapt. The question is whether this transition is different in kind, not just degree.
+The optimistic response is that humans will move up the value chain, finding new forms of work and meaning that AI cannot replicate. This has been true in past technological transitions - but each transition has also left behind those who could not adapt. The question is whether this transition is different in kind, not just degree.
 
 ### *"Creativity is uniquely human"*
 
@@ -29,7 +29,7 @@ The retreat to creativity as the last human redoubt assumes that creativity has 
 
 ### *"Focus on what makes us human"*
 
-The appeal to ineffable human qualities — empathy, judgment, wisdom — assumes these qualities are legible and valued by markets and institutions. History suggests otherwise. The qualities we celebrate in philosophy are rarely the ones we reward in practice.
+The appeal to ineffable human qualities - empathy, judgment, wisdom - assumes these qualities are legible and valued by markets and institutions. History suggests otherwise. The qualities we celebrate in philosophy are rarely the ones we reward in practice.
 
 ## What We Actually Need
 
@@ -39,4 +39,4 @@ A fundamental rethinking of how societies value human contribution. This goes be
 
 ### Global
 
-An international conversation about what it means to be human in an age of artificial intelligence — not as a philosophical abstraction, but as a practical policy question with implications for work, education, culture, and governance across every nation on earth.
+An international conversation about what it means to be human in an age of artificial intelligence - not as a philosophical abstraction, but as a practical policy question with implications for work, education, culture, and governance across every nation on earth.

@@ -7,15 +7,15 @@ slug: "aristocracy"
 description: "The risk that AI concentrates cognitive advantage among those who already hold power."
 ---
 
-[DRAFT CONTENT — TO BE REPLACED]
+[DRAFT CONTENT - TO BE REPLACED]
 
 ## The Lens
 
 Every major technology has redistributed power. The printing press democratized knowledge. The internet democratized communication. AI promises to democratize intelligence itself. But promises of democratization often mask a deeper concentration.
 
-The pattern is consistent: a new technology initially appears to level the playing field, then gradually concentrates advantage among those with the resources to exploit it most effectively. AI is following this pattern at an accelerated pace. Those with access to the best models, the most data, and the deepest technical expertise are pulling away from everyone else — not in wealth alone, but in cognitive capacity.
+The pattern is consistent: a new technology initially appears to level the playing field, then gradually concentrates advantage among those with the resources to exploit it most effectively. AI is following this pattern at an accelerated pace. Those with access to the best models, the most data, and the deepest technical expertise are pulling away from everyone else - not in wealth alone, but in cognitive capacity.
 
-The result may be a new form of aristocracy: not one based on birth or land, but on differential access to artificial intelligence. A cognitive caste system in which the augmented few can think faster, decide better, and act more effectively than the unaugmented many — permanently.
+The result may be a new form of aristocracy: not one based on birth or land, but on differential access to artificial intelligence. A cognitive caste system in which the augmented few can think faster, decide better, and act more effectively than the unaugmented many - permanently.
 
 ## The False Remedies
 
@@ -25,7 +25,7 @@ The most common reassurance is that AI tools will become ubiquitous and cheap, l
 
 ### *"Education is the great equalizer"*
 
-The faith in education as a leveling force assumes that the relevant skills can be taught and learned at scale. But when the frontier of AI capability moves faster than any curriculum can adapt, education becomes a treadmill — always running, never catching up. The half-life of technical skills is shrinking toward zero.
+The faith in education as a leveling force assumes that the relevant skills can be taught and learned at scale. But when the frontier of AI capability moves faster than any curriculum can adapt, education becomes a treadmill - always running, never catching up. The half-life of technical skills is shrinking toward zero.
 
 ### *"Antitrust will prevent concentration"*
 
@@ -35,7 +35,7 @@ Competition policy addresses market concentration but not cognitive concentratio
 
 ### National
 
-Public AI infrastructure that ensures high-capability AI access for all citizens, not just those who can afford premium tiers. Universal cognitive infrastructure, analogous to universal education or public libraries — institutions designed to prevent the emergence of a permanent cognitive underclass.
+Public AI infrastructure that ensures high-capability AI access for all citizens, not just those who can afford premium tiers. Universal cognitive infrastructure, analogous to universal education or public libraries - institutions designed to prevent the emergence of a permanent cognitive underclass.
 
 ### Global
 
