@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: "OWNER/REPO" # Replace with your actual GitHub repo (e.g., username/shades-of-singularity)
+  repo: "Bnicla/shades-of-singularity"
   branch: main
 
 # No media uploads — the site has no images

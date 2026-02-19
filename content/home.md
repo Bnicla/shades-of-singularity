@@ -1,5 +1,5 @@
 ---
-title: "Shades of the Singularity"
+title: "Shades of Singularity"
 description: "Eight Essays on the Futures We're Building and the Ones We're Drifting Into"
 ---
 

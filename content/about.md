@@ -1,13 +1,13 @@
 ---
 title: "About"
-description: "About the author and the Shades of the Singularity project."
+description: "About the author and the Shades of Singularity project."
 ---
 
 [PLACEHOLDER — Author bio and project description to be provided]
 
 ## About the Author
 
-Boris Schiapparelli is a writer and thinker working at the intersection of technology, governance, and political philosophy. *Shades of the Singularity* is his attempt to bring the rigor of institutional analysis to a conversation too often dominated by techno-optimism, techno-panic, and solutionism.
+Boris Schiapparelli is a writer and thinker working at the intersection of technology, governance, and political philosophy. *Shades of Singularity* is his attempt to bring the rigor of institutional analysis to a conversation too often dominated by techno-optimism, techno-panic, and solutionism.
 
 ## About This Project
 
