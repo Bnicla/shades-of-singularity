@@ -15,7 +15,7 @@ const essays = defineCollection({
 });
 
 const appendix = defineCollection({
-  loader: glob({ pattern: 'appendix.md', base: './content' }),
+  loader: glob({ pattern: 'appendix.md', base: './content', generateId: ({ entry }) => entry.replace(/\.md$/, '') }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string().optional(),
@@ -23,7 +23,7 @@ const appendix = defineCollection({
 });
 
 const pages = defineCollection({
-  loader: glob({ pattern: '{about,home}.md', base: './content' }),
+  loader: glob({ pattern: '{about,home}.md', base: './content', generateId: ({ entry }) => entry.replace(/\.md$/, '') }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
