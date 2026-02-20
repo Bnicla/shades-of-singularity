@@ -23,10 +23,9 @@ const scenarios = defineCollection({
     tier: z.number(),
     tierLabel: z.string(),
     likelihood: z.string(),
-    economic: z.union([z.number(), z.string()]),
-    social: z.union([z.number(), z.string()]),
-    political: z.union([z.number(), z.string()]),
-    existential: z.union([z.number(), z.string()]),
+    unmanaged: z.union([z.number(), z.string()]),
+    governed: z.union([z.number(), z.string()]),
+    dividend: z.union([z.number(), z.string()]),
     summary: z.string(),
   }),
 });

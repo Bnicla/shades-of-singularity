@@ -11,8 +11,8 @@ scenarios.sort((a, b) => a.data.number - b.data.number);
 
 const tiers = [
   { tier: 1, label: 'Near-Certain', scenarios: scenarios.filter(s => s.data.tier === 1) },
-  { tier: 2, label: 'Highly Likely', scenarios: scenarios.filter(s => s.data.tier === 2) },
-  { tier: 3, label: 'Probable', scenarios: scenarios.filter(s => s.data.tier === 3) },
+  { tier: 2, label: 'Highly Probable', scenarios: scenarios.filter(s => s.data.tier === 2) },
+  { tier: 3, label: 'Plausible', scenarios: scenarios.filter(s => s.data.tier === 3) },
   { tier: 4, label: 'Possible', scenarios: scenarios.filter(s => s.data.tier === 4) },
   { tier: 5, label: 'Speculative', scenarios: scenarios.filter(s => s.data.tier === 5) },
 ];
@@ -20,7 +20,7 @@ const tiers = [
 
 <BaseLayout
   title={appendixEntry.data.title}
-  description="An exhaustive taxonomy of 28 possible AI futures, ranked by likelihood."
+  description="Twenty-eight scenarios for the AI future, ranked by likelihood."
 >
   <header class="appendix-header">
     <h1 class="appendix-title">{appendixEntry.data.title}</h1>
@@ -37,7 +37,7 @@ const tiers = [
   <!-- Scenario Cards by Tier -->
   <div class="content-column">
     <hr style="margin: var(--space-xl) 0 var(--space-lg);" />
-    <h2 class="scenarios-heading">The 28 Scenarios</h2>
+    <h2 class="scenarios-heading">The 28 Shades</h2>
 
     {tiers.map((tierGroup) => (
       <section class="tier-section">
@@ -52,10 +52,9 @@ const tiers = [
               <h4 class="scenario-card-title">{scenario.data.title}</h4>
               <p class="scenario-card-summary">{scenario.data.summary}</p>
               <div class="scenario-card-scores">
-                <span title="Economic">E: {scenario.data.economic}</span>
-                <span title="Social">S: {scenario.data.social}</span>
-                <span title="Political">P: {scenario.data.political}</span>
-                <span title="Existential">X: {scenario.data.existential}</span>
+                <span title="Unmanaged">U: {scenario.data.unmanaged}</span>
+                <span title="Governed">G: {scenario.data.governed}</span>
+                <span title="Dividend">D: {scenario.data.dividend}</span>
               </div>
             </a>
           ))}

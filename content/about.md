@@ -5,7 +5,7 @@ description: "About B.E.N. and the Shades of Singularity project."
 
 ## About the Author
 
-B.E.N. are my initials. I'm not a public intellectual, a policy expert, or a futurist. I'm an MIT graduate, a product manager who has worked in startups and currently in Big Tech deploying generative AI to hundreds of millions of users.
+I'm not a public intellectual, a policy expert, or a futurist. I'm an MIT graduate, a product manager who has worked in startups and currently in Big Tech deploying generative AI to hundreds of millions of users.
 
 I don't have a particular authority to write these essays. What I have is a vantage point. I see what these systems can do, how fast they're improving, and how unprepared we are. Every working day, in practice. What strikes me most is the gap between what the people building AI know is coming and what the public conversation is willing to address.
 
@@ -46,3 +46,7 @@ In my work, I watch AI capabilities improve in discrete jumps that surprise even
 I don't know how much time we have. No one does. But the gap between what is coming and what we are prepared for is wide and getting wider. These essays are not the solution. They are an attempt to see clearly, so that the people who do build solutions can start from honest ground rather than comfortable illusions.
 
 The shades are being mixed. The question is whether anyone is holding the brush.
+
+## Contact
+
+I welcome conversation about any of the topics in these essays. If you have feedback, suggestions, or simply want to discuss, reach out at [ben@shadesofsingularity.com](mailto:ben@shadesofsingularity.com).
