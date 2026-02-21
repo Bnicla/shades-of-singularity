@@ -99,7 +99,7 @@
 .essay-nav {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
   border-top: 1px solid var(--color-rule);
@@ -110,7 +110,7 @@
   flex-direction: column;
   gap: 0.25rem;
   text-decoration: none;
-  max-width: 50%;
+  max-width: 42%;
 }
 
 .essay-nav-link:hover .essay-nav-title {
