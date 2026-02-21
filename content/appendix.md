@@ -3,22 +3,6 @@ title: "The Shades"
 subtitle: "Twenty-Eight Scenarios for the AI Future"
 ---
 
-*This taxonomy draws on academic literature (Bostrom, Chalmers, Hanson, Kurzweil, Ord, Russell, Yudkowsky), policy research (RAND, Brookings, CNAS, Atlantic Council), economic analysis (Acemoglu, Jones, Nordhaus), philosophical inquiry, and original synthesis.*
-
----
-
-## How to Read This Document
-
-The twenty-eight scenarios that follow are the raw pigments from which the essays in this collection are painted. They are not competing predictions. The future will not select one and discard the rest. It will combine many of them, shades layered over one another on the same canvas, each altering the color of what lies beneath.
-
-Some combinations are merely additive. Others interact. Epistemic collapse layered over cognitive atrophy does not produce two separate problems. It produces a population that cannot recognize its own misinformation, a failure mode neither scenario generates alone. Add foreign subversion and you have a citizenry that is manipulated, incapable of detecting the manipulation, and losing the cognitive tools to recover. Three individually survivable conditions; one extinction-level threat to self-governance.
-
-Each scenario is scored on two axes: the outcome if left unmanaged and the outcome if governed well. The gap between the two is the **Governance Dividend**, the measure of what institutional design can accomplish, and the reason this collection exists. The matrix below makes those dividends visible across all twenty-eight scenarios. The essays that follow this document are compositions of superposed shades, each essay layering multiple scenarios to reveal the interaction effects that individual analysis misses. The Blueprint is the response: a set of interlocking institutional mechanisms designed to claim those dividends before the window closes.
-
-The scenarios are presented individually for clarity, but the reader should hold in mind that the probable future is a composite. It is a painting, and the question is which shades mix, in what proportions, and whether anyone is governing the result.
-
----
-
 ## The Outcome Matrix
 
 ### Reading the Scale
@@ -92,25 +76,3 @@ The two outcome columns capture the central argument of the collection: the gap 
 3. **Stasis (#28): 1 pt** -- If AI plateaus, stakes are lower and conventional governance suffices.
 
 The scenarios where governance matters most are overwhelmingly the *probable* ones (Tiers 1-3), not the speculative ones (Tiers 4-5). The crisis is not waiting for a dramatic singularity event. It is already here, and the governance dividend is already on the table.
-
----
-
-## The Composite Picture
-
-Return now to the premise: these scenarios are shades, not choices. What picture do they compose?
-
-The darkest plausible composite, the one that requires no speculative breakthroughs, only the continuation of current trends, layers Tier 1 and Tier 2 scenarios into a single canvas:
-
-> Labor is devalued (#1). Wealth concentrates (#2). Surveillance is ambient (#3). Shared truth dissolves (#4). Citizens lose the capacity for independent thought (#5). A geopolitical arms race prevents cooperation (#6). Democratic institutions cannot keep pace (#7). Meaning evaporates (#8). The biosphere groans under the computational load (#9). Foreign powers exploit every seam (#10). The economy hums with synthetic persons who serve no human need (#11).
-
-Eleven shades. None of them speculative. All of them already underway. The composite is not a dramatic singularity event. It is a slow-motion institutional collapse where the economy grows, surveillance expands, shared truth dissolves, and democratic capacity erodes simultaneously. The danger is not a single catastrophic failure. It is the accumulation of degradations, each tolerable in isolation, that together leave the republic unable to function.
-
-Composites work in the other direction too. Layer democratic AI access (#18) over cognitive enhancement (#17) and the result is not merely public AI *plus* smarter citizens. It is a population equipped to *govern AI itself*, a positive feedback loop as powerful as any negative one. Add post-scarcity (#22) and the meaning crisis (#8) transforms from existential wound to creative liberation. Add effective governance design (#7, inverted) and the ecological crisis (#9) becomes the greatest demonstration of collective intelligence in history.
-
-The optimistic composite requires active construction. The pessimistic one requires only drift.
-
-That asymmetry, the fact that the dark composite is the default and the light one must be built, is the entire case for institutional intervention. The essays in this collection are compositions of these superposed shades: each essay layers specific scenarios to reveal how they interact, reinforce, and transform one another. The Blueprint that follows the essays is the response, a set of interlocking mechanisms designed to shift the composite toward the light end of the matrix. The shades themselves are the evidence: twenty-eight futures, already mixing.
-
----
-
-*Sources consulted: Bostrom (2014), Chalmers (2010), Hanson (2016), Kurzweil (2005, 2024), Ord (2020), Russell (2019), Yudkowsky (2013), Acemoglu and Restrepo (2018, 2019, 2024), Jones (2024), RAND (2025), Brookings (2025), CNAS (2023), Atlantic Council (2025), IEA (2025), MIT News (2025), UNEP (2024), Nature Machine Intelligence (2025), arXiv (2025), and approximately 60 additional articles, papers, and policy documents. Full citation list maintained in the master source archive.*

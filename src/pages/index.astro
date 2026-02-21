@@ -37,8 +37,55 @@ const jsonLd = {
     </div>
   </section>
 
+  <!-- How to Navigate This Collection -->
+  <section class="home-guide">
+    <div class="content-column">
+      <h2 class="section-heading">How to Read This Collection</h2>
+      <p>This project has three parts, each building on the last. They work together like diagnosis, evidence, and prescription.</p>
+
+      <div class="pillar-grid">
+        <a href="/essays/" class="pillar-card">
+          <h3 class="pillar-title">The Essays</h3>
+          <p class="pillar-description">Eight long-form pieces, each opening a window onto one dimension of the AI future. They diagnose what the current discourse misses and dismantle the reassuring answers that dominate the conversation.</p>
+        </a>
+
+        <a href="/scenarios/" class="pillar-card">
+          <h3 class="pillar-title">The 28 Scenarios</h3>
+          <p class="pillar-description">The raw pigments from which the essays are painted. Twenty-eight futures ranked by likelihood and scored by governance dividend - the gap between what happens if we drift and what happens if we design. These are the shades of singularity.</p>
+        </a>
+
+        <a href="/blueprint/" class="pillar-card">
+          <h3 class="pillar-title">The Blueprint</h3>
+          <p class="pillar-description">Five institutional mechanisms designed to claim the governance dividend. Not policy suggestions - architectural designs for the structures the AI transition requires.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Composite Picture -->
+  <section class="home-composite">
+    <div class="content-column">
+      <h2 class="section-heading">The Composite Picture</h2>
+      <p>The scenarios are not competing predictions. The future will not select one and discard the rest. It will combine many of them, shades layered over one another on the same canvas, each altering the color of what lies beneath.</p>
+
+      <blockquote class="composite-dark">
+        Labor is devalued. Wealth concentrates. Surveillance is ambient. Shared truth dissolves. Citizens lose the capacity for independent thought. A geopolitical arms race prevents cooperation. Democratic institutions cannot keep pace. Meaning evaporates. The biosphere groans under the computational load. Foreign powers exploit every seam. The economy hums with synthetic persons who serve no human need.
+      </blockquote>
+
+      <p>Eleven scenarios. None speculative. All already underway. The composite is not a dramatic singularity event. It is a slow-motion institutional collapse where the economy grows, surveillance expands, shared truth dissolves, and democratic capacity erodes simultaneously.</p>
+
+      <p>Composites work in the other direction too. Layer democratic AI access over cognitive enhancement and the result is a population equipped to govern AI itself - a positive feedback loop as powerful as any negative one. Add post-scarcity and the meaning crisis transforms from existential wound to creative liberation.</p>
+
+      <p class="composite-punchline"><strong>The optimistic composite requires active construction. The pessimistic one requires only drift.</strong></p>
+
+      <p>That asymmetry is the entire case for institutional intervention - and the reason the <a href="/blueprint/">Blueprint</a> exists.</p>
+    </div>
+  </section>
+
+  <!-- Essay List -->
   <section class="home-essays">
     <div class="content-column">
+      <h2 class="section-heading">The Essays</h2>
       {essays.map((essay) => (
         <EssayCard
           numeral={essay.data.numeral}
@@ -87,7 +134,84 @@ const jsonLd = {
     border-bottom: 1px solid var(--color-rule);
   }
 
+  .section-heading {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    text-align: center;
+    margin-bottom: var(--space-md);
+  }
+
+  .home-guide {
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .home-guide > .content-column > p {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+
+  .pillar-card {
+    padding: 1.25rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .pillar-card:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+  }
+
+  .pillar-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-accent);
+  }
+
+  .pillar-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .home-composite {
+    padding: var(--space-lg) 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .composite-dark {
+    border-left: 3px solid var(--color-accent);
+    padding-left: var(--space-md);
+    margin: var(--space-md) 0;
+    font-style: italic;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .composite-punchline {
+    text-align: center;
+    margin: var(--space-md) 0;
+  }
+
   .home-essays {
     padding: var(--space-lg) 0;
+  }
+
+  @media (max-width: 768px) {
+    .pillar-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

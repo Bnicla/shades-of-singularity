@@ -46,4 +46,14 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { essays, appendix, scenarios, pages };
+const blueprints = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/blueprints' }),
+  schema: z.object({
+    number: z.number(),
+    title: z.string(),
+    slug: z.string(),
+    summary: z.string(),
+  }),
+});
+
+export const collections = { essays, appendix, scenarios, pages, blueprints };

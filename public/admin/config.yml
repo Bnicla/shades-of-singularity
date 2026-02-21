@@ -24,6 +24,19 @@ collections:
       - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
+  - name: "blueprints"
+    label: "Blueprints"
+    folder: "content/blueprints"
+    create: false
+    slug: "{{fields.number | padStart(2, '0')}}-{{fields.slug}}"
+    sortable_fields: ["number"]
+    fields:
+      - { label: "Number", name: "number", widget: "number", value_type: "int" }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string" }
+      - { label: "Summary", name: "summary", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown" }
+
   - name: "pages"
     label: "Pages"
     files:

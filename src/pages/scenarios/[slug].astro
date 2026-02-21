@@ -26,7 +26,7 @@ const { Content } = await render(scenario);
   description={scenario.data.summary}
 >
   <div class="content-column" style="padding-top: var(--space-xl); padding-bottom: var(--space-lg);">
-    <a href="/appendix/" class="back-link">&larr; Back to all scenarios</a>
+    <a href="/scenarios/" class="back-link">&larr; Back to all scenarios</a>
 
     <header class="scenario-header">
       <div class="scenario-header-meta">
@@ -60,19 +60,19 @@ const { Content } = await render(scenario);
 
     <nav class="essay-nav" aria-label="Scenario navigation">
       {prevScenario ? (
-        <a href={`/appendix/${prevScenario.data.slug}/`} class="essay-nav-link essay-nav-link--prev">
+        <a href={`/scenarios/${prevScenario.data.slug}/`} class="essay-nav-link essay-nav-link--prev">
           <span class="essay-nav-label">&larr; Previous</span>
           <span class="essay-nav-title">{prevScenario.data.number}. {prevScenario.data.title}</span>
         </a>
       ) : <div />}
 
       {nextScenario ? (
-        <a href={`/appendix/${nextScenario.data.slug}/`} class="essay-nav-link essay-nav-link--next">
+        <a href={`/scenarios/${nextScenario.data.slug}/`} class="essay-nav-link essay-nav-link--next">
           <span class="essay-nav-label">Next &rarr;</span>
           <span class="essay-nav-title">{nextScenario.data.number}. {nextScenario.data.title}</span>
         </a>
       ) : (
-        <a href="/appendix/" class="essay-nav-link essay-nav-link--next">
+        <a href="/scenarios/" class="essay-nav-link essay-nav-link--next">
           <span class="essay-nav-label">Back &rarr;</span>
           <span class="essay-nav-title">All Scenarios</span>
         </a>

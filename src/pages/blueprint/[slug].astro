@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blueprints = await getCollection('blueprints');
+  blueprints.sort((a, b) => a.data.number - b.data.number);
+
+  return blueprints.map((bp, index) => ({
+    params: { slug: bp.data.slug },
+    props: {
+      blueprint: bp,
+      prevBlueprint: index > 0 ? blueprints[index - 1] : null,
+      nextBlueprint: index < blueprints.length - 1 ? blueprints[index + 1] : null,
+    },
+  }));
+}
+
+const { blueprint, prevBlueprint, nextBlueprint } = Astro.props;
+const { Content } = await render(blueprint);
+---
+
+<BaseLayout
+  title={`Blueprint ${blueprint.data.number}: ${blueprint.data.title}`}
+  description={blueprint.data.summary}
+>
+  <div class="content-column" style="padding-top: var(--space-xl); padding-bottom: var(--space-lg);">
+    <a href="/blueprint/" class="back-link">&larr; Back to all blueprints</a>
+
+    <header class="bp-header">
+      <span class="bp-number">Blueprint {blueprint.data.number}</span>
+      <h1 class="bp-title">{blueprint.data.title}</h1>
+      <p class="bp-summary">{blueprint.data.summary}</p>
+      <hr />
+    </header>
+
+    <article class="bp-body">
+      <Content />
+    </article>
+
+    <nav class="essay-nav" aria-label="Blueprint navigation">
+      {prevBlueprint ? (
+        <a href={`/blueprint/${prevBlueprint.data.slug}/`} class="essay-nav-link essay-nav-link--prev">
+          <span class="essay-nav-label">&larr; Previous</span>
+          <span class="essay-nav-title">{prevBlueprint.data.number}. {prevBlueprint.data.title}</span>
+        </a>
+      ) : <div />}
+
+      {nextBlueprint ? (
+        <a href={`/blueprint/${nextBlueprint.data.slug}/`} class="essay-nav-link essay-nav-link--next">
+          <span class="essay-nav-label">Next &rarr;</span>
+          <span class="essay-nav-title">{nextBlueprint.data.number}. {nextBlueprint.data.title}</span>
+        </a>
+      ) : (
+        <a href="/blueprint/" class="essay-nav-link essay-nav-link--next">
+          <span class="essay-nav-label">Back &rarr;</span>
+          <span class="essay-nav-title">All Blueprints</span>
+        </a>
+      )}
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-link {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: var(--space-md);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .bp-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .bp-number {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: var(--space-sm);
+  }
+
+  .bp-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: 0.5em;
+  }
+
+  .bp-summary {
+    font-size: var(--font-size-base);
+    font-style: italic;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+  }
+
+  .bp-body {
+    margin-bottom: var(--space-lg);
+  }
+
+  .bp-body p {
+    margin-bottom: 1.5em;
+  }
+</style>

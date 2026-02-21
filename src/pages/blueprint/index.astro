@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const blueprints = await getCollection('blueprints');
+blueprints.sort((a, b) => a.data.number - b.data.number);
+---
+
+<BaseLayout
+  title="The Blueprint"
+  description="Five institutional mechanisms designed to claim the governance dividend before the window closes."
+>
+  <header class="blueprint-header">
+    <h1 class="blueprint-title">The Blueprint</h1>
+    <p class="blueprint-subtitle">Five Institutional Mechanisms for the AI Transition</p>
+  </header>
+
+  <div class="content-column">
+    <p class="blueprint-intro">
+      The essays diagnose. The scenarios quantify. The Blueprint responds.
+    </p>
+    <p class="blueprint-intro">
+      These five mechanisms are not policy suggestions. They are institutional designs - interlocking structures that address the specific failure modes the scenarios identify. Each one targets a concrete problem. Together, they form an architecture for claiming the governance dividend before the window closes.
+    </p>
+    <p class="blueprint-intro">
+      The optimistic future requires active construction. The pessimistic one requires only drift. These are the blueprints for what must be built.
+    </p>
+  </div>
+
+  <div class="content-column">
+    <div class="blueprint-grid">
+      {blueprints.map((bp) => (
+        <a href={`/blueprint/${bp.data.slug}/`} class="blueprint-card">
+          <div class="blueprint-card-number">{bp.data.number}</div>
+          <h3 class="blueprint-card-title">{bp.data.title}</h3>
+          <p class="blueprint-card-summary">{bp.data.summary}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .blueprint-header {
+    text-align: center;
+    padding: var(--space-xl) 0 var(--space-md);
+  }
+
+  .blueprint-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: 0.3em;
+  }
+
+  .blueprint-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+
+  .blueprint-intro {
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: 1em;
+  }
+
+  .blueprint-intro:last-of-type {
+    margin-bottom: var(--space-lg);
+  }
+
+  .blueprint-grid {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+
+  .blueprint-card {
+    display: block;
+    padding: 1.5rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .blueprint-card:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent-muted);
+  }
+
+  .blueprint-card-number {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .blueprint-card-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .blueprint-card-summary {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+</style>

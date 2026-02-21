@@ -4,7 +4,7 @@ import { getEntry, getCollection, render } from 'astro:content';
 import '../../styles/appendix.css';
 
 const appendixEntry = await getEntry('appendix', 'appendix');
-const { Content } = await render(appendixEntry);
+const { Content: MatrixContent } = await render(appendixEntry);
 
 const scenarios = await getCollection('scenarios');
 scenarios.sort((a, b) => a.data.number - b.data.number);
@@ -19,32 +19,33 @@ const tiers = [
 ---
 
 <BaseLayout
-  title={appendixEntry.data.title}
-  description="Twenty-eight scenarios for the AI future, ranked by likelihood."
+  title="The 28 Scenarios"
+  description="Twenty-eight scenarios for the AI future, ranked by likelihood and scored by governance dividend."
 >
   <header class="appendix-header">
-    <h1 class="appendix-title">{appendixEntry.data.title}</h1>
-    {appendixEntry.data.subtitle && (
-      <p class="appendix-subtitle">{appendixEntry.data.subtitle}</p>
-    )}
+    <h1 class="appendix-title">The 28 Scenarios</h1>
+    <p class="appendix-subtitle">The Shades of Singularity</p>
   </header>
 
-  <!-- Intro, Matrix, Analysis, Composite -->
-  <div class="content-column appendix-content">
-    <Content />
+  <div class="content-column">
+    <p class="scenarios-intro">
+      These are the twenty-eight scenarios from which the essays in this collection are painted. They are not competing predictions. The future will not select one and discard the rest. It will combine many of them, shades layered over one another on the same canvas, each altering the color of what lies beneath.
+    </p>
+    <p class="scenarios-intro">
+      Each scenario is scored on two axes: the outcome if left <strong>unmanaged</strong> and the outcome if <strong>governed</strong> well. The gap between the two is the <strong>Governance Dividend</strong> - the measure of what institutional design can accomplish, and the reason this collection exists.
+    </p>
   </div>
 
   <!-- Scenario Cards by Tier -->
   <div class="content-column">
-    <hr style="margin: var(--space-xl) 0 var(--space-lg);" />
-    <h2 class="scenarios-heading">The 28 Shades</h2>
+    <h2 class="scenarios-heading">The Scenarios</h2>
 
     {tiers.map((tierGroup) => (
       <section class="tier-section">
         <h3 class="tier-label">Tier {tierGroup.tier}: {tierGroup.label}</h3>
         <div class="scenario-grid">
           {tierGroup.scenarios.map((scenario) => (
-            <a href={`/appendix/${scenario.data.slug}/`} class="scenario-card">
+            <a href={`/scenarios/${scenario.data.slug}/`} class="scenario-card">
               <div class="scenario-card-header">
                 <span class="scenario-number">{scenario.data.number}</span>
                 <span class="likelihood-badge">{scenario.data.likelihood}</span>
@@ -62,9 +63,26 @@ const tiers = [
       </section>
     ))}
   </div>
+
+  <!-- Outcome Matrix -->
+  <div class="content-column appendix-content">
+    <hr style="margin: var(--space-xl) 0 var(--space-lg);" />
+    <MatrixContent />
+  </div>
 </BaseLayout>
 
 <style>
+  .scenarios-intro {
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: 1em;
+  }
+
+  .scenarios-intro:last-of-type {
+    margin-bottom: var(--space-lg);
+  }
+
   .scenarios-heading {
     font-family: var(--font-heading);
     font-size: var(--font-size-xl);
