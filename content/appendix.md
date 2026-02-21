@@ -5,26 +5,6 @@ subtitle: "Twenty-Eight Scenarios for the AI Future"
 
 ## The Outcome Matrix
 
-### Reading the Scale
-
-**Outcome Scale:** -5 (civilizational extinction) to +5 (transcendent flourishing)
-
-| Score | Label |
-|-------|-------|
-| +5 | **Transcendence** -- Humanity fundamentally elevated beyond current limits |
-| +4 | **Flourishing** -- Dramatic improvement in welfare, agency, and meaning |
-| +3 | **Beneficial** -- Significant net positive; meaningful problems solved |
-| +2 | **Constructive** -- Modestly positive; more gains than losses |
-| +1 | **Marginal gain** -- Slight improvement, mostly adaptation |
-| 0 | **Neutral / Mixed** -- Gains and losses roughly cancel |
-| -1 | **Marginal harm** -- Slight degradation, livable but diminished |
-| -2 | **Damaging** -- Significant harm to large populations; recoverable |
-| -3 | **Severe** -- Structural damage to civilization; difficult to reverse |
-| -4 | **Catastrophic** -- Civilizational collapse or permanent tyranny |
-| -5 | **Extinction** -- End of humanity or permanent lock-in to misery |
-
-The two outcome columns capture the central argument of the collection: the gap between "Unmanaged" and "Governed" is the **Governance Dividend**, and it is enormous for precisely the scenarios that are most likely.
-
 ### The Full Matrix
 
 | # | Scenario | Likelihood | Unmanaged | Governed | Dividend |
@@ -57,6 +37,28 @@ The two outcome columns capture the central argument of the collection: the gap 
 | 26 | Human Extinction | ~5-15% | -5 | -5 | Prevention only |
 | 27 | Transcendence / Omega Point | ~5% | ? | ? | Beyond evaluation |
 | 28 | Stasis / "Singularity That Wasn't" | ~10% | 0 | +1 | 1 |
+
+---
+
+### Reading the Scale
+
+**Outcome Scale:** -5 (civilizational extinction) to +5 (transcendent flourishing)
+
+| Score | Label |
+|-------|-------|
+| +5 | **Transcendence** -- Humanity fundamentally elevated beyond current limits |
+| +4 | **Flourishing** -- Dramatic improvement in welfare, agency, and meaning |
+| +3 | **Beneficial** -- Significant net positive; meaningful problems solved |
+| +2 | **Constructive** -- Modestly positive; more gains than losses |
+| +1 | **Marginal gain** -- Slight improvement, mostly adaptation |
+| 0 | **Neutral / Mixed** -- Gains and losses roughly cancel |
+| -1 | **Marginal harm** -- Slight degradation, livable but diminished |
+| -2 | **Damaging** -- Significant harm to large populations; recoverable |
+| -3 | **Severe** -- Structural damage to civilization; difficult to reverse |
+| -4 | **Catastrophic** -- Civilizational collapse or permanent tyranny |
+| -5 | **Extinction** -- End of humanity or permanent lock-in to misery |
+
+The two outcome columns capture the central argument of the collection: the gap between "Unmanaged" and "Governed" is the **Governance Dividend**, and it is enormous for precisely the scenarios that are most likely.
 
 ---
 

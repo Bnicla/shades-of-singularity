@@ -8,14 +8,18 @@ essays.sort((a, b) => a.data.number - b.data.number);
 ---
 
 <BaseLayout title="The Essays" description="Eight essays. Eight angles on a future arriving whether we see it or not.">
-  <div class="content-column" style="padding-top: var(--space-xl);">
-    <header style="text-align: center; margin-bottom: var(--space-lg);">
-      <h1>The Essays</h1>
-      <p style="font-style: italic; color: var(--color-text-muted); margin-top: var(--space-sm);">
-        Eight essays. Eight angles on a future arriving whether we see it or not.
-      </p>
-    </header>
+  <header class="essays-header">
+    <h1 class="essays-title">The Essays</h1>
+    <p class="essays-subtitle">Eight angles on a future arriving whether we see it or not</p>
+  </header>
 
+  <div class="content-column">
+    <p class="essays-intro">
+      Each essay opens a window onto one dimension of the AI future. They diagnose what the current discourse misses, dismantle the reassuring answers that dominate the conversation, and name what we actually need - at the scale of nations and the scale of civilization.
+    </p>
+  </div>
+
+  <div class="content-column">
     {essays.map((essay) => (
       <EssayCard
         numeral={essay.data.numeral}
@@ -27,3 +31,32 @@ essays.sort((a, b) => a.data.number - b.data.number);
     ))}
   </div>
 </BaseLayout>
+
+<style>
+  .essays-header {
+    text-align: center;
+    padding: var(--space-xl) var(--content-padding) var(--space-md);
+    max-width: var(--content-width);
+    margin: 0 auto;
+  }
+
+  .essays-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: 0.5em;
+  }
+
+  .essays-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  .essays-intro {
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+  }
+</style>

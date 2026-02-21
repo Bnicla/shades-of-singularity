@@ -1,13 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import EssayCard from '../components/EssayCard.astro';
-import { getCollection, getEntry, render } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 
 const homeEntry = await getEntry('pages', 'home');
 const { Content: HomeContent } = await render(homeEntry);
-
-const essays = await getCollection('essays', ({ data }) => !data.draft);
-essays.sort((a, b) => a.data.number - b.data.number);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -82,21 +78,6 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- Essay List -->
-  <section class="home-essays">
-    <div class="content-column">
-      <h2 class="section-heading">The Essays</h2>
-      {essays.map((essay) => (
-        <EssayCard
-          numeral={essay.data.numeral}
-          title={essay.data.title}
-          subtitle={essay.data.subtitle}
-          slug={essay.data.slug}
-          description={essay.data.description}
-        />
-      ))}
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
@@ -203,10 +184,6 @@ const jsonLd = {
   .composite-punchline {
     text-align: center;
     margin: var(--space-md) 0;
-  }
-
-  .home-essays {
-    padding: var(--space-lg) 0;
   }
 
   @media (max-width: 768px) {
