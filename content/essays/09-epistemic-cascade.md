@@ -9,11 +9,11 @@ description: "Four shades form a causal chain: cheap fabrication overwhelms volu
 
 [DRAFT CONTENT - TO BE REPLACED]
 
-**Shades composed:** #4 (Information Collapse) + #5 (The Drowning of the Internet) + #6 (Cognitive Atrophy) + #17 (Fragmentation of Reality)
+**Shades composed:** #3 (The Drowning of the Internet) + #5 (Information Collapse) + #6 (Cognitive Atrophy) + #17 (Fragmentation of Reality)
 
 ## The Causal Chain
 
-These four shades form a causal chain, each making the next more lethal. Fabrication becomes cheap (#4). The volunteer institutions that helped humans evaluate content are overwhelmed by machine-scale volume (#5). Individual cognitive capacity to evaluate independently atrophies (#6). People retreat into identity-based information bubbles because that is the only remaining heuristic (#17). The Dead Internet is the emergent result of running all four simultaneously: bots producing content, bots consuming it, bots acting on it, humans a shrinking minority in a recursive loop that no longer requires them.
+These four shades form a causal chain, each making the next more lethal. The volunteer institutions that helped humans evaluate content are overwhelmed by machine-scale volume (#3). Fabrication becomes cheap (#5). Individual cognitive capacity to evaluate independently atrophies (#6). People retreat into identity-based information bubbles because that is the only remaining heuristic (#17). The Dead Internet is the emergent result of running all four simultaneously: bots producing content, bots consuming it, bots acting on it, humans a shrinking minority in a recursive loop that no longer requires them.
 
 ## Key Questions
 
@@ -26,4 +26,4 @@ These four shades form a causal chain, each making the next more lethal. Fabrica
 
 ## Relationship to the Blueprint
 
-The governance response differs across the chain. Content provenance (C2PA) addresses #4. Identity verification and contribution gating address #5. Education reform addresses #6. Public media and epistemic floor-building address #17. No single intervention covers the full cascade.
+The governance response differs across the chain. Identity verification and contribution gating address #3. Content provenance (C2PA) addresses #5. Education reform addresses #6. Public media and epistemic floor-building address #17. No single intervention covers the full cascade.

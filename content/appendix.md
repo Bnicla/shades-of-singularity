@@ -11,9 +11,9 @@ subtitle: "Twenty-Nine Scenarios for the AI Future"
 |---|----------|-----------|-----------|----------|----------|
 | 1 | Gradual Erosion of Human Labor Value | ~95% | -3 | +3 | 6 |
 | 2 | The Concentration of AI Power | ~90% | -3 | +2 | 5 |
-| 3 | Surveillance Singularity | ~85% | -4 | +1 | 5 |
-| 4 | Information Collapse | ~85% | -3 | +1 | 4 |
-| 5 | The Drowning of the Internet | ~90% | -3 | 0 | 3 |
+| 3 | The Drowning of the Internet | ~90% | -3 | 0 | 3 |
+| 4 | Surveillance Singularity | ~85% | -4 | +1 | 5 |
+| 5 | Information Collapse | ~85% | -3 | +1 | 4 |
 | 6 | Cognitive Atrophy Trap | ~85% | -3 | +1 | 4 |
 | 7 | Geopolitical AI Arms Race | ~80% | -4 | +1 | 5 |
 | 8 | Governance Obsolescence | ~80% | -3 | +2 | 5 |
