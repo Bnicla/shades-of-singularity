@@ -1,5 +1,5 @@
 ---
-number: 17
+number: 16
 title: "The Creative Extraction"
 slug: "creative-extraction"
 tier: 3

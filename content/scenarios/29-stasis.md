@@ -1,5 +1,5 @@
 ---
-number: 30
+number: 29
 title: "The Stasis / \"Singularity That Wasn't\""
 slug: "stasis"
 tier: 5

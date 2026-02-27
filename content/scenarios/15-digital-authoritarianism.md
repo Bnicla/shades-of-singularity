@@ -1,5 +1,5 @@
 ---
-number: 14
+number: 15
 title: "Digital Authoritarianism as Global Norm"
 slug: "digital-authoritarianism"
 tier: 3

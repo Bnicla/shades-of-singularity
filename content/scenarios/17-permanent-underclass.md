@@ -1,5 +1,5 @@
 ---
-number: 15
+number: 17
 title: "Permanent Underclass / Neo-Feudalism"
 slug: "permanent-underclass"
 tier: 3

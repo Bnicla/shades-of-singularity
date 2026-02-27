@@ -1,5 +1,5 @@
 ---
-number: 13
+number: 14
 title: "Alignment Failure (Misaligned Superintelligence)"
 slug: "alignment-failure"
 tier: 3

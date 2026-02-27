@@ -1,5 +1,5 @@
 ---
-number: 16
+number: 13
 title: "The Financial Chain Reaction"
 slug: "financial-chain-reaction"
 tier: 3
