@@ -1,11 +1,30 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/essay.css';
 import { getEntry, render } from 'astro:content';
 
 const aboutEntry = await getEntry('pages', 'about');
 const { Content } = await render(aboutEntry);
 ---
 
-<PageLayout title={aboutEntry.data.title} description={aboutEntry.data.description}>
-  <Content />
-</PageLayout>
+<BaseLayout title={aboutEntry.data.title} description={aboutEntry.data.description}>
+  <div class="content-column" style="padding-top: var(--space-xl); padding-bottom: var(--space-lg);">
+    <header class="about-header">
+      <h1>{aboutEntry.data.title}</h1>
+    </header>
+    <article class="essay-body">
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+
+  .about-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+</style>

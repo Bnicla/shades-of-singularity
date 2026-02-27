@@ -19,17 +19,17 @@ const tiers = [
 ---
 
 <BaseLayout
-  title="The 29 Scenarios"
-  description="Twenty-nine scenarios for the AI future, ranked by likelihood and scored by governance dividend."
+  title="The 29 Shades of Singularity"
+  description="Twenty-nine futures ranked by likelihood and scored by governance dividend. The gap between drift and design."
 >
   <header class="appendix-header">
-    <h1 class="appendix-title">The 29 Scenarios</h1>
-    <p class="appendix-subtitle">The Shades of Singularity</p>
+    <h1 class="appendix-title">The 29 Shades of Singularity</h1>
+    <p class="appendix-subtitle">Twenty-nine futures ranked by likelihood and scored by governance dividend. The gap between drift and design.</p>
   </header>
 
   <div class="content-column">
     <p class="scenarios-intro">
-      These are the twenty-nine scenarios from which the essays in this collection are painted. They are not competing predictions. The future will not select one and discard the rest. It will combine many of them, shades layered over one another on the same canvas, each altering the color of what lies beneath.
+      These twenty-nine scenarios are the evidence base from which the essays in this collection are drawn. They are not competing predictions. The future will not select one and discard the rest. It will combine many of them, shades layered over one another on the same canvas, each altering the color of what lies beneath.
     </p>
     <p class="scenarios-intro">
       Each scenario is scored on two axes: the outcome if left <strong>unmanaged</strong> and the outcome if <strong>governed</strong> well. The gap between the two is the <strong>Governance Dividend</strong> - the measure of what institutional design can accomplish, and the reason this collection exists.
@@ -38,14 +38,14 @@ const tiers = [
 
   <!-- Scenario Cards by Tier -->
   <div class="content-column">
-    <h2 class="scenarios-heading">The Scenarios</h2>
+    <h2 class="scenarios-heading">The Shades</h2>
 
     {tiers.map((tierGroup) => (
       <section class="tier-section">
         <h3 class="tier-label">Tier {tierGroup.tier}: {tierGroup.label}</h3>
         <div class="scenario-grid">
           {tierGroup.scenarios.map((scenario) => (
-            <a href={`/scenarios/${scenario.data.slug}/`} class="scenario-card">
+            <a href={`/the-29-shades/${scenario.data.slug}/`} class="scenario-card">
               <div class="scenario-card-header">
                 <span class="scenario-number">{scenario.data.number}</span>
                 <span class="likelihood-badge">{scenario.data.likelihood}</span>
