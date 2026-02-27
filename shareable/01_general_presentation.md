@@ -60,7 +60,7 @@ The gap between the two is the **Governance Dividend**. It measures what institu
 
 | # | Scenario | Likelihood | Unmanaged | Governed | Dividend |
 |---|----------|-----------|-----------|----------|----------|
-| 1 | Gradual Erosion of Human Labor Value | ~95% | -3 | +3 | 6 |
+| 1 | The Gradual Erosion of Human Labor Value | ~95% | -3 | +3 | 6 |
 | 2 | The Concentration of AI Power | ~90% | -3 | +2 | 5 |
 | 3 | The Drowning of the Internet | ~90% | -3 | 0 | 3 |
 | 4 | The Surveillance Singularity | ~85% | -4 | +1 | 5 |
@@ -72,11 +72,11 @@ The gap between the two is the **Governance Dividend**. It measures what institu
 | 10 | The Ecological Reckoning | ~75% | -3 | +3 | 6 |
 | 11 | Foreign AI Subversion | ~75% | -4 | +1 | 5 |
 | 12 | The Synthetic Persons Economy | ~70% | -2 | +1 | 3 |
-| 13 | Alignment Failure | ~50-60% | -5 | -1 | 4 |
-| 14 | Digital Authoritarianism as Global Norm | ~55% | -4 | +1 | 5 |
-| 15 | Permanent Underclass / Neo-Feudalism | ~50% | -4 | +2 | 6 |
-| 16 | The Financial Chain Reaction | ~60-65% | -3 | +1 | 4 |
-| 17 | The Creative Extraction | ~55% | -2 | +3 | 5 |
+| 13 | The Financial Chain Reaction | ~60% | -3 | +1 | 4 |
+| 14 | Alignment Failure (Misaligned Superintelligence) | ~55% | -5 | -1 | 4 |
+| 15 | Digital Authoritarianism as Global Norm | ~55% | -4 | +1 | 5 |
+| 16 | The Creative Extraction | ~55% | -2 | +3 | 5 |
+| 17 | Permanent Underclass / Neo-Feudalism | ~50% | -4 | +2 | 6 |
 | 18 | The Fragmentation of Reality | ~45% | -3 | 0 | 3 |
 | 19 | The Cognitive Enhancement Divide | ~35% | -3 | +4 | 7 |
 | 20 | The Democratic AI / Cognitive Bill of Rights | ~30% | N/A | +4 | Active creation |
@@ -87,9 +87,9 @@ The gap between the two is the **Governance Dividend**. It measures what institu
 | 25 | Mind Uploading / Digital Consciousness | ~15% | -2 | +3 | 5 |
 | 26 | AI Consciousness / Machine Sentience | ~15% | -2 | +2 | 4 |
 | 27 | AI Religion / Techno-Eschatology | ~15% | -2 | 0 | 2 |
-| 28 | Human Extinction | ~5-15% | -5 | -5 | Prevention only |
-| 29 | The Transcendence / Omega Point | ~5% | ? | ? | Beyond evaluation |
-| 30 | The Stasis / "Singularity That Wasn't" | ~10% | 0 | +1 | 1 |
+| 28 | Human Extinction | ~10% | -5 | -5 | Prevention only |
+| 29 | The Stasis / "Singularity That Wasn't" | ~10% | 0 | +1 | 1 |
+| 30 | The Transcendence / Omega Point | ~5% | ? | ? | Beyond evaluation |
 
 ### Tier Assignments
 
@@ -132,11 +132,25 @@ Each essay composes multiple shades to reveal interaction effects that individua
 | VII | On the Sovereignty of Nations in the Age of Machines | #7 Arms Race + #11 Foreign Subversion | Draft placeholder |
 | VIII | On the True Wealth of the Nation | #1 Labor + #10 Ecology + #24 Post-Scarcity | Draft placeholder |
 | IX | On the Epistemic Cascade | #3 Drowning + #5 Info Collapse + #6 Cognitive Atrophy + #18 Reality Fragmentation | Draft placeholder |
-| X | On the Economic Reckoning | #1 Labor + #2 Power + #15 Neo-Feudalism + #24 Post-Scarcity | Draft placeholder |
+| X | On the Economic Reckoning | #1 Labor + #2 Power + #17 Neo-Feudalism + #24 Post-Scarcity | Draft placeholder |
 | XI | On the Optimistic Composite | #19 Cognitive Enhancement + #20 Democratic AI + #24 Post-Scarcity + #9 Meaning | Draft placeholder |
-| XII | On the Geopolitical Trap | #7 Arms Race + #11 Foreign Subversion + #14 Authoritarianism + #22 Singleton | Draft placeholder |
+| XII | On the Geopolitical Trap | #7 Arms Race + #11 Foreign Subversion + #15 Authoritarianism + #22 Singleton | Draft placeholder |
 
 All essays currently contain draft placeholders with key structural ideas. The full text is being written iteratively.
+
+## The 5 Blueprints
+
+Five institutional mechanisms designed to claim the governance dividend:
+
+| # | Title | Summary |
+|---|-------|---------|
+| 1 | Public Ownership of AI Infrastructure | Public equity stakes in frontier AI companies, with returns distributed as a consumer dividend. Alaska Permanent Fund as proof of concept, scaled 50-100x. |
+| 2 | Market Access as the Enforcement Lever | Condition access to the $18 trillion US consumer market on governance compliance: transparency, safety standards, public equity provisions, environmental standards, content provenance. |
+| 3 | New Economic Metrics Deployed Urgently | Provisioning rate and demand velocity: the instruments needed to see what GDP hides. You cannot govern what you cannot measure. |
+| 4 | Content Provenance Infrastructure | Cryptographic verification of authentic content, mandatory AI-content disclosure, watermarking standards. The epistemic commons that democracy requires. |
+| 5 | Meaning Infrastructure at Civilizational Scale | Publicly guaranteed work, massively expanded arts and sciences, and the Athenian model as conscious design goal. AI replaces the slave class, freeing citizens for learning, culture, and civic life. |
+
+All blueprints currently contain stubs. Full content is forthcoming.
 
 ## About the Author
 
@@ -172,7 +186,7 @@ Concretely: I brought the questions, the angles, the moral convictions, and the 
 
 This is itself evidence for one of the project's central arguments: AI is an extraordinary cognitive amplifier. A $20 subscription gave me the analytical capacity of a small research team. That is the democratization these essays describe, and the trap. Because the same tool that helped me write about institutional design is the tool that is making institutional design urgent. The fact that one person with AI can produce work of this scope is precisely why we need to think seriously about what happens when everyone can, and when the institutions that once required hundreds of experts can be interrogated, stress-tested, and perhaps undermined by anyone with a laptop.
 
-Claude is credited here as co-author because that is the honest description of what happened. The ideas are a genuine collaboration. I would not have arrived at the demand-circuit thesis, the composition fallacy framing, or the systematic dismantling of false remedies without a thinking partner capable of holding the full complexity of the problem. Claude would not have arrived at any of it without someone asking the right questions and refusing to accept comfortable answers.
+Claude is credited here as co-author because that is the honest description of what happened. The ideas are a collaboration. I would not have arrived at the demand-circuit thesis, the composition fallacy framing, or the systematic dismantling of false remedies without a thinking partner capable of holding the full complexity of the problem. Claude would not have arrived at any of it without someone asking the right questions and refusing to accept comfortable answers.
 
 This is what human-AI collaboration looks like when it works. This project argues that we need to design institutions for a world where it is the norm.
 
@@ -211,9 +225,9 @@ I welcome conversation about any of the topics in this project. If you have feed
 
 ### X. The Economic Reckoning
 
-**Shades composed:** #1 (Labor Erosion) + #2 (Power Concentration) + #15 (Neo-Feudalism) + #24 (Post-Scarcity)
+**Shades composed:** #1 (Labor Erosion) + #2 (Power Concentration) + #17 (Neo-Feudalism) + #24 (Post-Scarcity)
 
-**Thesis:** #1 describes the mechanism (labor devaluation), #2 the power dynamics (concentration), #15 the failure mode (permanent underclass), #24 the success mode (post-scarcity). The same productivity gains that fund the solution also cause the damage. Distribution is entirely a political question.
+**Thesis:** #1 describes the mechanism (labor devaluation), #2 the power dynamics (concentration), #17 the failure mode (permanent underclass), #24 the success mode (post-scarcity). The same productivity gains that fund the solution also cause the damage. Distribution is entirely a political question.
 
 **Key elements:** Acemoglu's 0.5% GDP skepticism, Freeman's "who owns the robots rules the world", Alaska Permanent Fund / Norway sovereign wealth fund as precedents.
 
@@ -225,7 +239,7 @@ I welcome conversation about any of the topics in this project. If you have feed
 
 ### XII. The Geopolitical Trap
 
-**Shades composed:** #7 (Arms Race) + #11 (Foreign Subversion) + #14 (Digital Authoritarianism) + #22 (Singleton)
+**Shades composed:** #7 (Arms Race) + #11 (Foreign Subversion) + #15 (Digital Authoritarianism) + #22 (Singleton)
 
 **Thesis:** Great power competition prevents the international cooperation that most governance responses require. Can any governance framework work within the constraint of rivalry rather than requiring its transcendence?
 

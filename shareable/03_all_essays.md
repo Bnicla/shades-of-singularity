@@ -1,6 +1,6 @@
 # The Essays
 
-Twelve essays on the futures we're building and the ones we're drifting into. Each essay composes multiple shades to reveal interaction effects that individual analysis misses.
+Twelve essays on the futures we are building and the ones we are drifting into. Each essay composes multiple shades to reveal interaction effects that individual analysis misses.
 
 ---
 
@@ -421,6 +421,3 @@ Great power competition prevents the international cooperation that most governa
 - China's Digital Silk Road exporting surveillance infrastructure to the Global South
 - Whether alignment is achievable by one nation alone or requires cooperation
 - Can governance work within the constraint of rivalry rather than requiring its transcendence?
-
----
-
