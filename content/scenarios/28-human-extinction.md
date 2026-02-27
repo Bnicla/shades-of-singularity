@@ -1,5 +1,5 @@
 ---
-number: 27
+number: 28
 title: "Human Extinction"
 slug: "human-extinction"
 tier: 5

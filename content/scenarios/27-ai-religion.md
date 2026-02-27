@@ -1,5 +1,5 @@
 ---
-number: 26
+number: 27
 title: "AI Religion / Techno-Eschatology"
 slug: "ai-religion"
 tier: 5

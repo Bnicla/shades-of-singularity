@@ -1,5 +1,5 @@
 ---
-number: 19
+number: 20
 title: "The Democratic AI / Cognitive Bill of Rights"
 slug: "democratic-ai"
 tier: 4

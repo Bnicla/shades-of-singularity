@@ -22,7 +22,10 @@ const jsonLd = {
   <section class="home-hero">
     <div class="content-column" style="text-align: center;">
       <h1 class="home-title">Shades of Singularity</h1>
-      <p class="home-subtitle">Twenty-Nine Scenarios. Twelve Essays. One Blueprint.<br />A map of the futures we're building and the ones we're drifting into.</p>
+      <blockquote class="home-epigraph">
+        "Most of the threats we face come from the progress we've made in science and technology. We are not going to stop making progress, or reverse it, so we must recognize the dangers and control them."
+        <cite>Stephen Hawking, BBC Radio Times, January 2016</cite>
+      </blockquote>
     </div>
   </section>
 
@@ -36,22 +39,22 @@ const jsonLd = {
   <section class="home-guide">
     <div class="content-column">
       <h2 class="section-heading">How to Read This Collection</h2>
-      <p>This project has three parts, each building on the last. They work together like evidence, diagnosis, and prescription.</p>
+      <p>The collection is built in three layers, each serving a different purpose.</p>
 
       <div class="pillar-grid">
         <a href="/the-29-shades/" class="pillar-card">
-          <h3 class="pillar-title">The 29 Shades</h3>
-          <p class="pillar-description">Twenty-nine futures ranked by likelihood and scored by governance dividend. Each one examines a specific convergence of AI with existing human systems: labor markets, democratic institutions, surveillance infrastructure, ecological limits, geopolitical rivalry. These are the evidence base for everything that follows.</p>
+          <h3 class="pillar-title">The Shades</h3>
+          <p class="pillar-description">Each shade isolates one dimension of the AI future, grounds it in data, scores it on likelihood and outcome, and stress-tests it against dissent. These are the building blocks.</p>
         </a>
 
         <a href="/essays/" class="pillar-card">
           <h3 class="pillar-title">The Essays</h3>
-          <p class="pillar-description">Twelve long-form pieces that synthesize the shades into arguments. Each essay draws on multiple scenarios to diagnose what the current discourse misses and name what we actually need, at the scale of nations and the scale of civilization.</p>
+          <p class="pillar-description">Each essay layers multiple shades together to explore how they interact, reinforce, or constrain each other. The essays are forward-looking and interpretive where the shades aim to be evidentiary.</p>
         </a>
 
         <a href="/blueprint/" class="pillar-card">
-          <h3 class="pillar-title">The Blueprint</h3>
-          <p class="pillar-description">Five institutional mechanisms designed to claim the governance dividend. Not policy suggestions - architectural designs for the structures the AI transition requires.</p>
+          <h3 class="pillar-title">The Blueprints</h3>
+          <p class="pillar-description">Drawing on the most probable outcomes, the blueprints propose specific institutional mechanisms designed to capture what the analysis reveals: an enormous gap between where current trends lead and where good governance could take us.</p>
         </a>
       </div>
     </div>
@@ -61,19 +64,21 @@ const jsonLd = {
   <section class="home-composite">
     <div class="content-column">
       <h2 class="section-heading">The Composite Picture</h2>
-      <p>The scenarios are not competing predictions. The future will not select one and discard the rest. It will combine many of them, shades layered over one another on the same canvas, each altering the color of what lies beneath.</p>
+      <p>The future will not select one shade and discard the rest. It will combine many of them, layered over one another on the same canvas, each altering the color of what lies beneath.</p>
+
+      <p>A shade in isolation is precise. It can say: labor displacement is accelerating, and here is the data. It can say: private credit is exposed to software revenue assumptions that AI is eroding, and here are the numbers. It can say: the open internet's volunteer institutions are buckling under machine-scale volume, and here are the cases. That precision is the point. Each shade stays close to what can be verified.</p>
+
+      <p>Composition is where the picture gets harder, and more important. Labor displacement does not happen in a vacuum. It concentrates wealth, which buys political influence, which shapes the rules governing AI deployment, which accelerates further displacement. Surveillance infrastructure does not expand independently of governance failure. Information pollution does not degrade public discourse without also weakening the democratic capacity to respond. The shades interact. Some reinforce each other. Some are in tension. The essays exist to trace those interactions: to take the data-grounded building blocks and ask what happens when they arrive together.</p>
 
       <blockquote class="composite-dark">
-        Labor is devalued. Wealth concentrates. Surveillance is ambient. Shared truth dissolves. The volunteer infrastructure of the open internet drowns under bot-scale volume. Citizens lose the capacity for independent thought. A geopolitical arms race prevents cooperation. Democratic institutions cannot keep pace. Meaning evaporates. The biosphere groans under the computational load. Foreign powers exploit every seam. The economy hums with synthetic persons who serve no human need.
+        The darkest plausible composite requires no speculative breakthroughs, only the continuation of current trends. Labor is devalued. Wealth concentrates. The volunteer infrastructure of the open internet drowns. Surveillance becomes ambient. Shared truth dissolves. Citizens lose capacity for independent thought. A geopolitical arms race prevents cooperation. Democratic institutions fall behind. Meaning evaporates. The biosphere groans under the computational load. Foreign powers exploit every seam. The economy hums with synthetic activity serving no human need. The financial system amplifies every shock through opaque credit chains.
       </blockquote>
 
-      <p>Twenty-nine scenarios. None speculative. All already underway. The composite is not a dramatic singularity event. It is a slow-motion institutional collapse where the economy grows, surveillance expands, shared truth dissolves, and democratic capacity erodes simultaneously.</p>
-
-      <p>Composites work in the other direction too. Layer democratic AI access over cognitive enhancement and the result is a population equipped to govern AI itself - a positive feedback loop as powerful as any negative one. Add post-scarcity and the meaning crisis transforms from existential wound to creative liberation.</p>
+      <p>None of these are speculative. All of them are already underway. The composite is not a dramatic singularity event. It is a slow-motion institutional erosion where the economy grows, surveillance expands, shared truth dissolves, and democratic capacity weakens simultaneously.</p>
 
       <p class="composite-punchline"><strong>The optimistic composite requires active construction. The pessimistic one requires only drift.</strong></p>
 
-      <p>That asymmetry is the entire case for institutional intervention - and the reason the <a href="/blueprint/">Blueprint</a> exists.</p>
+      <p>That asymmetry is the entire case for institutional intervention, and the reason this collection exists.</p>
     </div>
   </section>
 
@@ -88,16 +93,27 @@ const jsonLd = {
     font-size: var(--font-size-3xl);
     font-weight: 700;
     line-height: 1.1;
-    margin-bottom: 0.4em;
+    margin-bottom: 0.75em;
   }
 
-  .home-subtitle {
+  .home-epigraph {
     font-family: var(--font-body);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     font-style: italic;
     color: var(--color-text-muted);
-    margin-bottom: 0.75em;
-    line-height: 1.5;
+    line-height: 1.6;
+    max-width: 36em;
+    margin: 0 auto;
+    border: none;
+    padding: 0;
+  }
+
+  .home-epigraph cite {
+    display: block;
+    margin-top: 0.5em;
+    font-size: var(--font-size-sm);
+    font-style: normal;
+    color: var(--color-text-muted);
   }
 
   .home-premise {

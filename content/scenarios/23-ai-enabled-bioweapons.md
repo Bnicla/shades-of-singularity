@@ -1,5 +1,5 @@
 ---
-number: 22
+number: 23
 title: "AI-Enabled Bioweapons / Catastrophic Misuse"
 slug: "ai-enabled-bioweapons"
 tier: 4

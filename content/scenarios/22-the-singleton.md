@@ -1,5 +1,5 @@
 ---
-number: 21
+number: 22
 title: "The Singleton"
 slug: "the-singleton"
 tier: 4

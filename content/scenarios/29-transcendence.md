@@ -1,5 +1,5 @@
 ---
-number: 28
+number: 29
 title: "The Transcendence / Omega Point"
 slug: "transcendence"
 tier: 5

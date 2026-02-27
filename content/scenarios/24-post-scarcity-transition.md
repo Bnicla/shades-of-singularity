@@ -1,5 +1,5 @@
 ---
-number: 23
+number: 24
 title: "The Post-Scarcity Transition"
 slug: "post-scarcity-transition"
 tier: 4

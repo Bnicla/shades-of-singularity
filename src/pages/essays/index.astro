@@ -7,10 +7,10 @@ const essays = await getCollection('essays', ({ data }) => !data.draft);
 essays.sort((a, b) => a.data.number - b.data.number);
 ---
 
-<BaseLayout title="The Essays" description="Twelve arguments drawn from twenty-nine shades of what is coming.">
+<BaseLayout title="The Essays" description="Arguments drawn from the shades of what is coming.">
   <header class="essays-header">
     <h1 class="essays-title">The Essays</h1>
-    <p class="essays-subtitle">Twelve arguments drawn from twenty-nine shades of what is coming</p>
+    <p class="essays-subtitle">Arguments drawn from the shades of what is coming</p>
   </header>
 
   <div class="content-column">

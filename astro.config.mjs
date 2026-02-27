@@ -7,6 +7,7 @@ export default defineConfig({
   redirects: {
     '/scenarios': '/the-29-shades',
     '/scenarios/[slug]': '/the-29-shades/[slug]',
+    '/the-29-shades/creativity-singularity': '/the-29-shades/creative-extraction',
   },
   integrations: [
     sitemap({

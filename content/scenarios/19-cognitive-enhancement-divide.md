@@ -1,5 +1,5 @@
 ---
-number: 18
+number: 19
 title: "The Cognitive Enhancement Divide"
 slug: "cognitive-enhancement-divide"
 tier: 4

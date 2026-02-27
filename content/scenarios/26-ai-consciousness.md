@@ -1,5 +1,5 @@
 ---
-number: 25
+number: 26
 title: "AI Consciousness / Machine Sentience"
 slug: "ai-consciousness"
 tier: 5

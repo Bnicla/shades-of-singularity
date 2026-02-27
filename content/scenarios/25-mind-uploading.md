@@ -1,5 +1,5 @@
 ---
-number: 24
+number: 25
 title: "Mind Uploading / Digital Consciousness"
 slug: "mind-uploading"
 tier: 5

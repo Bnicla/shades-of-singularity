@@ -1,5 +1,5 @@
 ---
-number: 20
+number: 21
 title: "The Intelligence Explosion (Hard Takeoff)"
 slug: "intelligence-explosion"
 tier: 4

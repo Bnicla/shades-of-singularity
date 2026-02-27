@@ -1,5 +1,5 @@
 ---
-number: 17
+number: 18
 title: "The Fragmentation of Reality"
 slug: "fragmentation-of-reality"
 tier: 3
