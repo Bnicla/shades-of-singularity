@@ -4,7 +4,7 @@ title: "Alignment Failure (Misaligned Superintelligence)"
 slug: "alignment-failure"
 tier: 3
 tierLabel: "Plausible"
-likelihood: "~50-60%"
+likelihood: "~55%"
 unmanaged: -5
 governed: -1
 dividend: 4

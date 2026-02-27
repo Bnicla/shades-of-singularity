@@ -4,7 +4,7 @@ title: "The Financial Chain Reaction"
 slug: "financial-chain-reaction"
 tier: 3
 tierLabel: "Plausible"
-likelihood: "~60-65%"
+likelihood: "~60%"
 unmanaged: -3
 governed: 1
 dividend: 4

@@ -7,14 +7,22 @@ const appendixEntry = await getEntry('appendix', 'appendix');
 const { Content: MatrixContent } = await render(appendixEntry);
 
 const scenarios = await getCollection('scenarios');
-scenarios.sort((a, b) => a.data.number - b.data.number);
+
+function parseLikelihood(str: string): number {
+  const match = str.match(/(\d+)/);
+  return match ? parseInt(match[1]) : 0;
+}
+
+function sortByLikelihood(arr: typeof scenarios) {
+  return arr.sort((a, b) => parseLikelihood(b.data.likelihood) - parseLikelihood(a.data.likelihood));
+}
 
 const tiers = [
-  { tier: 1, label: 'Near-Certain', scenarios: scenarios.filter(s => s.data.tier === 1) },
-  { tier: 2, label: 'Highly Probable', scenarios: scenarios.filter(s => s.data.tier === 2) },
-  { tier: 3, label: 'Plausible', scenarios: scenarios.filter(s => s.data.tier === 3) },
-  { tier: 4, label: 'Possible', scenarios: scenarios.filter(s => s.data.tier === 4) },
-  { tier: 5, label: 'Speculative', scenarios: scenarios.filter(s => s.data.tier === 5) },
+  { tier: 1, label: 'Near-Certain', scenarios: sortByLikelihood(scenarios.filter(s => s.data.tier === 1)) },
+  { tier: 2, label: 'Highly Probable', scenarios: sortByLikelihood(scenarios.filter(s => s.data.tier === 2)) },
+  { tier: 3, label: 'Plausible', scenarios: sortByLikelihood(scenarios.filter(s => s.data.tier === 3)) },
+  { tier: 4, label: 'Possible', scenarios: sortByLikelihood(scenarios.filter(s => s.data.tier === 4)) },
+  { tier: 5, label: 'Speculative', scenarios: sortByLikelihood(scenarios.filter(s => s.data.tier === 5)) },
 ];
 ---
 

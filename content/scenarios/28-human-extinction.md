@@ -4,7 +4,7 @@ title: "Human Extinction"
 slug: "human-extinction"
 tier: 5
 tierLabel: "Speculative"
-likelihood: "~5-15%"
+likelihood: "~10%"
 unmanaged: -5
 governed: -5
 dividend: "Prevention only"
