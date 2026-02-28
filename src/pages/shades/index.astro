@@ -53,7 +53,7 @@ const tiers = [
         <h3 class="tier-label">Tier {tierGroup.tier}: {tierGroup.label}</h3>
         <div class="scenario-grid">
           {tierGroup.scenarios.map((scenario) => (
-            <a href={`/the-29-shades/${scenario.data.slug}/`} class="scenario-card">
+            <a href={`/shades/${scenario.data.slug}/`} class="scenario-card">
               <div class="scenario-card-header">
                 <span class="scenario-number">{scenario.data.number}</span>
                 <span class="likelihood-badge">{scenario.data.likelihood}</span>
