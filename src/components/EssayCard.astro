@@ -5,9 +5,10 @@ interface Props {
   subtitle: string;
   slug: string;
   description: string;
+  shortEssaySlug?: string;
 }
 
-const { numeral, title, subtitle, slug, description } = Astro.props;
+const { numeral, title, subtitle, slug, description, shortEssaySlug } = Astro.props;
 ---
 
 <article class="essay-card">
@@ -17,6 +18,12 @@ const { numeral, title, subtitle, slug, description } = Astro.props;
   </h3>
   <p class="essay-card-subtitle">{subtitle}</p>
   <p class="essay-card-description">{description}</p>
+  <div class="essay-card-actions">
+    <a href={`/essays/${slug}/`} class="read-essay-link">Read the essay &rarr;</a>
+    {shortEssaySlug && (
+      <a href={`/short-essays/${shortEssaySlug}/`} class="short-version-link">Short version</a>
+    )}
+  </div>
 </article>
 
 <style>
@@ -66,6 +73,45 @@ const { numeral, title, subtitle, slug, description } = Astro.props;
   .essay-card-description {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
-    margin-bottom: 0;
+    margin-bottom: 0.75em;
+  }
+
+  .essay-card-actions {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .read-essay-link {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .read-essay-link:hover {
+    text-decoration: underline;
+  }
+
+  .short-version-link {
+    font-family: var(--font-body);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--color-rule);
+    padding: 0.35em 0.75em;
+    border-radius: 3px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .short-version-link:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
   }
 </style>

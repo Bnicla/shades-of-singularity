@@ -46,14 +46,23 @@ const pages = defineCollection({
   }),
 });
 
-const blueprints = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './content/blueprints' }),
+const shortEssays = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/short-essays' }),
   schema: z.object({
     number: z.number(),
+    numeral: z.string(),
     title: z.string(),
+    subtitle: z.string(),
     slug: z.string(),
-    summary: z.string(),
+    description: z.string(),
+    fullEssaySlug: z.string(),
+    draft: z.boolean().optional().default(false),
+    relatedShades: z.array(z.object({
+      number: z.number(),
+      title: z.string(),
+      slug: z.string(),
+    })).optional().default([]),
   }),
 });
 
-export const collections = { essays, appendix, scenarios, pages, blueprints };
+export const collections = { essays, shortEssays, appendix, scenarios, pages };

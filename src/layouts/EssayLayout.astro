@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import EssayNav from '../components/EssayNav.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import '../styles/essay.css';
 
 interface EssayLink {
@@ -49,6 +50,7 @@ const jsonLd = {
       <p class="essay-subtitle">{subtitle}</p>
       <p class="essay-meta">~{readingTime} min read</p>
       <hr />
+      <ShareButtons title={title} url={Astro.url.pathname} />
     </header>
 
     <article class="essay-body">

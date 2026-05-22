@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
+import Analytics from '@vercel/analytics/astro';
 import '../styles/global.css';
 
 interface Props {
@@ -58,9 +59,6 @@ const { title, description, ogType, ogImage, jsonLd } = Astro.props;
       <slot />
     </main>
     <Footer />
-    <script>
-      import { inject } from '@vercel/analytics';
-      inject();
-    </script>
+    <Analytics />
   </body>
 </html>

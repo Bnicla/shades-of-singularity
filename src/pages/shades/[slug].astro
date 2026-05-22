@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getCollection, render } from 'astro:content';
 import '../../styles/appendix.css';
 import '../../styles/essay.css';
@@ -53,6 +54,7 @@ const { Content } = await render(scenario);
       </div>
 
       <hr />
+      <ShareButtons title={`${scenario.data.title}`} url={Astro.url.pathname} />
     </header>
 
     <article class="scenario-body">

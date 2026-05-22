@@ -5,17 +5,21 @@ import { getCollection } from 'astro:content';
 
 const essays = await getCollection('essays', ({ data }) => !data.draft);
 essays.sort((a, b) => a.data.number - b.data.number);
+
+const shortEssays = await getCollection('shortEssays', ({ data }) => !data.draft);
+const shortEssayByFullSlug = new Map(
+  shortEssays.map((s) => [s.data.fullEssaySlug, s.data.slug])
+);
 ---
 
-<BaseLayout title="The Essays" description="Arguments drawn from the shades of what is coming.">
+<BaseLayout title="Full Essays" description="The complete analysis of each dimension of the AI transformation: sourced, footnoted, with counterarguments engaged.">
   <header class="essays-header">
-    <h1 class="essays-title">The Essays</h1>
-    <p class="essays-subtitle">Arguments drawn from the shades of what is coming</p>
+    <h1 class="essays-title">Full Essays</h1>
   </header>
 
   <div class="content-column">
     <p class="essays-intro">
-      Each essay opens a window onto one dimension of the AI future. They diagnose what the current discourse misses, dismantle the reassuring answers that dominate the conversation, and name what we actually need - at the scale of nations and the scale of civilization.
+      Each essay is the complete analysis of one dimension of the AI transformation: sourced, footnoted, with counterarguments engaged and three branching futures traced. For a shorter introduction to each argument, start with the <a href="/short-essays/">short essays</a>.
     </p>
   </div>
 
@@ -27,6 +31,7 @@ essays.sort((a, b) => a.data.number - b.data.number);
         subtitle={essay.data.subtitle}
         slug={essay.data.slug}
         description={essay.data.description}
+        shortEssaySlug={shortEssayByFullSlug.get(essay.data.slug)}
       />
     ))}
   </div>

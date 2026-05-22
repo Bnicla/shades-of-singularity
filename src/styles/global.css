@@ -31,6 +31,7 @@
 
   /* Spacing */
   --content-width: 42.5rem;
+  --content-width-wide: 52rem;
   --content-padding: 1.5rem;
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -397,6 +398,14 @@ code {
   background-color: var(--color-accent);
   z-index: 100;
   transition: width 0.1s linear;
+}
+
+/* --- Responsive Layout --- */
+
+@media (min-width: 1024px) {
+  :root {
+    --content-width: var(--content-width-wide);
+  }
 }
 
 /* --- Responsive Typography --- */

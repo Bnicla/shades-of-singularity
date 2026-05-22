@@ -1,6 +1,6 @@
 ---
 title: "The Shades"
-subtitle: "Twenty-Nine Scenarios for the AI Future"
+subtitle: "Outcome matrix for the AI future"
 ---
 
 ## The Outcome Matrix

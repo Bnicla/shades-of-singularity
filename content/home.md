@@ -1,8 +1,8 @@
 ---
 title: "Shades of Singularity"
-description: "A map of the futures we're building and the ones we're drifting into."
+description: "Essays on the futures we're building and the ones we're drifting into."
 ---
 
-This collection starts from a premise: the AI transformation has already begun. Its wide diffusion is coming. The speed and depth of its impact can be debated. Its imminence cannot.
+The technological singularity is the hypothesis that artificial intelligence will eventually surpass human intelligence, triggering changes so profound that life on the other side becomes unrecognizable. This collection examines the shades of that transition: the gradations between utopia and catastrophe, the futures that are neither cleanly bright nor cleanly dark, and the institutional choices that determine which mixture arrives.
 
-The debate over whether AI will reshape the economy, the information environment, the labor market, governance, warfare, and daily life is over. It is reshaping them now. The open questions are how fast, how deep, and whether anyone is steering. This collection exists because those questions deserve better answers than the ones currently on offer: skill up, regulate later, trust the market, become a plumber.
+The most consequential technology in human history is being debated with the wrong questions, defended with remedies that solve nothing, and governed by no one. This collection offers a different way of seeing: evidence first, then argument, then the institutional choices that determine which future arrives.

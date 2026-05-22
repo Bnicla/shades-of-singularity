@@ -1,7 +1,9 @@
 {
-  "name": "astro-init",
+  "name": "shades-of-singularity",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site for shadesofsingularity.com — essays on AI futures and institutional design.",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

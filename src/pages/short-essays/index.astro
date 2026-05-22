@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const shortEssays = await getCollection('shortEssays', ({ data }) => !data.draft);
+shortEssays.sort((a, b) => a.data.number - b.data.number);
+---
+
+<BaseLayout title="Short Essays" description="Each short essay distills one dimension of the AI transformation into a single argument.">
+  <header class="short-essays-header">
+    <h1 class="short-essays-title">Short Essays</h1>
+  </header>
+
+  <div class="content-column">
+    <p class="short-essays-intro">
+      Each short essay makes one argument about the AI transformation in about ten minutes of reading. No footnotes, no sources. For the evidence, counterarguments, and branching futures, read the full essay linked at the bottom of each piece.
+    </p>
+
+    <div class="essay-list">
+      {shortEssays.map((entry) => (
+        <div class="essay-summary-card">
+          <span class="essay-summary-numeral">{entry.data.numeral}</span>
+          <h3 class="essay-summary-title">
+            <a href={`/short-essays/${entry.data.slug}/`}>{entry.data.title}</a>
+          </h3>
+          <p class="essay-summary-subtitle">{entry.data.subtitle}</p>
+          <div class="essay-summary-actions">
+            <a href={`/short-essays/${entry.data.slug}/`} class="read-essay-link">Read the essay &rarr;</a>
+            <a href={`/essays/${entry.data.fullEssaySlug}/`} class="full-length-link">Full-length version</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .short-essays-header {
+    text-align: center;
+    padding: var(--space-xl) 0 var(--space-md);
+  }
+
+  .short-essays-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+  }
+
+  .short-essays-intro {
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+  }
+
+  .essay-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .essay-summary-card {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .essay-summary-card:last-child {
+    border-bottom: none;
+  }
+
+  .essay-summary-numeral {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+  }
+
+  .essay-summary-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: var(--line-height-heading);
+    margin: 0.25em 0;
+  }
+
+  .essay-summary-title a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .essay-summary-title a:hover {
+    color: var(--color-accent);
+  }
+
+  .essay-summary-subtitle {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5em;
+  }
+
+  .essay-summary-actions {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-top: 0.5em;
+    flex-wrap: wrap;
+  }
+
+  .read-essay-link {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .read-essay-link:hover {
+    text-decoration: underline;
+  }
+
+  .full-length-link {
+    font-family: var(--font-body);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--color-rule);
+    padding: 0.35em 0.75em;
+    border-radius: 3px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .full-length-link:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .coming-soon-tag {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-left: 0.75em;
+    vertical-align: middle;
+  }
+</style>

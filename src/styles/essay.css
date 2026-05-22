@@ -6,7 +6,7 @@
 
 .essay-header {
   text-align: center;
-  padding: var(--space-xl) 0 var(--space-lg);
+  padding: var(--space-xl) 0 var(--space-md);
 }
 
 .essay-numeral {
@@ -83,6 +83,13 @@
   color: var(--color-accent);
   margin-top: var(--space-md);
   margin-bottom: var(--space-sm);
+}
+
+/* Reduce top spacing on the first element in the essay body */
+.essay-body > :first-child {
+  margin-top: var(--space-md);
+  padding-top: 0;
+  border-top: none;
 }
 
 /* First paragraph after a section heading */

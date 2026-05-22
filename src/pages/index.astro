@@ -1,9 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getEntry, render } from 'astro:content';
+import { getEntry, getCollection, render } from 'astro:content';
 
 const homeEntry = await getEntry('pages', 'home');
 const { Content: HomeContent } = await render(homeEntry);
+
+const shortEssays = await getCollection('shortEssays', ({ data }) => !data.draft);
+shortEssays.sort((a, b) => a.data.number - b.data.number);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -20,7 +23,7 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <section class="home-hero">
-    <div class="content-column" style="text-align: center;">
+    <div class="content-column">
       <h1 class="home-title">Shades of Singularity</h1>
       <blockquote class="home-epigraph">
         "Most of the threats we face come from the progress we've made in science and technology. We are not going to stop making progress, or reverse it, so we must recognize the dangers and control them."
@@ -35,50 +38,51 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- How to Navigate This Collection -->
+  <!-- How This Collection Works -->
   <section class="home-guide">
     <div class="content-column">
-      <h2 class="section-heading">How to Read This Collection</h2>
+      <h2 class="section-heading">How This Collection Works</h2>
       <p>The collection is built in three layers, each serving a different purpose.</p>
 
       <div class="pillar-grid">
-        <a href="/shades/" class="pillar-card">
-          <h3 class="pillar-title">The Shades</h3>
-          <p class="pillar-description">Each shade isolates one dimension of the AI future, grounds it in data, scores it on likelihood and outcome, and stress-tests it against dissent. These are the building blocks.</p>
+        <a href="/short-essays/" class="pillar-card">
+          <h3 class="pillar-title">Short Essays</h3>
+          <p class="pillar-description">Start here. Each short essay makes one argument about the AI transformation in about ten minutes of reading. No footnotes, no sources.</p>
         </a>
 
         <a href="/essays/" class="pillar-card">
-          <h3 class="pillar-title">The Essays</h3>
-          <p class="pillar-description">Each essay layers multiple shades together to explore how they interact, reinforce, or constrain each other. The essays are forward-looking and interpretive where the shades aim to be evidentiary.</p>
+          <h3 class="pillar-title">Full Essays</h3>
+          <p class="pillar-description">Go deeper. Each full essay is the complete analysis of one dimension of the AI transformation: sourced, footnoted, with counterarguments engaged and three branching futures traced.</p>
         </a>
 
-        <a href="/blueprint/" class="pillar-card">
-          <h3 class="pillar-title">The Blueprints</h3>
-          <p class="pillar-description">Drawing on the most probable outcomes, the blueprints propose specific institutional mechanisms designed to capture what the analysis reveals: an enormous gap between where current trends lead and where good governance could take us.</p>
+        <a href="/shades/" class="pillar-card">
+          <h3 class="pillar-title">The Shades</h3>
+          <p class="pillar-description">The evidence base. Each shade isolates one variable of the AI future, scores it on likelihood and outcome, and traces where it points.</p>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- The Composite Picture -->
-  <section class="home-composite">
+  <!-- The Arguments -->
+  <section class="home-essays">
     <div class="content-column">
-      <h2 class="section-heading">The Composite Picture</h2>
-      <p>The future will not select one shade and discard the rest. It will combine many of them, layered over one another on the same canvas, each altering the color of what lies beneath.</p>
+      <h2 class="section-heading">The Arguments</h2>
 
-      <p>A shade in isolation is precise. It can say: labor displacement is accelerating, and here is the data. It can say: private credit is exposed to software revenue assumptions that AI is eroding, and here are the numbers. It can say: the open internet's volunteer institutions are buckling under machine-scale volume, and here are the cases. That precision is the point. Each shade stays close to what can be verified.</p>
-
-      <p>Composition is where the picture gets harder, and more important. Labor displacement does not happen in a vacuum. It concentrates wealth, which buys political influence, which shapes the rules governing AI deployment, which accelerates further displacement. Surveillance infrastructure does not expand independently of governance failure. Information pollution does not degrade public discourse without also weakening the democratic capacity to respond. The shades interact. Some reinforce each other. Some are in tension. The essays exist to trace those interactions: to take the data-grounded building blocks and ask what happens when they arrive together.</p>
-
-      <blockquote class="composite-dark">
-        The darkest plausible composite requires no speculative breakthroughs, only the continuation of current trends. Labor is devalued. Wealth concentrates. The volunteer infrastructure of the open internet drowns. Surveillance becomes ambient. Shared truth dissolves. Citizens lose capacity for independent thought. A geopolitical arms race prevents cooperation. Democratic institutions fall behind. Meaning evaporates. The biosphere groans under the computational load. Foreign powers exploit every seam. The economy hums with synthetic activity serving no human need. The financial system amplifies every shock through opaque credit chains.
-      </blockquote>
-
-      <p>None of these are speculative. All of them are already underway. The composite is not a dramatic singularity event. It is a slow-motion institutional erosion where the economy grows, surveillance expands, shared truth dissolves, and democratic capacity weakens simultaneously.</p>
-
-      <p class="composite-punchline"><strong>The optimistic composite requires active construction. The pessimistic one requires only drift.</strong></p>
-
-      <p>That asymmetry is the entire case for institutional intervention, and the reason this collection exists.</p>
+      <div class="essay-list">
+        {shortEssays.map((entry) => (
+          <div class="essay-summary-card">
+            <span class="essay-summary-numeral">{entry.data.numeral}</span>
+            <h3 class="essay-summary-title">
+              <a href={`/short-essays/${entry.data.slug}/`}>{entry.data.title}</a>
+            </h3>
+            <p class="essay-summary-subtitle">{entry.data.subtitle}</p>
+            <div class="essay-summary-actions">
+              <a href={`/short-essays/${entry.data.slug}/`} class="read-essay-link">Read the essay &rarr;</a>
+              <a href={`/essays/${entry.data.fullEssaySlug}/`} class="full-length-link">Full-length version</a>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -90,10 +94,11 @@ const jsonLd = {
   }
 
   .home-title {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-2xl);
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: 0.75em;
+    text-align: center;
   }
 
   .home-epigraph {
@@ -174,23 +179,113 @@ const jsonLd = {
     line-height: 1.6;
   }
 
-  .home-composite {
+  .home-essays {
     padding: var(--space-lg) 0;
     border-bottom: 1px solid var(--color-rule);
   }
 
-  .composite-dark {
-    border-left: 3px solid var(--color-accent);
-    padding-left: var(--space-md);
-    margin: var(--space-md) 0;
-    font-style: italic;
-    color: var(--color-text-muted);
-    line-height: 1.7;
+  .essay-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
-  .composite-punchline {
-    text-align: center;
-    margin: var(--space-md) 0;
+  .essay-summary-card {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .essay-summary-card:last-child {
+    border-bottom: none;
+  }
+
+  .essay-summary-numeral {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+  }
+
+  .essay-summary-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    line-height: var(--line-height-heading);
+    margin: 0.25em 0;
+  }
+
+  .essay-summary-title a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .essay-summary-title a:hover {
+    color: var(--color-accent);
+  }
+
+  .essay-summary-subtitle {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5em;
+  }
+
+  .essay-summary-actions {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-top: 0.5em;
+    flex-wrap: wrap;
+  }
+
+  .read-essay-link {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .read-essay-link:hover {
+    text-decoration: underline;
+  }
+
+  .full-length-link {
+    font-family: var(--font-body);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--color-rule);
+    padding: 0.35em 0.75em;
+    border-radius: 3px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .full-length-link:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .essay-placeholder {
+    opacity: 0.55;
+  }
+
+  .coming-soon-tag {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-left: 0.75em;
+    vertical-align: middle;
   }
 
   @media (max-width: 768px) {

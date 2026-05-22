@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
+import '../../styles/essay.css';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const shortEssays = await getCollection('shortEssays');
+  shortEssays.sort((a, b) => a.data.number - b.data.number);
+
+  return shortEssays.map((essay, index) => ({
+    params: { slug: essay.data.slug },
+    props: {
+      essay,
+      prevEssay: index > 0
+        ? { numeral: shortEssays[index - 1].data.numeral, title: shortEssays[index - 1].data.title, slug: shortEssays[index - 1].data.slug }
+        : null,
+      nextEssay: index < shortEssays.length - 1
+        ? { numeral: shortEssays[index + 1].data.numeral, title: shortEssays[index + 1].data.title, slug: shortEssays[index + 1].data.slug }
+        : null,
+    },
+  }));
+}
+
+const { essay, prevEssay, nextEssay } = Astro.props;
+const { Content } = await render(essay);
+
+const wordCount = essay.body ? essay.body.split(/\s+/).length : 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / 230));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: essay.data.title,
+  description: essay.data.description,
+  author: { '@type': 'Person', name: 'B.E.N.' },
+  publisher: { '@type': 'Organization', name: 'Shades of Singularity' },
+  mainEntityOfPage: Astro.url.href,
+};
+---
+
+<BaseLayout title={essay.data.title} description={essay.data.description} ogType="article" jsonLd={jsonLd}>
+  <ReadingProgress />
+
+  <div class="content-column">
+    <header class="essay-header">
+      <p class="essay-numeral">Short Essay {essay.data.numeral}</p>
+      <h1 class="essay-title">{essay.data.title}</h1>
+      <p class="essay-subtitle">{essay.data.subtitle}</p>
+      <p class="essay-meta">~{readingTime} min read</p>
+      <hr />
+      <ShareButtons title={essay.data.title} url={Astro.url.pathname} />
+    </header>
+
+    <article class="essay-body">
+      <Content />
+    </article>
+
+    <div class="go-deeper">
+      <h2>Go Deeper</h2>
+
+      <p class="go-deeper-full-essay">
+        <a href={`/essays/${essay.data.fullEssaySlug}/`}>Read the full essay &rarr;</a>
+        <span class="go-deeper-description">The complete analysis: sourced, footnoted, with counterarguments engaged and three branching futures traced.</span>
+      </p>
+
+      {essay.data.relatedShades && essay.data.relatedShades.length > 0 && (
+        <div class="go-deeper-shades">
+          <p class="go-deeper-shades-label">Related Shades:</p>
+          <ul>
+            {essay.data.relatedShades.map((shade) => (
+              <li><a href={`/shades/${shade.slug}/`}>Shade #{shade.number}: {shade.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+
+    <nav class="essay-nav" aria-label="Short essay navigation">
+      {prevEssay && (
+        <a href={`/short-essays/${prevEssay.slug}/`} class="essay-nav-link essay-nav-prev">
+          <span class="essay-nav-label">&larr; Previous</span>
+          <span class="essay-nav-title">Essay {prevEssay.numeral}</span>
+        </a>
+      )}
+      {nextEssay && (
+        <a href={`/short-essays/${nextEssay.slug}/`} class="essay-nav-link essay-nav-next">
+          <span class="essay-nav-label">Next &rarr;</span>
+          <span class="essay-nav-title">Essay {nextEssay.numeral}</span>
+        </a>
+      )}
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .go-deeper {
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+    border-top: 2px solid var(--color-rule);
+    background-color: var(--color-accent-muted);
+    border-radius: 6px;
+  }
+
+  .go-deeper h2 {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .go-deeper-full-essay a {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .go-deeper-full-essay a:hover {
+    text-decoration: underline;
+  }
+
+  .go-deeper-description {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-top: 0.25em;
+  }
+
+  .go-deeper-shades {
+    margin-top: var(--space-md);
+  }
+
+  .go-deeper-shades-label {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    margin-bottom: 0.5em;
+  }
+
+  .go-deeper-shades ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .go-deeper-shades li {
+    margin-bottom: 0.4em;
+  }
+
+  .go-deeper-shades a {
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .go-deeper-shades a:hover {
+    color: var(--color-accent);
+  }
+
+  .essay-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .essay-nav-link {
+    text-decoration: none;
+    color: var(--color-text);
+    transition: color 0.15s ease;
+  }
+
+  .essay-nav-link:hover {
+    color: var(--color-accent);
+  }
+
+  .essay-nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .essay-nav-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .essay-nav-title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+  }
+</style>
