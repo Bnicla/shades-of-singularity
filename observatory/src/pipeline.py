@@ -33,11 +33,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger("observatory")
 
-# Cap on how many items can hit the (expensive, RPD-limited) LLM
-# adjudication step per run. We take the top-K by embedding similarity
-# to the claim seeds, which is a stable upper bound regardless of how
-# noisy the upstream feeds get.
-MAX_ADJUDICATE = 10
+# Cap on how many non-tier-1 items can hit the (RPD-limited) LLM
+# adjudication step per run. Top-K by TF-IDF similarity to the claim
+# seeds; bounds RPD usage no matter how noisy the upstream feeds get.
+MAX_ADJUDICATE_OTHER = 5
+
+# Tier-1 (named-scholar) items skip the top-K cap but must still clear a
+# minimal relevance floor. Many tracked scholars (e.g., Nussbaum)
+# publish across non-AI fields; without a floor, their literary or
+# philosophy work floods adjudication and burns through daily quota.
+# Floor of 0.02 ≈ p25 of observed score distribution; drops items with
+# essentially zero vocabulary overlap with any claim seed.
+TIER1_RELEVANCE_FLOOR = 0.02
 
 
 def run_pipeline(mode: str = "local"):
@@ -74,22 +81,31 @@ def run_pipeline(mode: str = "local"):
         renderer.render(existing, output_path=_output_path(mode))
         return
 
-    # Step 3: Relevance filter (embeddings).
-    # We embed every non-tier-1 item with local TF-IDF, rank by
-    # cosine similarity to the 25 claim seeds, and take the top-K for
-    # LLM adjudication. The cap is intentional: it bounds RPD usage on
-    # the LLM regardless of how noisy the upstream feeds get. Tier-1
-    # (named-scholar) items are scored too — to carry a top-claim hint
-    # into adjudication — but never dropped on score.
-    tier1_items = [item for item in new_items if item.get("tier") == 1]
+    # Step 3: Relevance filter (TF-IDF).
+    # Every item is scored. Non-tier-1 items pass the top-K cap.
+    # Tier-1 items skip the cap but must clear TIER1_RELEVANCE_FLOOR so
+    # off-topic output from a tracked scholar (e.g., Nussbaum's literary
+    # work) doesn't flood adjudication.
+    tier1_all = [item for item in new_items if item.get("tier") == 1]
     other_items = [item for item in new_items if item.get("tier") != 1]
 
-    logger.info(f"Step 3: Embedding relevance filter on {len(new_items)} items")
+    logger.info(f"Step 3: TF-IDF relevance filter on {len(new_items)} items")
     relevance.score_items(other_items)
-    relevance.score_items(tier1_items)
-    relevance.log_score_distribution(other_items + tier1_items)
+    relevance.score_items(tier1_all)
+    relevance.log_score_distribution(other_items + tier1_all)
 
-    top_other = EmbeddingFilter.top_k(other_items, MAX_ADJUDICATE)
+    tier1_items = [
+        it for it in tier1_all
+        if it.get("relevance_score", 0.0) >= TIER1_RELEVANCE_FLOOR
+    ]
+    tier1_dropped = len(tier1_all) - len(tier1_items)
+    if tier1_dropped:
+        logger.info(
+            f"  Dropped {tier1_dropped} of {len(tier1_all)} tier-1 items "
+            f"below relevance floor {TIER1_RELEVANCE_FLOOR}"
+        )
+
+    top_other = EmbeddingFilter.top_k(other_items, MAX_ADJUDICATE_OTHER)
     to_adjudicate = tier1_items + top_other
     if to_adjudicate:
         top_score = max(it.get("relevance_score", 0.0) for it in to_adjudicate)
