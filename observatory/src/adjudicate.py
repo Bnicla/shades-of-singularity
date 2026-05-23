@@ -1,12 +1,16 @@
 """
-Adjudicator: Gemini 2.5 Flash evaluation of whether an item bears on
-a specific load-bearing claim in the essay collection.
+Adjudicator: Gemini 2.5 Flash-Lite evaluation of whether an item bears
+on a specific load-bearing claim in the essay collection.
 
 This is the precision pass. Each item gets a full-text analysis against
-the claim inventory in prompts.py. The embedding filter in embed.py
-already cut volume to the handful of items that are semantically on
-topic, so RPM pressure is light — we still throttle and back off
-properly because Gemini 2.5 Flash free tier is ~10 RPM.
+the claim inventory in prompts.py. The pipeline upstream caps the number
+of items reaching us via top-K embedding rank, so volume is bounded.
+
+We deliberately pick Flash-Lite over Flash for free-tier headroom:
+- Flash:      10 RPM,  500 RPD
+- Flash-Lite: 15 RPM, 1000 RPD
+Quality is acceptable for our structured-JSON prompt; the embedding
+similarity is doing the topic-relevance work already.
 
 Two model-specific gotchas worth calling out:
 - Gemini 2.5 spends "thinking" tokens against maxOutputTokens by default.
@@ -36,7 +40,7 @@ GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{mode
 
 
 class Adjudicator:
-    def __init__(self, api_key: str, model: str = "gemini-2.5-flash"):
+    def __init__(self, api_key: str, model: str = "gemini-2.5-flash-lite"):
         self.api_key = api_key
         self.model = model
 

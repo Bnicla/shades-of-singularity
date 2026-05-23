@@ -173,6 +173,29 @@ class EmbeddingFilter:
         kept = [it for it in items if it.get("relevance_score", 0.0) >= self.threshold]
         return kept
 
+    def log_score_distribution(self, items: list[dict]) -> None:
+        """Emit a one-line summary of the relevance-score distribution.
+
+        Useful for calibrating self.threshold against the actual model's
+        cosine-sim range, which varies a lot between embedding models.
+        """
+        scores = [it.get("relevance_score") for it in items if it.get("relevance_score") is not None]
+        if not scores:
+            logger.info("Embedding score distribution: (no scored items)")
+            return
+        arr = np.asarray(scores, dtype=np.float32)
+        q = np.quantile(arr, [0.0, 0.25, 0.5, 0.75, 0.9, 1.0])
+        logger.info(
+            f"Embedding score distribution over {len(arr)} items: "
+            f"min={q[0]:.3f} p25={q[1]:.3f} p50={q[2]:.3f} "
+            f"p75={q[3]:.3f} p90={q[4]:.3f} max={q[5]:.3f}"
+        )
+
+    @staticmethod
+    def top_k(items: list[dict], k: int) -> list[dict]:
+        """Return the k items with the highest relevance_score, sorted desc."""
+        return sorted(items, key=lambda it: it.get("relevance_score", 0.0), reverse=True)[:k]
+
     @staticmethod
     def _item_text(item: dict) -> str:
         title = item.get("title", "")

@@ -33,6 +33,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger("observatory")
 
+# Cap on how many items can hit the (expensive, RPD-limited) LLM
+# adjudication step per run. We take the top-K by embedding similarity
+# to the claim seeds, which is a stable upper bound regardless of how
+# noisy the upstream feeds get.
+MAX_ADJUDICATE = 10
+
 
 def run_pipeline(mode: str = "local"):
     """Execute the full pipeline."""
@@ -69,27 +75,30 @@ def run_pipeline(mode: str = "local"):
         return
 
     # Step 3: Relevance filter (embeddings).
-    # Tier 1 (named-scholar) items bypass the filter — their output is
-    # auto-adjudicated regardless of topic. Everything else is embedded with
-    # gemini-embedding-001 and dropped if its top-claim cosine similarity is
-    # below the threshold.
+    # We embed every non-tier-1 item with gemini-embedding-001, rank by
+    # cosine similarity to the 25 claim seeds, and take the top-K for
+    # LLM adjudication. The cap is intentional: it bounds RPD usage on
+    # the LLM regardless of how noisy the upstream feeds get. Tier-1
+    # (named-scholar) items are scored too — to carry a top-claim hint
+    # into adjudication — but never dropped on score.
     tier1_items = [item for item in new_items if item.get("tier") == 1]
     other_items = [item for item in new_items if item.get("tier") != 1]
 
-    logger.info(f"Step 3: Embedding relevance filter on {len(other_items)} non-tier-1 items")
+    logger.info(f"Step 3: Embedding relevance filter on {len(new_items)} items")
     relevance.score_items(other_items)
-    # Also score tier 1 so we can pass the top-claim hint into adjudicate,
-    # but never drop them.
     relevance.score_items(tier1_items)
+    relevance.log_score_distribution(other_items + tier1_items)
 
-    kept_other = relevance.filter(other_items)
-    logger.info(
-        f"  {len(kept_other)} of {len(other_items)} items cleared the "
-        f"{relevance.threshold:.2f} similarity threshold "
-        f"(+ {len(tier1_items)} tier-1 bypassing)"
-    )
-
-    to_adjudicate = tier1_items + kept_other
+    top_other = EmbeddingFilter.top_k(other_items, MAX_ADJUDICATE)
+    to_adjudicate = tier1_items + top_other
+    if to_adjudicate:
+        top_score = max(it.get("relevance_score", 0.0) for it in to_adjudicate)
+        bottom_score = min(it.get("relevance_score", 0.0) for it in to_adjudicate)
+        logger.info(
+            f"  Selected {len(to_adjudicate)} items for adjudication "
+            f"({len(tier1_items)} tier-1 + top-{len(top_other)} of {len(other_items)}; "
+            f"score range {bottom_score:.3f}-{top_score:.3f})"
+        )
 
     # Step 4: Adjudicate
     logger.info(f"Step 4: Adjudication ({len(to_adjudicate)} items)")
