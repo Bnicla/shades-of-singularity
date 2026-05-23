@@ -1,0 +1,46 @@
+name: Observatory daily scan
+
+# Runs the research-monitor pipeline once a day, then pushes the rendered
+# HTML digest into Vercel KV. The Vercel serve function (/observatory)
+# reads from KV and returns the latest digest to visitors.
+#
+# This lives on GitHub Actions instead of Vercel Cron because the pipeline
+# routinely takes 5-15 minutes to complete (40+ feeds + 100s of LLM calls),
+# which exceeds Vercel's serverless function duration limits.
+
+on:
+  schedule:
+    - cron: '0 10 * * *'   # 10:00 UTC daily (06:00 ET / 12:00 CET)
+  workflow_dispatch: {}    # also allow manual triggering from the Actions tab
+
+# Prevent overlapping runs (e.g. if a long run is in progress when the next cron fires)
+concurrency:
+  group: observatory-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: observatory/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r observatory/requirements.txt
+
+      - name: Run observatory pipeline
+        working-directory: observatory
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
+          KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
+        run: python src/pipeline.py --production

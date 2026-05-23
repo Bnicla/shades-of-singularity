@@ -1,0 +1,354 @@
+# Observatory axes configuration
+# Each axis maps to one essay in the Shades of Singularity collection.
+# The adjudication prompt uses these to evaluate whether new material
+# bears on a SPECIFIC CLAIM, not merely on a general topic.
+#
+# Structure per axis:
+#   core_thesis: one-sentence summary of the essay's argument
+#   load_bearing_claims: the specific assertions where new evidence
+#     would actually change what's written. Each has:
+#     - claim: the assertion as stated in the essay
+#     - evidence_base: what currently supports it
+#     - vulnerability: what kind of new material could challenge it
+#     - section: where in the essay this claim lives
+#   related_shades: which of the 30 shades this axis connects to
+#   key_counterarguments: positions the essay already engages with
+
+axes:
+
+  essay_1_labor:
+    title: "On the End of Work as We Know It"
+    axis: "Labor automation and the future of work"
+    core_thesis: >
+      AI-driven automation will restructure labor markets through task-level
+      displacement rather than wholesale job elimination, but the distributional
+      consequences depend on institutional choices about how productivity gains
+      are shared.
+    load_bearing_claims:
+      - id: "e1_c1"
+        claim: >
+          The task-share framework (Acemoglu) provides a more accurate model
+          of AI labor impact than occupation-level predictions.
+        evidence_base: "Acemoglu 'Simple Macroeconomics of AI', Eloundou et al. (Science 2024)"
+        vulnerability: >
+          New empirical studies showing occupation-level displacement patterns
+          that the task-share model fails to predict. Or revisions to Acemoglu's
+          own framework.
+        section: "Core argument, Gap 3 addition"
+
+      - id: "e1_c2"
+        claim: >
+          Hulten's theorem constrains the macroeconomic impact of AI because
+          cost shares of affected tasks limit aggregate productivity gains.
+        evidence_base: "Acemoglu's application of Hulten's theorem to AI task automation"
+        vulnerability: >
+          Empirical evidence that AI's impact on cost shares is larger than
+          Acemoglu projects, or theoretical challenges to applying Hulten's
+          theorem in the context of rapidly expanding task frontiers.
+        section: "Gap 3 addition"
+
+      - id: "e1_c3"
+        claim: >
+          Distributional effects of AI automation will be regressive without
+          deliberate institutional intervention.
+        evidence_base: "Cazzaniga et al. (IMF 2024), Brookings labor reports"
+        vulnerability: >
+          Evidence that market mechanisms alone are producing equitable
+          distribution of AI productivity gains. Or new data showing
+          upskilling effects dominating displacement effects.
+        section: "Central argument"
+
+      - id: "e1_c4"
+        claim: >
+          The task-share gap between AI exposure and actual economic impact
+          is significant and underappreciated.
+        evidence_base: "Acemoglu methodology critique, Eloundou exposure estimates"
+        vulnerability: >
+          Closing of the gap through realized productivity data. Or new
+          methodologies that reconcile exposure estimates with macro outcomes.
+        section: "Gap 3"
+
+    related_shades: [1, 2, 3, 4, 5]
+    key_counterarguments:
+      - "Technological unemployment fears have historically been overstated"
+      - "New task creation may offset displacement at scale"
+      - "AI as complement rather than substitute for most occupations"
+
+  essay_2_truth:
+    title: "On the Economics of Truth"
+    axis: "Epistemic infrastructure and information integrity"
+    core_thesis: >
+      AI creates a triple asymmetry in epistemic infrastructure: the cost
+      of producing misinformation drops toward zero while the cost of
+      verification remains high, concentrating epistemic power in entities
+      that control generation infrastructure.
+    load_bearing_claims:
+      - id: "e2_c1"
+        claim: >
+          The triple asymmetry (generation cost collapse, verification cost
+          persistence, concentration of epistemic power) is the correct
+          framework for understanding AI's impact on truth.
+        evidence_base: "Original synthesis across information economics literature"
+        vulnerability: >
+          Alternative frameworks that better explain observed information
+          ecosystem dynamics. Or evidence that verification costs are
+          also dropping at comparable rates.
+        section: "Core framework"
+
+      - id: "e2_c2"
+        claim: >
+          Epistemic infrastructure is a distinct category from information
+          quality, requiring institutional rather than merely technical solutions.
+        evidence_base: "Conceptual argument distinguishing infrastructure from content"
+        vulnerability: >
+          Successful technical solutions (better detection, watermarking,
+          provenance) that obviate institutional approaches.
+        section: "Axis definition"
+
+      - id: "e2_c3"
+        claim: >
+          Content provenance and watermarking are necessary but insufficient
+          for maintaining epistemic integrity at scale.
+        evidence_base: "Technical literature on watermarking limitations, adversarial robustness"
+        vulnerability: >
+          Breakthroughs in robust, unforgeable provenance systems that
+          achieve institutional-grade reliability.
+        section: "Section V (potential overlap with Essay 4)"
+
+    related_shades: [6, 7, 8, 9, 10]
+    key_counterarguments:
+      - "Markets for truth will self-correct through reputation mechanisms"
+      - "AI-powered fact-checking can keep pace with AI-generated misinformation"
+
+  essay_3_power:
+    title: "On the Automation of Power"
+    axis: "Power concentration and institutional capture"
+    core_thesis: >
+      AI accelerates the concentration of power by automating decision-making
+      in ways that are opaque, self-reinforcing, and resistant to democratic
+      accountability.
+    load_bearing_claims:
+      - id: "e3_c1"
+        claim: >
+          AI-enabled power concentration operates through automation of
+          decision-making rather than merely through market dominance
+          or data accumulation.
+        evidence_base: "Synthesis of surveillance capitalism, algorithmic governance literature"
+        vulnerability: >
+          Evidence that regulatory intervention (antitrust, data portability)
+          is effectively preventing concentration. Or that decentralized AI
+          (open-weight models) is meaningfully diffusing power.
+        section: "Core argument"
+
+      - id: "e3_c2"
+        claim: >
+          Self-reinforcing feedback loops in AI deployment create lock-in
+          effects that resist correction.
+        evidence_base: "Network effects analysis, platform economics"
+        vulnerability: >
+          Empirical evidence of successful power diffusion or platform
+          disruption in the AI era. Open-source model dynamics that
+          challenge concentration narratives.
+        section: "Feedback loop analysis"
+
+    related_shades: [11, 12, 13, 14, 15]
+    key_counterarguments:
+      - "Open-source AI is a meaningful counterforce to concentration"
+      - "Competition between AI labs prevents monopoly outcomes"
+      - "Democratic institutions remain capable of regulating AI power"
+
+  essay_4_human:
+    title: "On the Hollowing of the Human"
+    axis: "Human development and cognitive scaffolding"
+    core_thesis: >
+      The distinction between developmental scaffolding (builds capacity,
+      then withdraws) and substitutive scaffolding (replaces capacity
+      permanently) is the key frame for understanding AI's impact on
+      human cognitive development.
+    load_bearing_claims:
+      - id: "e4_c1"
+        claim: >
+          The developmental vs. substitutive scaffolding distinction is
+          empirically meaningful and can be operationalized through the
+          augmented vs. dependent cognition falsifiable test.
+        evidence_base: "Cognitive development literature, original test design"
+        vulnerability: >
+          Studies showing the distinction is not empirically tractable.
+          Or evidence that all scaffolding eventually becomes developmental
+          given sufficient duration.
+        section: "Core framework"
+
+      - id: "e4_c2"
+        claim: >
+          The Dunning-Kruger Effect caveat applies: users of AI scaffolding
+          may be unable to assess their own capacity degradation.
+        evidence_base: "DKE literature applied to AI-assisted cognition"
+        vulnerability: >
+          Metacognition research showing AI users can accurately assess
+          their own skill retention. Or longitudinal studies showing
+          no measurable capacity degradation.
+        section: "DKE caveat section"
+
+      - id: "e4_c3"
+        claim: >
+          Current AI deployment patterns are predominantly substitutive
+          rather than developmental.
+        evidence_base: "Analysis of commercial AI tool design patterns"
+        vulnerability: >
+          Evidence of AI tools designed for developmental scaffolding
+          showing measurable capacity-building effects at scale.
+        section: "Empirical assessment"
+
+    related_shades: [16, 17, 18, 19, 20]
+    key_counterarguments:
+      - "Writing didn't destroy memory; calculators didn't destroy numeracy"
+      - "AI tools can be designed to build rather than replace capacity"
+      - "Cognitive offloading frees capacity for higher-order thinking"
+
+  essay_5_inheritance:
+    title: "On the Inheritance We Choose"
+    axis: "Intergenerational capability and sensitive periods"
+    core_thesis: >
+      AI's impact on human capability development is not uniform across
+      the lifespan; the agenesis (never-developed) vs. atrophy
+      (developed-then-lost) distinction matters because sensitive periods
+      in development create irreversible windows.
+    load_bearing_claims:
+      - id: "e5_c1"
+        claim: >
+          The agenesis vs. atrophy distinction is the correct frame for
+          understanding intergenerational AI effects, because the two
+          conditions have different developmental trajectories and
+          different intervention profiles.
+        evidence_base: "Developmental psychology, sensitive period literature"
+        vulnerability: >
+          Neuroplasticity research showing sensitive period effects are
+          more reversible than claimed. Or evidence that agenesis and
+          atrophy converge in outcomes given sufficient remediation.
+        section: "Core framework"
+
+      - id: "e5_c2"
+        claim: >
+          Sensitive periods for key cognitive capabilities (writing,
+          mathematical reasoning, social cognition) create genuine
+          windows where AI substitution causes irreversible deficits.
+        evidence_base: "Neurodevelopmental literature on critical/sensitive periods"
+        vulnerability: >
+          Adult neuroplasticity research demonstrating full recovery
+          of capabilities never developed during sensitive periods.
+          Or redefinition of which capabilities have genuine sensitive
+          periods.
+        section: "Sensitive period argument"
+
+    related_shades: [19, 21, 22]
+    key_counterarguments:
+      - "Every generation fears the next generation's tools"
+      - "Neuroplasticity research suggests fewer hard windows than claimed"
+      - "Cognitive enhancement may offset capability loss"
+
+  essay_6_governance:
+    title: "On the Choices That Remain"
+    axis: "AI governance, alignment, and institutional response"
+    core_thesis: >
+      A 3-to-7-year chokepoint window exists for meaningful AI governance
+      before three erosion vectors (capability diffusion, regulatory capture,
+      democratic legitimacy decay) close the opportunity. Coalition-building
+      around verified concrete grievances is the viable path.
+    load_bearing_claims:
+      - id: "e6_c1"
+        claim: >
+          The chokepoint window (3-7 years) is a real and empirically
+          grounded timeframe, not arbitrary alarmism.
+        evidence_base: >
+          Anthropic RSP v3.0 (Feb 2026), open-weight proliferation timelines,
+          regulatory capture precedents, Pentagon-Anthropic confrontation
+        vulnerability: >
+          Evidence that the window is longer (regulatory capacity building
+          faster than expected) or shorter (capability diffusion accelerating
+          beyond projected timelines). Major governance breakthroughs or
+          failures that reset the clock.
+        section: "Chokepoint analysis"
+
+      - id: "e6_c2"
+        claim: >
+          Three specific erosion vectors (capability diffusion, regulatory
+          capture, democratic legitimacy decay) are the primary mechanisms
+          closing the governance window.
+        evidence_base: "Open-weight model proliferation, lobbying data, public trust surveys"
+        vulnerability: >
+          Identification of additional erosion vectors not covered. Or
+          evidence that one of the three is not operating as described
+          (e.g., regulatory capture being effectively resisted).
+        section: "Erosion vector analysis"
+
+      - id: "e6_c3"
+        claim: >
+          Four verified concrete grievances form the viable basis for
+          coalition-building across otherwise fragmented stakeholders.
+        evidence_base: "Specific grievances documented with primary sources"
+        vulnerability: >
+          New coalition-mobilizing issues that are more potent. Or evidence
+          that the identified grievances have been resolved or have failed
+          to mobilize coalitions in practice.
+        section: "Coalition strategy"
+
+      - id: "e6_c4"
+        claim: >
+          Developmental foundation interventions (procurement standards,
+          professional licensing, K-16 reform) are the most durable
+          governance mechanisms because they operate upstream of capability
+          deployment.
+        evidence_base: "Allen, Hadfield, Carpenter regulatory models"
+        vulnerability: >
+          Evidence that downstream interventions (liability regimes,
+          insurance markets, ex-post regulation) are more effective
+          than upstream developmental approaches.
+        section: "Developmental foundation expansion"
+
+      - id: "e6_c5"
+        claim: >
+          The Anthropic RSP v3.0 framework represents a meaningful but
+          insufficient governance mechanism.
+        evidence_base: "RSP v3.0 text (Feb 2026), Karnofsky/Thomas commentary"
+        vulnerability: >
+          Major RSP revisions (v4+) that address identified shortcomings.
+          Or empirical evidence of RSP effectiveness/failure in practice.
+        section: "RSP analysis"
+
+    related_shades: [23, 24, 25, 26, 27, 28, 29, 30]
+    key_counterarguments:
+      - "Market incentives will produce adequate safety (Ball/Cowen position)"
+      - "International competition makes unilateral governance self-defeating"
+      - "Existing institutions can adapt without new regulatory frameworks"
+      - "Open-weight models make governance technically infeasible"
+
+# Cross-essay monitoring
+cross_cutting_signals:
+  - type: "Major lab policy announcement"
+    description: >
+      Any policy paper, commitment, or framework from Anthropic, OpenAI,
+      Google DeepMind, or Meta AI that bears on governance, safety, or
+      labor market commitments.
+    minimum_axes: ["essay_6_governance"]
+    often_also: ["essay_3_power"]
+
+  - type: "Government regulatory action"
+    description: >
+      Executive orders, legislation, agency rules, or international
+      agreements on AI governance.
+    minimum_axes: ["essay_6_governance"]
+    often_also: ["essay_3_power", "essay_1_labor"]
+
+  - type: "Major empirical study on AI labor effects"
+    description: >
+      Studies with large sample sizes or novel methodologies measuring
+      actual (not projected) AI effects on employment, wages, or tasks.
+    minimum_axes: ["essay_1_labor"]
+    often_also: ["essay_5_inheritance"]
+
+  - type: "AI capability milestone"
+    description: >
+      Demonstrations of new capabilities that change the task frontier
+      or affect the chokepoint timeline.
+    minimum_axes: ["essay_6_governance"]
+    often_also: ["essay_1_labor", "essay_3_power"]

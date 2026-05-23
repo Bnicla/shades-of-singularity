@@ -1,0 +1,217 @@
+# Observatory source configuration
+# Tier 1: Named scholars (bypass triage, go straight to adjudication)
+# Tier 2: Institutional feeds (high volume, needs triage)
+# Tier 3: Editorial sources (rigorous enough to cite)
+
+tier_1_scholars:
+  # Each entry: name, affiliations, and monitoring channels
+  # These scholars' output is auto-adjudicated regardless of topic
+
+  - name: "Daron Acemoglu"
+    arxiv_author: "Acemoglu_D"
+    google_scholar_id: "ImhaNCkAAAAJ"
+    nber_author: "daron-acemoglu"
+    notes: "Labor automation, task-share framework, Power and Progress thesis"
+
+  - name: "Sara Hooker"
+    arxiv_author: "Hooker_S"
+    google_scholar_id: "Qy4TdGsAAAAJ"
+    notes: "Compute threshold critique, hardware lottery, efficiency gaps"
+
+  - name: "Danielle Allen"
+    google_scholar_id: "sWDqQ08AAAAJ"
+    notes: "Justice by Means of Democracy, Democratic Knowledge Project"
+
+  - name: "Gillian Hadfield"
+    arxiv_author: "Hadfield_G"
+    google_scholar_id: "k8T5sNkAAAAJ"
+    notes: "Regulatory markets, AI governance architecture"
+
+  - name: "Philip Pettit"
+    google_scholar_id: "Cx-PVGEAAAAJ"
+    notes: "Republican non-domination, freedom as non-domination"
+
+  - name: "Elizabeth Anderson"
+    google_scholar_id: "gL8v3BEAAAAJ"
+    notes: "Relational equality, democratic workplace theory"
+
+  - name: "Amartya Sen"
+    google_scholar_id: "6bVf1FEAAAAJ"
+    notes: "Capabilities approach, development as freedom"
+
+  - name: "Martha Nussbaum"
+    google_scholar_id: "EcXEpfcAAAAJ"
+    notes: "Capabilities approach, central capabilities list"
+
+  - name: "Jack Clark"
+    notes: "Import AI newsletter, AI policy, co-author regulatory markets"
+
+  - name: "Daniel Carpenter"
+    google_scholar_id: "RyC0LnUAAAAJ"
+    notes: "FDA regulatory model, bureaucratic capacity"
+
+  - name: "Holden Karnofsky"
+    notes: "Cold Takes blog, AI safety, RSP commentary"
+
+  - name: "Dean Ball"
+    notes: "Hyperdimensional, regulatory skepticism perspective"
+
+  - name: "Matt Clancy"
+    notes: "New Things Under the Sun, innovation economics"
+
+  - name: "Tyna Eloundou"
+    google_scholar_id: "0LGlHWcAAAAJ"
+    notes: "GPTs are GPTs paper, Science 2024 occupational exposure"
+
+  - name: "Mauro Cazzaniga"
+    notes: "IMF AI and labor studies"
+
+  - name: "Carson Ezell"
+    notes: "FDA-for-AI regulatory proposals"
+
+  - name: "Drake Thomas"
+    notes: "RSP v3.0 commentary and analysis"
+
+tier_2_institutional:
+  arxiv:
+    categories:
+      - "cs.CY"   # Computers and Society
+      - "cs.AI"   # Artificial Intelligence
+      - "econ.GN"  # General Economics
+      - "cs.HC"   # Human-Computer Interaction (selective)
+    feed_url: "https://rss.arxiv.org/rss/{category}"
+    polling: "daily"
+    notes: "Highest volume source. Triage aggressively."
+
+  nber:
+    feed_url: "https://www.nber.org/rss/new.xml"
+    polling: "daily"
+    notes: "Working papers. Watch for labor, productivity, innovation series."
+
+  imf_working_papers:
+    feed_url: "https://www.imf.org/en/Publications/RSS?type=WP"
+    polling: "weekly"
+    notes: "Lower volume but high-quality labor/macro papers."
+
+  brookings:
+    feeds:
+      - url: "https://www.brookings.edu/topic/artificial-intelligence/feed/"
+        label: "AI topic"
+      - url: "https://www.brookings.edu/topic/technology-policy/feed/"
+        label: "Tech policy"
+    polling: "daily"
+
+  lab_blogs:
+    - name: "Anthropic"
+      feed_url: "https://www.anthropic.com/research/rss.xml"
+      alternate_url: "https://www.anthropic.com/news/rss.xml"
+      priority: "high"
+      notes: "RSP updates, safety research, policy positions"
+
+    - name: "OpenAI"
+      feed_url: "https://openai.com/blog/rss.xml"
+      priority: "high"
+      notes: "Policy papers, capability announcements, governance"
+
+    - name: "Google DeepMind"
+      feed_url: "https://deepmind.google/blog/rss.xml"
+      priority: "medium"
+
+    - name: "Meta AI (FAIR)"
+      feed_url: "https://ai.meta.com/blog/rss/"
+      priority: "medium"
+      notes: "Open-weight model releases relevant to Essay 6 governance"
+
+  policy_institutes:
+    - name: "CSET Georgetown"
+      feed_url: "https://cset.georgetown.edu/feed/"
+      notes: "AI policy analysis, workforce, national security"
+
+    - name: "AI Now Institute"
+      feed_url: "https://ainowinstitute.org/feed"
+      notes: "Power concentration, labor, accountability"
+
+    - name: "RAND AI"
+      url: "https://www.rand.org/topics/artificial-intelligence.html"
+      notes: "No RSS; scrape or poll. National security, governance."
+
+    - name: "Center for AI Safety"
+      url: "https://www.safe.ai/research"
+      notes: "Catastrophic risk, alignment research"
+
+    - name: "Partnership on AI"
+      feed_url: "https://partnershiponai.org/feed/"
+      notes: "Multi-stakeholder governance perspectives"
+
+  government_regulatory:
+    - name: "EU AI Act tracker"
+      url: "https://artificialintelligenceact.eu"
+      notes: "Regulatory implementation updates for Essay 6"
+
+    - name: "NIST AI"
+      url: "https://www.nist.gov/artificial-intelligence"
+      notes: "Standards, risk framework updates"
+
+    - name: "UK AISI"
+      url: "https://www.aisi.gov.uk/research"
+      notes: "Safety evaluations, frontier model assessments"
+
+tier_3_editorial:
+  journals:
+    - name: "Science"
+      feed_url: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+      filter_keywords: ["artificial intelligence", "machine learning", "automation", "labor"]
+
+    - name: "Nature"
+      feed_url: "https://www.nature.com/nature.rss"
+      filter_keywords: ["AI", "artificial intelligence", "automation", "large language model"]
+
+  magazines_and_reviews:
+    - name: "Foreign Affairs"
+      url: "https://www.foreignaffairs.com/topics/science-technology"
+      notes: "Geopolitical AI dimensions, governance. No RSS; poll."
+
+    - name: "Harvard Business Review"
+      feed_url: "https://hbr.org/topic/technology.rss"
+      filter_keywords: ["AI", "artificial intelligence", "automation", "generative"]
+
+    - name: "MIT Technology Review"
+      feed_url: "https://www.technologyreview.com/feed/"
+      notes: "Selective; watch for policy and labor pieces, skip product reviews."
+
+    - name: "The Economist"
+      url: "https://www.economist.com/science-and-technology"
+      notes: "Occasional deep pieces on AI governance, labor displacement."
+
+  newsletters_and_blogs:
+    - name: "Import AI (Jack Clark)"
+      url: "https://importai.substack.com/feed"
+      notes: "Tier 1 author but newsletter format; treat as editorial."
+
+    - name: "New Things Under the Sun (Matt Clancy)"
+      url: "https://mattsclancy.substack.com/feed"
+      notes: "Innovation economics, science of science. Tier 1 author."
+
+    - name: "Cold Takes (Holden Karnofsky)"
+      url: "https://www.cold-takes.com/feed"
+      notes: "AI safety, transformative AI timelines."
+
+    - name: "Hyperdimensional (Dean Ball)"
+      url: "https://www.hyperdimensional.co/feed"
+      notes: "Regulatory skepticism counterpoint for Essay 6."
+
+    - name: "One Useful Thing (Ethan Mollick)"
+      url: "https://www.oneusefulthing.org/feed"
+      notes: "AI in practice, education, capability assessments."
+
+    - name: "Noahpinion (Noah Smith)"
+      url: "https://noahpinion.substack.com/feed"
+      notes: "Economics of AI, labor, industrial policy."
+
+# Polling configuration
+defaults:
+  polling_interval: "daily"
+  max_items_per_feed: 20
+  timeout_seconds: 30
+  retry_attempts: 3
+  user_agent: "Observatory/1.0 (research-monitor; +shadesofsingularity.com)"
