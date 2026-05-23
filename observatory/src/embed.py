@@ -2,7 +2,7 @@
 Embedding-based relevance filter.
 
 Replaces the previous regex-prefilter + LLM-triage steps. For each ingested
-item we embed `title + abstract` with text-embedding-004 (free on Gemini's
+item we embed `title + abstract` with gemini-embedding-001 (free on Gemini's
 free tier, 1500 req/day, 5 RPM), then compute cosine similarity against a
 pre-computed seed matrix built from the 20 load-bearing claims in
 axes.yaml. Items keep a `relevance_score` plus the top-3 nearest claim IDs
@@ -37,11 +37,11 @@ import yaml
 
 logger = logging.getLogger("observatory.embed")
 
-EMBED_MODEL = "models/text-embedding-004"
+EMBED_MODEL = "models/gemini-embedding-001"
 EMBED_ENDPOINT = (
     "https://generativelanguage.googleapis.com/v1beta/{model}:batchEmbedContents"
 )
-EMBED_BATCH_SIZE = 100         # text-embedding-004 batchEmbedContents cap
+EMBED_BATCH_SIZE = 100         # gemini-embedding-001 batchEmbedContents cap
 MAX_RETRIES = 4
 
 # Default cosine-similarity threshold below which items are dropped.

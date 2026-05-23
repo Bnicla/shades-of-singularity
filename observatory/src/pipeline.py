@@ -3,7 +3,7 @@ Observatory pipeline orchestrator.
 
 Runs: ingest -> dedup -> embedding relevance filter -> adjudicate -> render.
 
-The relevance step uses text-embedding-004 (free on Gemini free tier) to
+The relevance step uses gemini-embedding-001 (free on Gemini free tier) to
 cosine-match each item against the 20 load-bearing claims in axes.yaml.
 That replaces what used to be a regex prefilter + an LLM-triage step,
 and it cuts the number of items that reach the expensive Gemini 2.5
@@ -71,7 +71,7 @@ def run_pipeline(mode: str = "local"):
     # Step 3: Relevance filter (embeddings).
     # Tier 1 (named-scholar) items bypass the filter — their output is
     # auto-adjudicated regardless of topic. Everything else is embedded with
-    # text-embedding-004 and dropped if its top-claim cosine similarity is
+    # gemini-embedding-001 and dropped if its top-claim cosine similarity is
     # below the threshold.
     tier1_items = [item for item in new_items if item.get("tier") == 1]
     other_items = [item for item in new_items if item.get("tier") != 1]
