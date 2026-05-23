@@ -27,3 +27,7 @@ pnpm-debug.log*
 # Python bytecode (observatory pipeline)
 __pycache__/
 *.pyc
+
+# Observatory runtime caches (embedding seed matrix, local SQLite)
+observatory/cache/
+observatory/output/

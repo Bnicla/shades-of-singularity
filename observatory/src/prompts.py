@@ -1,82 +1,9 @@
 """
-Observatory prompts for triage and adjudication.
+Observatory prompts for adjudication.
 
-These prompts are the core intellectual machinery of the pipeline.
-The triage prompt is cheap and generous; the adjudication prompt is
-expensive and precise. Both are designed to be updated as essays evolve.
-"""
-
-# ---------------------------------------------------------------------------
-# TRIAGE PROMPT (Haiku-class)
-# Purpose: fast binary filter. Does this item plausibly touch one of six axes?
-# Design: generous. False positives are acceptable; false negatives are not.
-# ---------------------------------------------------------------------------
-
-TRIAGE_SYSTEM = """You are a research triage assistant for a specific essay collection
-about AI and society. Your job is to determine whether a given article, paper,
-or blog post plausibly bears on one or more of six defined thematic axes.
-
-You are a GENEROUS filter. When in doubt, pass the item through. False positives
-(passing an irrelevant item) cost a few cents of compute downstream. False negatives
-(dropping a relevant item) mean the author misses material that could improve their work.
-
-The six axes are:
-
-1. LABOR: AI-driven automation, task displacement, labor market restructuring,
-   productivity distribution, occupational exposure.
-
-2. TRUTH: Epistemic infrastructure, misinformation economics, content provenance,
-   verification systems, information integrity at scale.
-
-3. POWER: AI-enabled power concentration, algorithmic governance, surveillance,
-   platform lock-in, democratic accountability of AI systems.
-
-4. HUMAN: Cognitive scaffolding, AI's effect on human skill development,
-   capability augmentation vs. replacement, metacognition, education.
-
-5. INHERITANCE: Intergenerational effects of AI, developmental sensitive periods,
-   childhood cognitive development, agenesis vs. atrophy of capabilities.
-
-6. GOVERNANCE: AI regulation, safety frameworks (RSPs, evals), international
-   coordination, liability regimes, open-weight proliferation, regulatory capture.
-
-Items that are PURELY about model architecture, training methods, benchmark scores,
-or product launches with no policy/societal dimension should be DROPPED.
-
-Items about AI applications in specific domains (healthcare, climate, etc.) should
-be DROPPED unless they specifically address one of the six axes above.
-"""
-
-TRIAGE_USER = """Evaluate the following item. Respond with a JSON object only.
-
-Title: {title}
-Source: {source}
-Date: {date}
-Abstract/Summary: {abstract}
-
-Respond with:
-{{
-  "pass": true/false,
-  "candidate_axes": ["LABOR", "TRUTH", ...],  // empty if pass=false
-  "confidence": "high" | "medium" | "low",
-  "reason": "one sentence explaining the decision"
-}}
-"""
-
-
-# Batched variant: evaluate up to N items in one call. The model returns
-# a JSON array keyed by the integer index we supply, in the same order.
-TRIAGE_BATCH_USER = """Evaluate each item below against the six axes. Respond with a JSON
-array of decisions in the same order as the items, one object per item.
-
-{items_block}
-
-Respond ONLY with a JSON array of exactly {n} objects, in the same order:
-[
-  {{"index": 1, "pass": true/false, "candidate_axes": ["LABOR", ...], "confidence": "high"|"medium"|"low"}},
-  {{"index": 2, ...}},
-  ...
-]
+The triage step is no longer LLM-driven — relevance is computed by
+embedding similarity against axes.yaml seeds in embed.py. Only the
+adjudication prompt remains here.
 """
 
 
@@ -224,6 +151,12 @@ Source: {source}
 Authors: {authors}
 Date: {date}
 URL: {url}
+
+Embedding-relevance hint (NOT authoritative — these are the claims whose
+seed text most resembled this item by cosine similarity; you may agree,
+override, or mark the item as off-topic):
+{relevance_hint}
+
 Full text or extended abstract:
 {text}
 

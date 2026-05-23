@@ -1,7 +1,13 @@
 """
 Observatory pipeline orchestrator.
 
-Runs the full ingest -> dedup -> triage -> adjudicate -> render cycle.
+Runs: ingest -> dedup -> embedding relevance filter -> adjudicate -> render.
+
+The relevance step uses text-embedding-004 (free on Gemini free tier) to
+cosine-match each item against the 20 load-bearing claims in axes.yaml.
+That replaces what used to be a regex prefilter + an LLM-triage step,
+and it cuts the number of items that reach the expensive Gemini 2.5
+Flash adjudicator to the handful that are semantically on-topic.
 
 Usage:
     python pipeline.py --local          # Local dev with SQLite
@@ -17,8 +23,7 @@ from datetime import datetime, timezone
 
 from ingest import IngestManager
 from dedup import DedupStore
-from prefilter import passes_prefilter
-from triage import TriageFilter
+from embed import EmbeddingFilter
 from adjudicate import Adjudicator
 from render import ObservatoryRenderer
 
@@ -41,7 +46,7 @@ def run_pipeline(mode: str = "local"):
 
     dedup = DedupStore(mode=mode)
     ingester = IngestManager(config_path="config/sources.yaml")
-    triager = TriageFilter(api_key=api_key)
+    relevance = EmbeddingFilter(api_key=api_key, axes_path="config/axes.yaml")
     adjudicator = Adjudicator(api_key=api_key)
     renderer = ObservatoryRenderer(template_path="templates/observatory.html")
 
@@ -63,25 +68,28 @@ def run_pipeline(mode: str = "local"):
         renderer.render(existing, output_path=_output_path(mode))
         return
 
-    # Step 3: Triage
-    # Tier 1 (named scholar) items bypass both prefilter and triage.
-    # Everything else first hits a cheap keyword prefilter, then the LLM triage.
+    # Step 3: Relevance filter (embeddings).
+    # Tier 1 (named-scholar) items bypass the filter — their output is
+    # auto-adjudicated regardless of topic. Everything else is embedded with
+    # text-embedding-004 and dropped if its top-claim cosine similarity is
+    # below the threshold.
     tier1_items = [item for item in new_items if item.get("tier") == 1]
     other_items = [item for item in new_items if item.get("tier") != 1]
 
-    before_prefilter = len(other_items)
-    other_items = [item for item in other_items if passes_prefilter(item)]
+    logger.info(f"Step 3: Embedding relevance filter on {len(other_items)} non-tier-1 items")
+    relevance.score_items(other_items)
+    # Also score tier 1 so we can pass the top-claim hint into adjudicate,
+    # but never drop them.
+    relevance.score_items(tier1_items)
+
+    kept_other = relevance.filter(other_items)
     logger.info(
-        f"Step 3a: Prefilter dropped {before_prefilter - len(other_items)} "
-        f"of {before_prefilter} items on keyword match"
+        f"  {len(kept_other)} of {len(other_items)} items cleared the "
+        f"{relevance.threshold:.2f} similarity threshold "
+        f"(+ {len(tier1_items)} tier-1 bypassing)"
     )
 
-    logger.info(f"Step 3b: Triage ({len(other_items)} items, {len(tier1_items)} bypass as tier 1)")
-    passed_triage = triager.filter(other_items)
-    logger.info(f"  {len(passed_triage)} items passed triage")
-
-    # Combine tier 1 + triage-passed items for adjudication
-    to_adjudicate = tier1_items + passed_triage
+    to_adjudicate = tier1_items + kept_other
 
     # Step 4: Adjudicate
     logger.info(f"Step 4: Adjudication ({len(to_adjudicate)} items)")
