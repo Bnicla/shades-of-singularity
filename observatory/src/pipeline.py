@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 
 from ingest import IngestManager
 from dedup import DedupStore
+from prefilter import passes_prefilter
 from triage import TriageFilter
 from adjudicate import Adjudicator
 from render import ObservatoryRenderer
@@ -45,8 +46,10 @@ def run_pipeline(mode: str = "local"):
     renderer = ObservatoryRenderer(template_path="templates/observatory.html")
 
     # Step 1: Ingest
+    # 8-day lookback covers the weekly cron cadence with a day of slack
+    # for rescheduled runs and feed-publication lag.
     logger.info("Step 1: Ingesting from all sources")
-    raw_items = ingester.fetch_all()
+    raw_items = ingester.fetch_all(lookback_days=8)
     logger.info(f"  Fetched {len(raw_items)} raw items")
 
     # Step 2: Dedup
@@ -61,11 +64,19 @@ def run_pipeline(mode: str = "local"):
         return
 
     # Step 3: Triage
-    # Tier 1 (named scholar) items bypass triage
+    # Tier 1 (named scholar) items bypass both prefilter and triage.
+    # Everything else first hits a cheap keyword prefilter, then the LLM triage.
     tier1_items = [item for item in new_items if item.get("tier") == 1]
     other_items = [item for item in new_items if item.get("tier") != 1]
 
-    logger.info(f"Step 3: Triage ({len(other_items)} items, {len(tier1_items)} bypass as tier 1)")
+    before_prefilter = len(other_items)
+    other_items = [item for item in other_items if passes_prefilter(item)]
+    logger.info(
+        f"Step 3a: Prefilter dropped {before_prefilter - len(other_items)} "
+        f"of {before_prefilter} items on keyword match"
+    )
+
+    logger.info(f"Step 3b: Triage ({len(other_items)} items, {len(tier1_items)} bypass as tier 1)")
     passed_triage = triager.filter(other_items)
     logger.info(f"  {len(passed_triage)} items passed triage")
 

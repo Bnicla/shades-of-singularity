@@ -21,6 +21,7 @@ import hashlib
 import logging
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from urllib.parse import quote_plus
 
 import feedparser
 import requests
@@ -107,18 +108,25 @@ class IngestManager:
         """Tier 2: Institutional feeds."""
         items = []
 
-        # arXiv category feeds
+        # arXiv search-query feeds (scoped to axis-relevant terms, not broad categories)
         arxiv_config = self.config.get("tier_2_institutional", {}).get("arxiv", {})
-        for category in arxiv_config.get("categories", []):
+        for search in arxiv_config.get("searches", []):
+            label = search.get("label", "untitled")
             try:
-                url = arxiv_config["feed_url"].format(category=category)
-                feed_items = self._parse_rss(url, f"arXiv:{category}", cutoff)
+                query = quote_plus(search["query"])
+                url = (
+                    "https://export.arxiv.org/api/query"
+                    f"?search_query={query}"
+                    "&sortBy=submittedDate&sortOrder=descending"
+                    f"&max_results={self.max_items}"
+                )
+                feed_items = self._parse_rss(url, f"arXiv: {label}", cutoff)
                 for item in feed_items:
                     item["tier"] = 2
-                    item["feed_category"] = f"arxiv:{category}"
+                    item["feed_category"] = f"arxiv:{label}"
                 items.extend(feed_items)
             except Exception as e:
-                logger.warning(f"Failed to fetch arXiv {category}: {e}")
+                logger.warning(f"Failed to fetch arXiv search '{label}': {e}")
 
         # Lab blogs
         for lab in self.config.get("tier_2_institutional", {}).get("lab_blogs", []):

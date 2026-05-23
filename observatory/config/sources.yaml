@@ -74,14 +74,27 @@ tier_1_scholars:
 
 tier_2_institutional:
   arxiv:
-    categories:
-      - "cs.CY"   # Computers and Society
-      - "cs.AI"   # Artificial Intelligence
-      - "econ.GN"  # General Economics
-      - "cs.HC"   # Human-Computer Interaction (selective)
-    feed_url: "https://rss.arxiv.org/rss/{category}"
-    polling: "daily"
-    notes: "Highest volume source. Triage aggressively."
+    polling: "weekly"
+    notes: |
+      Search-query feeds instead of broad category feeds. Cuts noise at the
+      source so we don't pay for triage on EEG-emotion-recognition papers.
+      Query syntax is the arXiv API search grammar:
+      https://info.arxiv.org/help/api/user-manual.html#query_details
+    searches:
+      - label: "labor & automation"
+        query: '(cat:econ.GN OR cat:cs.CY) AND (all:automation OR all:labor OR all:displacement OR all:workforce OR all:productivity OR all:"task share")'
+
+      - label: "AI governance & policy"
+        query: 'cat:cs.CY AND (all:governance OR all:regulation OR all:policy OR all:liability OR all:audit OR all:antitrust)'
+
+      - label: "alignment, safety, evaluation"
+        query: '(cat:cs.CY OR cat:cs.AI) AND (all:alignment OR all:"AI safety" OR all:evaluation OR all:"red team" OR all:"open-weight" OR all:"frontier model" OR all:oversight)'
+
+      - label: "truth & misinformation"
+        query: 'cat:cs.CY AND (all:misinformation OR all:disinformation OR all:provenance OR all:watermark OR all:deepfake OR all:"content authenticity")'
+
+      - label: "human cognition & education"
+        query: '(cat:cs.CY OR cat:cs.HC) AND (all:education OR all:cognitive OR all:metacognition OR all:scaffold OR all:deskilling OR all:"sensitive period")'
 
   nber:
     feed_url: "https://www.nber.org/rss/new.xml"

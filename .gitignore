@@ -23,3 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+
+# Python bytecode (observatory pipeline)
+__pycache__/
+*.pyc

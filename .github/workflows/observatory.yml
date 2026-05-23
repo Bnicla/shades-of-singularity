@@ -1,16 +1,20 @@
-name: Observatory daily scan
+name: Observatory weekly scan
 
-# Runs the research-monitor pipeline once a day, then pushes the rendered
+# Runs the research-monitor pipeline once a week, then pushes the rendered
 # HTML digest into Vercel KV. The Vercel serve function (/observatory)
 # reads from KV and returns the latest digest to visitors.
 #
 # This lives on GitHub Actions instead of Vercel Cron because the pipeline
-# routinely takes 5-15 minutes to complete (40+ feeds + 100s of LLM calls),
-# which exceeds Vercel's serverless function duration limits.
+# can take 5-15 minutes to complete (40+ feeds + LLM calls), which exceeds
+# Vercel's serverless function duration limits.
+#
+# Weekly cadence keeps total LLM call volume comfortably inside Gemini's
+# free-tier daily quota. Academic + policy material doesn't move fast
+# enough to need daily scans.
 
 on:
   schedule:
-    - cron: '0 10 * * *'   # 10:00 UTC daily (06:00 ET / 12:00 CET)
+    - cron: '0 10 * * 1'   # Mondays 10:00 UTC (06:00 ET / 12:00 CET)
   workflow_dispatch: {}    # also allow manual triggering from the Actions tab
 
 # Prevent overlapping runs (e.g. if a long run is in progress when the next cron fires)

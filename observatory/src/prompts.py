@@ -64,6 +64,22 @@ Respond with:
 """
 
 
+# Batched variant: evaluate up to N items in one call. The model returns
+# a JSON array keyed by the integer index we supply, in the same order.
+TRIAGE_BATCH_USER = """Evaluate each item below against the six axes. Respond with a JSON
+array of decisions in the same order as the items, one object per item.
+
+{items_block}
+
+Respond ONLY with a JSON array of exactly {n} objects, in the same order:
+[
+  {{"index": 1, "pass": true/false, "candidate_axes": ["LABOR", ...], "confidence": "high"|"medium"|"low"}},
+  {{"index": 2, ...}},
+  ...
+]
+"""
+
+
 # ---------------------------------------------------------------------------
 # ADJUDICATION PROMPT (Sonnet-class)
 # Purpose: determine whether an item bears on a SPECIFIC CLAIM in a specific
