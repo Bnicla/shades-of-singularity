@@ -3,7 +3,7 @@ Observatory pipeline orchestrator.
 
 Runs: ingest -> dedup -> embedding relevance filter -> adjudicate -> render.
 
-The relevance step uses gemini-embedding-001 (free on Gemini free tier) to
+The relevance step uses local TF-IDF (free on Gemini free tier) to
 cosine-match each item against the 20 load-bearing claims in axes.yaml.
 That replaces what used to be a regex prefilter + an LLM-triage step,
 and it cuts the number of items that reach the expensive Gemini 2.5
@@ -75,7 +75,7 @@ def run_pipeline(mode: str = "local"):
         return
 
     # Step 3: Relevance filter (embeddings).
-    # We embed every non-tier-1 item with gemini-embedding-001, rank by
+    # We embed every non-tier-1 item with local TF-IDF, rank by
     # cosine similarity to the 25 claim seeds, and take the top-K for
     # LLM adjudication. The cap is intentional: it bounds RPD usage on
     # the LLM regardless of how noisy the upstream feeds get. Tier-1
