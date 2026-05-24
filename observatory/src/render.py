@@ -204,6 +204,15 @@ class ObservatoryRenderer:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>{ctx['title']} | Shades of Singularity</title>
+<script>
+// Match main-site behavior: read stored preference (else system), set
+// data-theme on <html> BEFORE first paint so the page doesn't flash.
+(function() {{
+    var stored = localStorage.getItem('theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', stored || (prefersDark ? 'dark' : 'light'));
+}})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -219,6 +228,20 @@ class ObservatoryRenderer:
     --weakens: #c1121f;
     --extends: #B8860B;
     --reframes: #4a5568;
+}}
+
+[data-theme="dark"] {{
+    --bg: #1A1814;
+    --text: #E8E0D4;
+    --text-secondary: #A09888;
+    --accent: #D4A942;
+    --accent-light: rgba(212, 169, 66, 0.13);
+    --border: #3A352E;
+    --card-bg: #252118;
+    --strengthens: #57b896;
+    --weakens: #ef5060;
+    --extends: #D4A942;
+    --reframes: #8b9bbf;
 }}
 
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
@@ -238,6 +261,46 @@ header {{
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
 }}
+
+.header-top {{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}}
+
+.dark-mode-toggle {{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease;
+}}
+
+.dark-mode-toggle:hover {{
+    background-color: var(--accent-light);
+}}
+
+.dark-mode-toggle svg {{
+    width: 1.125rem;
+    height: 1.125rem;
+    stroke: var(--text-secondary);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}}
+
+.dark-mode-toggle .icon-sun {{ display: none; }}
+.dark-mode-toggle .icon-moon {{ display: block; }}
+[data-theme="dark"] .dark-mode-toggle .icon-sun {{ display: block; }}
+[data-theme="dark"] .dark-mode-toggle .icon-moon {{ display: none; }}
 
 header h1 {{
     font-family: 'Instrument Sans', sans-serif;
@@ -473,7 +536,25 @@ footer {{
 </head>
 <body>
 <header>
-    <h1>{ctx['title']}</h1>
+    <div class="header-top">
+        <h1>{ctx['title']}</h1>
+        <button class="dark-mode-toggle" aria-label="Toggle dark mode" onclick="toggleTheme()">
+            <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+    </div>
     <div class="subtitle">Research monitor for the Shades of Singularity collection</div>
     <div class="meta">
         Last updated: {ctx['generated_at']}<br>
@@ -489,6 +570,21 @@ footer {{
 </footer>
 
 <script>
+function toggleTheme() {{
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+}}
+
+// Follow OS theme changes when the user hasn't picked one manually.
+window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', function(e) {{
+        if (!localStorage.getItem('theme')) {{
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }}
+    }});
+
 async function sendFeedback(btn, fp, signal) {{
     const card = btn.closest('.card');
     const buttons = card ? card.querySelectorAll('.feedback-btn') : [btn];
