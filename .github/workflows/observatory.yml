@@ -15,7 +15,16 @@ name: Observatory weekly scan
 on:
   schedule:
     - cron: '0 10 * * 1'   # Mondays 10:00 UTC (06:00 ET / 12:00 CET)
-  workflow_dispatch: {}    # also allow manual triggering from the Actions tab
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Pipeline mode'
+        type: choice
+        required: false
+        default: 'weekly'
+        options:
+          - weekly
+          - backfill
 
 # Prevent overlapping runs (e.g. if a long run is in progress when the next cron fires)
 concurrency:
@@ -47,4 +56,10 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
           KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
-        run: python src/pipeline.py --production
+          MODE: ${{ inputs.mode || 'weekly' }}
+        run: |
+          if [ "$MODE" = "backfill" ]; then
+            python src/pipeline.py --production --backfill
+          else
+            python src/pipeline.py --production
+          fi

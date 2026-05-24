@@ -109,6 +109,71 @@ class DedupStore:
         else:
             return self._kv_get_recent_results(cutoff)
 
+    def load_candidates_blob(self) -> list[dict]:
+        """Load the merged candidates JSON blob. Returns [] if absent."""
+        if self.mode == "local":
+            path = "output/candidates_blob.json"
+            if os.path.exists(path):
+                try:
+                    with open(path) as f:
+                        return json.load(f)
+                except Exception as e:
+                    logger.warning(f"candidates blob load failed: {e}")
+            return []
+        else:
+            resp = self.kv_session.get(f"{self.kv_url}/get/observatory:candidates_blob")
+            if resp.status_code != 200:
+                return []
+            data = resp.json().get("result")
+            if not data:
+                return []
+            try:
+                return json.loads(data)
+            except Exception as e:
+                logger.warning(f"candidates blob parse failed: {e}")
+                return []
+
+    def save_candidates_blob(self, candidates: list[dict]) -> None:
+        """Persist the merged candidates list to the KV blob (or local JSON)."""
+        payload = json.dumps(candidates)
+        if self.mode == "local":
+            os.makedirs("output", exist_ok=True)
+            with open("output/candidates_blob.json", "w") as f:
+                f.write(payload)
+        else:
+            self._kv_set("observatory:candidates_blob", payload)
+
+    def load_feedback_map(self) -> dict:
+        """
+        Return {fingerprint: signal} for every stored feedback entry.
+
+        Reads observatory:feedback_blob (a single JSON dict) instead of
+        scanning feedback:* keys, because Vercel KV's KEYS pattern endpoint
+        doesn't return matches reliably. The feedback API in
+        api/observatory-feedback.py writes to this same blob.
+        """
+        if self.mode == "local":
+            out: dict = {}
+            cursor = self.db.execute(
+                "SELECT fingerprint, signal FROM feedback ORDER BY timestamp DESC"
+            )
+            for fp, signal in cursor.fetchall():
+                out.setdefault(fp, signal)
+            return out
+        else:
+            resp = self.kv_session.get(f"{self.kv_url}/get/observatory:feedback_blob")
+            if resp.status_code != 200:
+                return {}
+            data = resp.json().get("result")
+            if not data:
+                return {}
+            try:
+                blob = json.loads(data)
+                return blob if isinstance(blob, dict) else {}
+            except Exception as e:
+                logger.warning(f"feedback blob parse failed: {e}")
+                return {}
+
     def store_feedback(self, fingerprint: str, signal: str):
         """Store user feedback on a result (integrated / useful_later / noise)."""
         now = datetime.now(timezone.utc).isoformat()

@@ -1,7 +1,8 @@
 """
 Observatory pipeline orchestrator.
 
-Runs: ingest -> dedup -> TF-IDF rank -> synthesize candidate cards -> render.
+Runs: ingest -> dedup -> TF-IDF rank -> synthesize candidate cards ->
+merge into accumulator blob -> render.
 
 Design note: the cron does NOT invoke an LLM. We tried LLM-in-the-loop
 adjudication (Gemini 2.5 Flash, then Flash-Lite) and burned through
@@ -12,25 +13,31 @@ similarity against the axes.yaml claim seeds, present the top-N as
 candidates. No LLM, no network calls past ingest, no quota dependency.
 
 The LLM adjudicator remains in adjudicate.py and can be invoked
-manually via --adjudicate for deep-evaluating specific items; it's just
-not on the standing-monitor critical path.
+manually for deep-evaluating specific items; it's just not on the
+standing-monitor critical path.
+
+Accumulator: candidates persist across runs in a single KV blob
+(observatory:candidates_blob). Each run merges its new top-N into the
+blob, dedupes by fingerprint, drops items older than MAX_BLOB_AGE_DAYS,
+and trims to MAX_BLOB_TOTAL by relevance score. The page renders the
+merged blob (with user-flagged "noise" items hidden), so a one-shot
+backfill plus a weekly cron together produce a steady, curated digest.
 
 Usage:
-    python pipeline.py --local          # Local dev with SQLite
-    python pipeline.py --production     # Production with Vercel KV
-    python pipeline.py --backfill       # One-time backfill sweep
+    python pipeline.py --local                       # SQLite dev mode
+    python pipeline.py --production                  # Vercel KV
+    python pipeline.py --backfill --production       # one-shot backfill
 """
 
 import argparse
 import json
 import logging
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from ingest import IngestManager
 from dedup import DedupStore
 from embed import EmbeddingFilter
-from adjudicate import Adjudicator
 from render import ObservatoryRenderer
 
 logging.basicConfig(
@@ -39,12 +46,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger("observatory")
 
-# How many candidate cards to render per run. Top-N by TF-IDF score
-# across all (tier-floored) items. The first HIGH_CONFIDENCE_CUTOFF
-# of those are shown in the "clears" section, the rest in "flagged
-# for review" — a soft prioritization, not an LLM verdict.
+# Weekly run: how many new candidates the pipeline synthesizes per run.
 CANDIDATE_TOP_N = 15
-HIGH_CONFIDENCE_CUTOFF = 5
+
+# Backfill run: how many candidates to keep from the full ~5-month window.
+BACKFILL_TOP_N = 60
+
+# Accumulator (persisted in KV across runs)
+MAX_BLOB_TOTAL = 60        # total cards kept after merge + prune
+MAX_BLOB_AGE_DAYS = 180    # drop items older than this from the blob
+
+# Top this many items in the final blob get the "high" confidence label
+# (shown in the renderer's "Clears the bar" section). The rest go to
+# "flagged for review". Cosmetic prioritization only.
+HIGH_CONFIDENCE_CUTOFF = 10
 
 # Tier-1 (named-scholar) items must clear this TF-IDF score before
 # being eligible for ranking. Many tracked scholars (Nussbaum, etc.)
@@ -53,93 +68,117 @@ HIGH_CONFIDENCE_CUTOFF = 5
 TIER1_RELEVANCE_FLOOR = 0.02
 
 
-def run_pipeline(mode: str = "local"):
-    """Execute the full pipeline."""
-    logger.info(f"Starting observatory pipeline in {mode} mode")
+def run_pipeline(
+    mode: str = "local",
+    *,
+    lookback_days: int = 8,
+    top_n: int = CANDIDATE_TOP_N,
+    skip_dedup: bool = False,
+    label: str = "weekly",
+):
+    """
+    Execute the pipeline.
+
+    `lookback_days` and `top_n` are tuned per call-site:
+      weekly:   8 days, top 15 new candidates
+      backfill: 150 days, top 60 new candidates
+
+    `skip_dedup=True` (used by backfill) ignores prior "seen" state so
+    every item in the lookback window is scored fresh. Items still get
+    marked seen at the end so the next weekly run doesn't re-process
+    them.
+    """
+    logger.info(f"Starting observatory pipeline ({label}) in {mode} mode")
     start_time = datetime.now(timezone.utc)
 
-    # GEMINI_API_KEY is no longer required for the cron path — left in
-    # the environment so the manual --adjudicate mode (which does call
-    # Gemini) still works without code changes.
     dedup = DedupStore(mode=mode)
     ingester = IngestManager(config_path="config/sources.yaml")
     relevance = EmbeddingFilter(axes_path="config/axes.yaml")
     renderer = ObservatoryRenderer(template_path="templates/observatory.html")
 
     # Step 1: Ingest
-    # 8-day lookback covers the weekly cron cadence with a day of slack
-    # for rescheduled runs and feed-publication lag.
-    logger.info("Step 1: Ingesting from all sources")
-    raw_items = ingester.fetch_all(lookback_days=8)
+    logger.info(f"Step 1: Ingesting (lookback={lookback_days}d)")
+    raw_items = ingester.fetch_all(lookback_days=lookback_days)
     logger.info(f"  Fetched {len(raw_items)} raw items")
 
-    # Step 2: Dedup
-    logger.info("Step 2: Deduplication")
-    new_items = dedup.filter_new(raw_items)
-    logger.info(f"  {len(new_items)} new items after dedup ({len(raw_items) - len(new_items)} seen before)")
-
-    if not new_items:
-        logger.info("No new items. Regenerating page with existing data.")
-        existing = dedup.get_recent_results(days=30)
-        renderer.render(existing, output_path=_output_path(mode))
-        return
-
-    # Step 3: Score all items with TF-IDF, apply tier-1 floor.
-    tier1_all = [item for item in new_items if item.get("tier") == 1]
-    other_items = [item for item in new_items if item.get("tier") != 1]
-
-    logger.info(f"Step 3: TF-IDF relevance filter on {len(new_items)} items")
-    relevance.score_items(other_items)
-    relevance.score_items(tier1_all)
-    relevance.log_score_distribution(other_items + tier1_all)
-
-    tier1_items = [
-        it for it in tier1_all
-        if it.get("relevance_score", 0.0) >= TIER1_RELEVANCE_FLOOR
-    ]
-    tier1_dropped = len(tier1_all) - len(tier1_items)
-    if tier1_dropped:
-        logger.info(
-            f"  Dropped {tier1_dropped} of {len(tier1_all)} tier-1 items "
-            f"below relevance floor {TIER1_RELEVANCE_FLOOR}"
-        )
-
-    # Step 4: Pick top-N candidates by score and synthesize result dicts.
-    # No LLM call here — the cron is intentionally LLM-free. See the
-    # module docstring for the rationale.
-    pool = tier1_items + other_items
-    candidates = EmbeddingFilter.top_k(pool, CANDIDATE_TOP_N)
-    if candidates:
-        top_score = candidates[0].get("relevance_score", 0.0)
-        bottom_score = candidates[-1].get("relevance_score", 0.0)
-        logger.info(
-            f"Step 4: Synthesizing {len(candidates)} candidate cards "
-            f"(score range {bottom_score:.3f}-{top_score:.3f})"
-        )
+    # Step 2: Dedup (skipped for backfill)
+    if skip_dedup:
+        new_items = raw_items
+        logger.info("Step 2: Dedup skipped (backfill mode)")
     else:
-        logger.info("Step 4: No candidates after relevance filter")
-    results = _synthesize_candidate_results(candidates)
+        new_items = dedup.filter_new(raw_items)
+        logger.info(
+            f"Step 2: {len(new_items)} new items after dedup "
+            f"({len(raw_items) - len(new_items)} seen before)"
+        )
 
-    high = [r for r in results if r.get("confidence") == "high"]
-    flagged = [r for r in results if r.get("confidence") == "medium"]
-    logger.info(f"  {len(high)} top picks, {len(flagged)} flagged for review")
+    # Step 3: Score with TF-IDF, apply tier-1 floor
+    new_results: list[dict] = []
+    if new_items:
+        tier1_all = [it for it in new_items if it.get("tier") == 1]
+        other_items = [it for it in new_items if it.get("tier") != 1]
 
-    # Step 5: Store results + mark items seen
-    # We still keep the per-result records in KV so a future
-    # accumulator/archive view can read them; for the current page we
-    # just render this run's `results` directly because the existing
-    # KV KEYS-pattern scan in _kv_get_recent_results doesn't reliably
-    # return matches against Vercel KV.
-    logger.info("Step 5: Storing results")
+        logger.info(f"Step 3: TF-IDF relevance filter on {len(new_items)} items")
+        relevance.score_items(other_items)
+        relevance.score_items(tier1_all)
+        relevance.log_score_distribution(other_items + tier1_all)
+
+        tier1_items = [
+            it for it in tier1_all
+            if it.get("relevance_score", 0.0) >= TIER1_RELEVANCE_FLOOR
+        ]
+        tier1_dropped = len(tier1_all) - len(tier1_items)
+        if tier1_dropped:
+            logger.info(
+                f"  Dropped {tier1_dropped} of {len(tier1_all)} tier-1 items "
+                f"below relevance floor {TIER1_RELEVANCE_FLOOR}"
+            )
+
+        # Step 4: Synthesize new candidate result dicts (no LLM)
+        pool = tier1_items + other_items
+        candidates = EmbeddingFilter.top_k(pool, top_n)
+        if candidates:
+            logger.info(
+                f"Step 4: Synthesizing {len(candidates)} new candidate cards "
+                f"(score range "
+                f"{candidates[-1].get('relevance_score', 0.0):.3f}-"
+                f"{candidates[0].get('relevance_score', 0.0):.3f})"
+            )
+        new_results = _synthesize_candidate_results(candidates)
+    else:
+        logger.info("Step 3/4: No new items to score; will refresh page from existing blob")
+
+    # Step 5: Merge into the accumulator blob, prune, re-rank
+    existing_blob = dedup.load_candidates_blob()
+    logger.info(f"Step 5: Loaded {len(existing_blob)} existing items from blob")
+    merged = _merge_and_rerank(
+        existing_blob, new_results,
+        max_total=MAX_BLOB_TOTAL,
+        max_age_days=MAX_BLOB_AGE_DAYS,
+    )
+    logger.info(f"  Blob after merge: {len(merged)} items")
+    dedup.save_candidates_blob(merged)
+
+    # Apply user feedback: hide "noise"; the blob still contains them so
+    # they don't re-surface, but they don't render.
+    feedback = dedup.load_feedback_map()
+    visible = [
+        r for r in merged
+        if feedback.get(r.get("fingerprint", "")) != "noise"
+    ]
+    if len(visible) < len(merged):
+        logger.info(f"  Hiding {len(merged) - len(visible)} items flagged 'noise'")
+
+    # Step 6: Persist seen state and per-result records (latter is legacy)
     dedup.mark_seen(raw_items)
-    dedup.store_results(results)
+    if new_results:
+        dedup.store_results(new_results)
 
-    # Step 6: Render
-    logger.info("Step 6: Rendering observatory page")
+    # Step 7: Render
+    logger.info("Step 7: Rendering observatory page")
     output_path = _output_path(mode)
-    renderer.render(results, output_path=output_path)
+    renderer.render(visible, output_path=output_path, feedback=feedback)
 
-    # In production, push rendered HTML to KV for the serve function
     if mode == "production":
         logger.info("Pushing rendered HTML to KV")
         with open(output_path) as f:
@@ -151,54 +190,74 @@ def run_pipeline(mode: str = "local"):
 
 
 def run_backfill(mode: str = "local"):
-    """One-time backfill sweep for the last 2-3 months."""
-    logger.info("Starting backfill sweep")
-
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise EnvironmentError("GEMINI_API_KEY not set")
-
-    ingester = IngestManager(config_path="config/sources.yaml")
-    adjudicator = Adjudicator(api_key=api_key)
-    renderer = ObservatoryRenderer(template_path="templates/observatory.html")
-
-    # Fetch with extended lookback
-    logger.info("Fetching with 90-day lookback")
-    raw_items = ingester.fetch_all(lookback_days=90)
-    logger.info(f"  Fetched {len(raw_items)} items from last 90 days")
-
-    # No dedup for backfill; evaluate everything
-    logger.info(f"Adjudicating all {len(raw_items)} items (backfill mode)")
-    results = adjudicator.evaluate(raw_items)
-
-    clears = [r for r in results if r["clears_bar"]]
-    logger.info(f"  {len(clears)} items clear the bar")
-
-    # Render backfill report
-    renderer.render(
-        results,
-        output_path=_output_path(mode, suffix="_backfill"),
-        title="Observatory Backfill: January - May 2026"
+    """One-shot historical sweep: 150-day lookback, top 60 candidates."""
+    run_pipeline(
+        mode,
+        lookback_days=150,
+        top_n=BACKFILL_TOP_N,
+        skip_dedup=True,
+        label="backfill",
     )
-    logger.info("Backfill complete")
+
+
+def _merge_and_rerank(
+    existing: list[dict],
+    new: list[dict],
+    *,
+    max_total: int,
+    max_age_days: int,
+) -> list[dict]:
+    """
+    Merge new candidate results into the existing blob.
+
+    - Dedupe by fingerprint (new entries overwrite existing).
+    - Drop items whose item.date is older than max_age_days.
+    - Sort by item.relevance_score (desc).
+    - Cap to max_total.
+    - Reassign confidence based on final rank (top HIGH_CONFIDENCE_CUTOFF
+      get "high", rest "medium").
+    """
+    by_fp: dict[str, dict] = {}
+    for c in existing:
+        fp = c.get("fingerprint", "")
+        if fp:
+            by_fp[fp] = c
+    for c in new:
+        fp = c.get("fingerprint", "")
+        if fp:
+            by_fp[fp] = c
+
+    cutoff_iso = (
+        datetime.now(timezone.utc) - timedelta(days=max_age_days)
+    ).isoformat()
+
+    def _date_ok(card: dict) -> bool:
+        d = (card.get("item") or {}).get("date") or ""
+        # Missing date = keep (some sources don't expose pub date)
+        return (not d) or (d >= cutoff_iso[:10]) or (d >= cutoff_iso)
+
+    pruned = [c for c in by_fp.values() if _date_ok(c)]
+    pruned.sort(
+        key=lambda c: (c.get("item") or {}).get("relevance_score", 0.0),
+        reverse=True,
+    )
+    pruned = pruned[:max_total]
+
+    for rank, card in enumerate(pruned):
+        card["confidence"] = "high" if rank < HIGH_CONFIDENCE_CUTOFF else "medium"
+
+    return pruned
 
 
 def _synthesize_candidate_results(items: list[dict]) -> list[dict]:
     """
     Turn TF-IDF scored items into result dicts that match the schema the
-    renderer expects from LLM adjudication. We populate fields from the
-    relevance signals instead of from an LLM verdict.
-
-    The first HIGH_CONFIDENCE_CUTOFF items by score are flagged
-    confidence='high' so they land in the renderer's "clears" section;
-    the rest get 'medium' and land in "flagged for review". That's
-    purely cosmetic prioritization — there is no LLM verdict here.
+    renderer expects from LLM adjudication. Confidence is set to
+    "medium" here; _merge_and_rerank reassigns based on the final
+    global rank in the merged blob.
     """
-    ranked = sorted(
-        items, key=lambda it: it.get("relevance_score", 0.0), reverse=True
-    )
     results = []
-    for rank, item in enumerate(ranked):
+    for item in items:
         abstract = item.get("abstract", "")
         summary = abstract[:280] + ("…" if len(abstract) > 280 else "")
         tier = item.get("tier", 0)
@@ -215,7 +274,7 @@ def _synthesize_candidate_results(items: list[dict]) -> list[dict]:
 
         results.append({
             "clears_bar": True,
-            "confidence": "high" if rank < HIGH_CONFIDENCE_CUTOFF else "medium",
+            "confidence": "medium",
             "primary_claim": claim,
             "secondary_claims": secondary,
             "relationship": None,

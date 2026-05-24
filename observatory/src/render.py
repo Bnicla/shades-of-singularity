@@ -78,10 +78,17 @@ class ObservatoryRenderer:
         self,
         results: list[dict],
         output_path: str,
-        title: Optional[str] = None
+        title: Optional[str] = None,
+        feedback: Optional[dict] = None,
     ):
-        """Render the observatory page from adjudication results."""
+        """Render the observatory page from adjudication results.
+
+        `feedback` maps fingerprint -> signal ('integrated' | 'useful_later' |
+        'noise'). The pipeline already filters out 'noise' before calling
+        this; remaining signals are passed through to render badges.
+        """
         now = datetime.now(timezone.utc)
+        feedback = feedback or {}
 
         # Separate high-confidence (auto-filed) from medium (flagged)
         clears = [r for r in results if r.get("clears_bar") and r.get("confidence") == "high"]
@@ -105,6 +112,7 @@ class ObservatoryRenderer:
             "clears_count": len(clears),
             "flagged_count": len(flagged),
             "total_scanned": len(results),
+            "feedback": feedback,
             "archive": archive,
             "claim_essays": CLAIM_ESSAYS,
             "claim_axes": CLAIM_AXES,
@@ -380,6 +388,25 @@ header .meta {{
     color: var(--accent);
 }}
 
+.feedback-btn.actioned {{
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
+}}
+
+.feedback-status {{
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    color: var(--accent);
+    align-self: center;
+}}
+
+.feedback-status[data-signal="noise"] {{
+    color: var(--text-secondary);
+    opacity: 0.6;
+}}
+
 .empty {{
     font-style: italic;
     color: var(--text-secondary);
@@ -460,6 +487,44 @@ footer {{
     Observatory | Shades of Singularity<br>
     Automated research monitor. Not linked from the public site.
 </footer>
+
+<script>
+async function sendFeedback(btn, fp, signal) {{
+    const card = btn.closest('.card');
+    const buttons = card ? card.querySelectorAll('.feedback-btn') : [btn];
+    buttons.forEach(b => b.classList.add('actioned'));
+    try {{
+        const resp = await fetch('/api/observatory-feedback', {{
+            method: 'POST',
+            headers: {{'Content-Type': 'application/json'}},
+            body: JSON.stringify({{fingerprint: fp, signal: signal}}),
+        }});
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const labels = {{
+            integrated: '✓ Integrated',
+            useful_later: '✓ Useful later',
+            noise: '✓ Marked noise',
+        }};
+        const wrap = btn.parentElement;
+        let badge = wrap.querySelector('.feedback-status');
+        if (!badge) {{
+            badge = document.createElement('span');
+            badge.className = 'feedback-status';
+            wrap.appendChild(badge);
+        }}
+        badge.dataset.signal = signal;
+        badge.textContent = labels[signal] || ('✓ ' + signal);
+        if (signal === 'noise' && card) {{
+            // Visually fade out the card; will be hidden entirely on next render.
+            card.style.opacity = '0.35';
+        }}
+    }} catch (err) {{
+        console.error('feedback failed', err);
+        buttons.forEach(b => b.classList.remove('actioned'));
+        alert('Could not save feedback: ' + err.message);
+    }}
+}}
+</script>
 </body>
 </html>"""
 
@@ -497,6 +562,19 @@ footer {{
 
         fp = result.get("fingerprint", "").replace('"', "&quot;")
 
+        # If the user has previously flagged this card, render a status
+        # badge inline with the feedback buttons.
+        prior_signal = (ctx.get("feedback") or {}).get(result.get("fingerprint", ""))
+        signal_label = {
+            "integrated": "✓ Integrated",
+            "useful_later": "✓ Useful later",
+            "noise": "✓ Marked noise",
+        }.get(prior_signal, "")
+        signal_badge = (
+            f'<span class="feedback-status" data-signal="{prior_signal}">{signal_label}</span>'
+            if signal_label else ""
+        )
+
         return f"""
 <div class="card" data-fingerprint="{fp}">
     <div class="card-header">
@@ -508,8 +586,9 @@ footer {{
     <div class="card-summary">{result.get('summary', '')}</div>
     {integration_html}
     <div class="card-feedback">
-        <button class="feedback-btn" onclick="sendFeedback('{fp}', 'integrated')">Integrated</button>
-        <button class="feedback-btn" onclick="sendFeedback('{fp}', 'useful_later')">Useful later</button>
-        <button class="feedback-btn" onclick="sendFeedback('{fp}', 'noise')">Noise</button>
+        <button class="feedback-btn" onclick="sendFeedback(this, '{fp}', 'integrated')">Integrated</button>
+        <button class="feedback-btn" onclick="sendFeedback(this, '{fp}', 'useful_later')">Useful later</button>
+        <button class="feedback-btn" onclick="sendFeedback(this, '{fp}', 'noise')">Noise</button>
+        {signal_badge}
     </div>
 </div>"""
