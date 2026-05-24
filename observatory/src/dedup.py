@@ -168,36 +168,57 @@ class DedupStore:
         else:
             self._kv_set("observatory:candidates_blob", payload)
 
-    def load_feedback_map(self) -> dict:
-        """
-        Return {fingerprint: signal} for every stored feedback entry.
-
-        Reads observatory:feedback_blob (a single JSON dict) instead of
-        scanning feedback:* keys, because Vercel KV's KEYS pattern endpoint
-        doesn't return matches reliably. The feedback API in
-        api/observatory-feedback.py writes to this same blob.
+    def load_filed_blob(self) -> list[dict]:
+        """Load filed cards. Each entry is a card dict with a `signal`
+        field ('integrated' | 'useful_later' | 'noise') stamped in.
+        Filed cards don't age out — they're the user's curated history.
         """
         if self.mode == "local":
-            out: dict = {}
-            cursor = self.db.execute(
-                "SELECT fingerprint, signal FROM feedback ORDER BY timestamp DESC"
-            )
-            for fp, signal in cursor.fetchall():
-                out.setdefault(fp, signal)
-            return out
+            path = "output/filed_blob.json"
+            if os.path.exists(path):
+                try:
+                    with open(path) as f:
+                        return json.load(f)
+                except Exception as e:
+                    logger.warning(f"filed blob load failed: {e}")
+            return []
         else:
-            resp = self.kv_session.get(f"{self.kv_url}/get/observatory:feedback_blob")
+            resp = self.kv_session.get(f"{self.kv_url}/get/observatory:filed_blob")
             if resp.status_code != 200:
-                return {}
+                return []
             data = resp.json().get("result")
             if not data:
-                return {}
+                return []
             try:
                 blob = json.loads(data)
-                return blob if isinstance(blob, dict) else {}
+                return blob if isinstance(blob, list) else []
             except Exception as e:
-                logger.warning(f"feedback blob parse failed: {e}")
-                return {}
+                logger.warning(f"filed blob parse failed: {e}")
+                return []
+
+    def save_filed_blob(self, filed: list[dict]) -> None:
+        """Persist the filed cards list."""
+        payload = json.dumps(filed)
+        if self.mode == "local":
+            os.makedirs("output", exist_ok=True)
+            with open("output/filed_blob.json", "w") as f:
+                f.write(payload)
+        else:
+            self._kv_set("observatory:filed_blob", payload)
+
+    def load_feedback_map(self) -> dict:
+        """Return {fingerprint: signal} derived from filed_blob.
+
+        Kept for callers that just need a quick "has this fp been
+        filed?" lookup without loading the whole card list.
+        """
+        out: dict = {}
+        for card in self.load_filed_blob():
+            fp = card.get("fingerprint", "")
+            signal = card.get("signal")
+            if fp and signal:
+                out[fp] = signal
+        return out
 
     def store_feedback(self, fingerprint: str, signal: str):
         """Store user feedback on a result (integrated / useful_later / noise)."""

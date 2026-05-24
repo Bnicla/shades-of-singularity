@@ -1,15 +1,29 @@
 """
-Vercel Serverless Function: receive observatory feedback.
+Vercel Serverless Function: file / reclassify / unfile observatory cards.
 
 POST /api/observatory-feedback
-Body: { "fingerprint": str, "signal": "integrated"|"useful_later"|"noise" }
+Body: { "fingerprint": str, "signal": "integrated"|"useful_later"|"noise"|"pending" }
 
-Persists feedback in a single Vercel KV blob keyed `observatory:feedback_blob`,
-shaped as { fingerprint -> { signal, timestamp } }. The pipeline reads this
-blob during render to hide 'noise' items and badge 'integrated' / 'useful_later'.
+State model
+-----------
+There are two KV blobs:
+  - observatory:candidates_blob — pending cards from the pipeline
+  - observatory:filed_blob       — cards the user has decided on; each
+                                   carries a `signal` field
 
-Single-blob design is intentional — Vercel KV's KEYS pattern endpoint doesn't
-return matches reliably, so we don't store per-fingerprint keys.
+Transitions
+-----------
+- "file"      : signal in {integrated, useful_later, noise}, card is
+                currently in candidates_blob → move to filed_blob, stamp
+                signal + timestamp, remove from candidates.
+- "reclassify": signal in {integrated, useful_later, noise}, card is
+                already in filed_blob → update its signal in place.
+- "unfile"    : signal == "pending", card is in filed_blob → move back
+                to candidates_blob, drop the signal.
+
+Single-blob design (one JSON dict/list per blob) is intentional —
+Vercel KV's KEYS pattern endpoint doesn't return matches reliably,
+so we don't store per-fingerprint keys.
 
 Environment variables required:
   KV_REST_API_URL
@@ -27,8 +41,11 @@ import requests
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("observatory.feedback")
 
-VALID_SIGNALS = {"integrated", "useful_later", "noise"}
-BLOB_KEY = "observatory:feedback_blob"
+FILE_SIGNALS = {"integrated", "useful_later", "noise"}
+ALL_SIGNALS = FILE_SIGNALS | {"pending"}  # "pending" means "send back to candidates"
+
+CANDIDATES_KEY = "observatory:candidates_blob"
+FILED_KEY = "observatory:filed_blob"
 
 
 class handler(BaseHTTPRequestHandler):
@@ -45,8 +62,8 @@ class handler(BaseHTTPRequestHandler):
 
         if not fingerprint:
             return self._json(400, {"error": "fingerprint required"})
-        if signal not in VALID_SIGNALS:
-            return self._json(400, {"error": f"signal must be one of {sorted(VALID_SIGNALS)}"})
+        if signal not in ALL_SIGNALS:
+            return self._json(400, {"error": f"signal must be one of {sorted(ALL_SIGNALS)}"})
 
         kv_url = os.environ.get("KV_REST_API_URL")
         kv_token = os.environ.get("KV_REST_API_TOKEN")
@@ -56,45 +73,96 @@ class handler(BaseHTTPRequestHandler):
 
         auth = {"Authorization": f"Bearer {kv_token}"}
 
-        # Read-modify-write the single feedback blob. Not concurrency-safe
-        # but feedback is human-paced (clicks per second, not per ms).
         try:
-            resp = requests.get(f"{kv_url}/get/{BLOB_KEY}", headers=auth, timeout=8)
-            blob: dict = {}
-            if resp.status_code == 200:
-                data = resp.json().get("result")
-                if data:
-                    try:
-                        parsed = json.loads(data)
-                        if isinstance(parsed, dict):
-                            blob = parsed
-                    except Exception as e:
-                        logger.warning(f"feedback blob unparseable, overwriting: {e}")
+            candidates = self._load_list(kv_url, auth, CANDIDATES_KEY)
+            filed = self._load_list(kv_url, auth, FILED_KEY)
 
-            blob[fingerprint] = {
-                "signal": signal,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-            }
-            payload = json.dumps(blob)
+            now = datetime.now(timezone.utc).isoformat()
+            action = ""
 
-            put = requests.post(
-                f"{kv_url}/set/{BLOB_KEY}",
-                headers=auth,
-                data=payload,
-                timeout=8,
+            # Look the card up in both blobs.
+            cand_idx = next(
+                (i for i, c in enumerate(candidates) if c.get("fingerprint") == fingerprint),
+                None,
             )
-            if put.status_code >= 400:
-                logger.error(f"KV set failed: {put.status_code} {put.text[:200]}")
-                return self._json(502, {"error": "could not persist feedback"})
+            filed_idx = next(
+                (i for i, c in enumerate(filed) if c.get("fingerprint") == fingerprint),
+                None,
+            )
+
+            if signal == "pending":
+                # Unfile: move filed → candidates.
+                if filed_idx is None:
+                    return self._json(404, {"error": "card not in filed_blob"})
+                card = filed.pop(filed_idx)
+                card.pop("signal", None)
+                card.pop("filed_at", None)
+                # Avoid duplicates if it's somehow already pending.
+                if cand_idx is None:
+                    candidates.append(card)
+                action = "unfile"
+            else:
+                # File (or reclassify if already filed).
+                if filed_idx is not None:
+                    filed[filed_idx]["signal"] = signal
+                    filed[filed_idx]["filed_at"] = now
+                    action = "reclassify"
+                elif cand_idx is not None:
+                    card = candidates.pop(cand_idx)
+                    card["signal"] = signal
+                    card["filed_at"] = now
+                    filed.append(card)
+                    action = "file"
+                else:
+                    return self._json(
+                        404,
+                        {"error": "card not found in candidates or filed"},
+                    )
+
+            self._save_list(kv_url, auth, CANDIDATES_KEY, candidates)
+            self._save_list(kv_url, auth, FILED_KEY, filed)
 
         except requests.RequestException as e:
             logger.error(f"KV request failed: {e}")
             return self._json(502, {"error": "KV request failed"})
 
-        return self._json(200, {"ok": True, "fingerprint": fingerprint, "signal": signal})
+        return self._json(200, {
+            "ok": True,
+            "action": action,
+            "fingerprint": fingerprint,
+            "signal": signal,
+        })
+
+    # --------------------------------------------------------- helpers
+
+    @staticmethod
+    def _load_list(kv_url: str, auth: dict, key: str) -> list:
+        resp = requests.get(f"{kv_url}/get/{key}", headers=auth, timeout=8)
+        if resp.status_code != 200:
+            return []
+        data = resp.json().get("result")
+        if not data:
+            return []
+        try:
+            parsed = json.loads(data)
+            return parsed if isinstance(parsed, list) else []
+        except Exception:
+            return []
+
+    @staticmethod
+    def _save_list(kv_url: str, auth: dict, key: str, payload: list) -> None:
+        put = requests.post(
+            f"{kv_url}/set/{key}",
+            headers=auth,
+            data=json.dumps(payload),
+            timeout=8,
+        )
+        if put.status_code >= 400:
+            raise requests.RequestException(
+                f"KV set {key} failed: {put.status_code} {put.text[:200]}"
+            )
 
     def do_OPTIONS(self):
-        # CORS preflight (same-origin in practice, but defensive)
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")

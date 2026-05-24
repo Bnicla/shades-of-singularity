@@ -80,29 +80,45 @@ class ObservatoryRenderer:
         output_path: str,
         title: Optional[str] = None,
         feedback: Optional[dict] = None,
+        filed: Optional[list] = None,
     ):
-        """Render the observatory page from adjudication results.
+        """Render the observatory page.
 
-        `feedback` maps fingerprint -> signal ('integrated' | 'useful_later' |
-        'noise'). The pipeline already filters out 'noise' before calling
-        this; remaining signals are passed through to render badges.
+        `results` is the pending-tab content (cards from candidates_blob).
+        `filed` is the user-filed content (cards from filed_blob, each with
+        a `signal` field). Cards split into 4 tabs: Pending / Integrated /
+        Useful later / Noise.
+
+        `feedback` is kept for backward compatibility and ignored if
+        `filed` is provided.
         """
         now = datetime.now(timezone.utc)
-        feedback = feedback or {}
+        filed = filed or []
+        # Backward-compat shim: synthesize feedback map from filed for
+        # any caller still passing it.
+        feedback = feedback or {
+            c.get("fingerprint", ""): c.get("signal")
+            for c in filed
+            if c.get("fingerprint") and c.get("signal")
+        }
 
-        # Separate high-confidence (auto-filed) from medium (flagged)
+        # Pending = results passed in (already excludes filed at pipeline).
+        # Sub-split into "clears" (top) and "flagged" (rest) for visual
+        # priority inside the Pending tab.
         clears = [r for r in results if r.get("clears_bar") and r.get("confidence") == "high"]
         flagged = [r for r in results if r.get("clears_bar") and r.get("confidence") == "medium"]
-        # Low confidence / doesn't clear: not rendered
 
-        # Group by essay axis
+        # Filed buckets
+        integrated = [c for c in filed if c.get("signal") == "integrated"]
+        useful_later = [c for c in filed if c.get("signal") == "useful_later"]
+        noise = [c for c in filed if c.get("signal") == "noise"]
+
+        # Group pending by essay axis (unchanged)
         clears_by_axis = self._group_by_axis(clears)
         flagged_by_axis = self._group_by_axis(flagged)
 
-        # Build archive (group by month)
         archive = self._build_archive(results)
 
-        # Prepare template context
         context = {
             "title": title or "Observatory",
             "generated_at": now.strftime("%B %d, %Y at %H:%M UTC"),
@@ -111,7 +127,14 @@ class ObservatoryRenderer:
             "flagged_by_axis": flagged_by_axis,
             "clears_count": len(clears),
             "flagged_count": len(flagged),
-            "total_scanned": len(results),
+            "pending_count": len(clears) + len(flagged),
+            "integrated_cards": integrated,
+            "useful_later_cards": useful_later,
+            "noise_cards": noise,
+            "integrated_count": len(integrated),
+            "useful_later_count": len(useful_later),
+            "noise_count": len(noise),
+            "total_scanned": len(results) + len(filed),
             "feedback": feedback,
             "archive": archive,
             "claim_essays": CLAIM_ESSAYS,
@@ -174,28 +197,75 @@ class ObservatoryRenderer:
 
     def _render_inline(self, ctx: dict) -> str:
         """Fallback renderer: generates HTML without Jinja2 template."""
-        cards_html = ""
-
-        # Clears section
+        # --- Pending panel ---
+        pending_html = ""
         if ctx["clears_count"] > 0:
-            cards_html += '<section class="section"><h2>Clears the bar</h2>'
+            pending_html += '<section class="section"><h2>Clears the bar</h2>'
             for axis, items in ctx["clears_by_axis"].items():
-                cards_html += f'<h3 class="axis-header">{axis}</h3>'
+                pending_html += f'<h3 class="axis-header">{axis}</h3>'
                 for r in items:
-                    cards_html += self._render_card(r, ctx)
-            cards_html += "</section>"
-
-        # Flagged section
+                    pending_html += self._render_card(r, ctx)
+            pending_html += "</section>"
         if ctx["flagged_count"] > 0:
-            cards_html += '<section class="section"><h2>Flagged for review</h2>'
+            pending_html += '<section class="section"><h2>Flagged for review</h2>'
             for axis, items in ctx["flagged_by_axis"].items():
-                cards_html += f'<h3 class="axis-header">{axis}</h3>'
+                pending_html += f'<h3 class="axis-header">{axis}</h3>'
                 for r in items:
-                    cards_html += self._render_card(r, ctx)
-            cards_html += "</section>"
-
+                    pending_html += self._render_card(r, ctx)
+            pending_html += "</section>"
         if ctx["clears_count"] == 0 and ctx["flagged_count"] == 0:
-            cards_html = '<section class="section"><p class="empty">No items cleared the bar in this period.</p></section>'
+            pending_html = '<section class="section"><p class="empty">Nothing pending right now. Filed items live in the other tabs.</p></section>'
+
+        # --- Filed panels (Integrated / Useful later / Noise) ---
+        def _render_filed_list(cards: list, empty_msg: str) -> str:
+            if not cards:
+                return f'<section class="section"><p class="empty">{empty_msg}</p></section>'
+            # Sort newest-filed first if filed_at exists, else by score
+            sorted_cards = sorted(
+                cards,
+                key=lambda c: c.get("filed_at") or c.get("item", {}).get("date", ""),
+                reverse=True,
+            )
+            html = '<section class="section">'
+            for c in sorted_cards:
+                html += self._render_card(c, ctx)
+            html += "</section>"
+            return html
+
+        integrated_html = _render_filed_list(
+            ctx["integrated_cards"],
+            "Nothing here yet. Click ‘Integrated’ on a pending card to file it here.",
+        )
+        useful_later_html = _render_filed_list(
+            ctx["useful_later_cards"],
+            "Nothing here yet. ‘Useful later’ flags items to revisit without committing to integration.",
+        )
+        noise_html = _render_filed_list(
+            ctx["noise_cards"],
+            "Nothing here yet. Items you mark ‘Noise’ land here so you can audit your own filtering.",
+        )
+
+        # Tabs nav
+        tabs_html = f"""
+<nav class="tabs" role="tablist">
+  <button class="tab" data-tab="pending"      role="tab" aria-selected="true">Pending <span class="tab-count">{ctx['pending_count']}</span></button>
+  <button class="tab" data-tab="integrated"   role="tab" aria-selected="false">Integrated <span class="tab-count">{ctx['integrated_count']}</span></button>
+  <button class="tab" data-tab="useful_later" role="tab" aria-selected="false">Useful later <span class="tab-count">{ctx['useful_later_count']}</span></button>
+  <button class="tab" data-tab="noise"        role="tab" aria-selected="false">Noise <span class="tab-count">{ctx['noise_count']}</span></button>
+</nav>
+<div class="search-bar">
+  <input type="search" id="card-search" placeholder="Filter cards in the current tab by title, source, or claim…" autocomplete="off">
+</div>
+"""
+
+        panels_html = f"""
+<section class="tab-panel" data-panel="pending">{pending_html}</section>
+<section class="tab-panel" data-panel="integrated" hidden>{integrated_html}</section>
+<section class="tab-panel" data-panel="useful_later" hidden>{useful_later_html}</section>
+<section class="tab-panel" data-panel="noise" hidden>{noise_html}</section>
+"""
+
+        cards_html = tabs_html + panels_html
 
         return f"""<!DOCTYPE html>
 <html lang="en">
@@ -470,6 +540,95 @@ header .meta {{
     opacity: 0.6;
 }}
 
+/* Indicate which signal a filed card currently carries */
+.feedback-btn.active {{
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+    font-weight: 600;
+}}
+
+/* Tabs */
+.tabs {{
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}}
+
+.tab {{
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    margin-bottom: -1px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+}}
+
+.tab:hover {{
+    color: var(--text);
+}}
+
+.tab[aria-selected="true"] {{
+    color: var(--text);
+    border-bottom-color: var(--accent);
+}}
+
+.tab-count {{
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.45rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}}
+
+.tab[aria-selected="true"] .tab-count {{
+    background: var(--accent);
+    color: var(--bg);
+}}
+
+.tab-panel[hidden] {{ display: none; }}
+
+/* Search box */
+.search-bar {{
+    margin-bottom: 2rem;
+}}
+
+#card-search {{
+    width: 100%;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.92rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: border-color 0.15s;
+}}
+
+#card-search:focus {{
+    outline: none;
+    border-color: var(--accent);
+}}
+
+#card-search::placeholder {{
+    color: var(--text-secondary);
+    opacity: 0.8;
+}}
+
+.card.search-hidden {{ display: none; }}
+
 .empty {{
     font-style: italic;
     color: var(--text-secondary);
@@ -570,14 +729,13 @@ footer {{
 </footer>
 
 <script>
+// ---------- Theme toggle ----------
 function toggleTheme() {{
     var current = document.documentElement.getAttribute('data-theme');
     var next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
 }}
-
-// Follow OS theme changes when the user hasn't picked one manually.
 window.matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', function(e) {{
         if (!localStorage.getItem('theme')) {{
@@ -585,10 +743,56 @@ window.matchMedia('(prefers-color-scheme: dark)')
         }}
     }});
 
+// ---------- Tabs (with #hash routing) ----------
+const VALID_TABS = ['pending', 'integrated', 'useful_later', 'noise'];
+
+function showTab(name) {{
+    if (!VALID_TABS.includes(name)) name = 'pending';
+    document.querySelectorAll('.tab').forEach(function(btn) {{
+        btn.setAttribute('aria-selected', btn.dataset.tab === name ? 'true' : 'false');
+    }});
+    document.querySelectorAll('.tab-panel').forEach(function(panel) {{
+        panel.hidden = (panel.dataset.panel !== name);
+    }});
+    applySearchFilter();
+}}
+
+document.querySelectorAll('.tab').forEach(function(btn) {{
+    btn.addEventListener('click', function() {{
+        const name = btn.dataset.tab;
+        history.replaceState(null, '', '#' + name);
+        showTab(name);
+    }});
+}});
+
+window.addEventListener('hashchange', function() {{
+    showTab((location.hash || '#pending').slice(1));
+}});
+
+// ---------- Search (filters within active tab) ----------
+function applySearchFilter() {{
+    const input = document.getElementById('card-search');
+    if (!input) return;
+    const q = input.value.trim().toLowerCase();
+    const active = document.querySelector('.tab-panel:not([hidden])');
+    if (!active) return;
+    active.querySelectorAll('.card').forEach(function(card) {{
+        const hay = card.dataset.search || '';
+        card.classList.toggle('search-hidden', q && hay.indexOf(q) === -1);
+    }});
+}}
+
+document.addEventListener('DOMContentLoaded', function() {{
+    showTab((location.hash || '#pending').slice(1));
+    const input = document.getElementById('card-search');
+    if (input) input.addEventListener('input', applySearchFilter);
+}});
+
+// ---------- File / reclassify / unfile ----------
 async function sendFeedback(btn, fp, signal) {{
     const card = btn.closest('.card');
     const buttons = card ? card.querySelectorAll('.feedback-btn') : [btn];
-    buttons.forEach(b => b.classList.add('actioned'));
+    buttons.forEach(b => b.disabled = true);
     try {{
         const resp = await fetch('/api/observatory-feedback', {{
             method: 'POST',
@@ -596,28 +800,68 @@ async function sendFeedback(btn, fp, signal) {{
             body: JSON.stringify({{fingerprint: fp, signal: signal}}),
         }});
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        const labels = {{
-            integrated: '✓ Integrated',
-            useful_later: '✓ Useful later',
-            noise: '✓ Marked noise',
-        }};
-        const wrap = btn.parentElement;
-        let badge = wrap.querySelector('.feedback-status');
-        if (!badge) {{
-            badge = document.createElement('span');
-            badge.className = 'feedback-status';
-            wrap.appendChild(badge);
-        }}
-        badge.dataset.signal = signal;
-        badge.textContent = labels[signal] || ('✓ ' + signal);
-        if (signal === 'noise' && card) {{
-            // Visually fade out the card; will be hidden entirely on next render.
-            card.style.opacity = '0.35';
+
+        // Move the card to the target panel client-side so the user
+        // doesn't have to wait for the next render.
+        if (card) {{
+            const targetPanel = document.querySelector('.tab-panel[data-panel="' + signal + '"]');
+            if (targetPanel) {{
+                // Update tab counts
+                adjustCount(card.closest('.tab-panel').dataset.panel, -1);
+                adjustCount(signal, +1);
+                // Mark active button
+                buttons.forEach(b => {{
+                    b.classList.toggle('active', b.dataset.signal === signal);
+                    b.disabled = false;
+                }});
+                // Ensure the unfile button exists when moving into a filed tab
+                ensureUnfileButton(card, fp, signal);
+                // Strip placeholder "empty" message from the destination if present
+                const empty = targetPanel.querySelector('.empty');
+                if (empty) empty.closest('.section').remove();
+                // Find or create a section to host the card in the target panel
+                let section = targetPanel.querySelector('.section');
+                if (!section) {{
+                    section = document.createElement('section');
+                    section.className = 'section';
+                    targetPanel.appendChild(section);
+                }}
+                section.prepend(card);
+                applySearchFilter();
+            }}
         }}
     }} catch (err) {{
         console.error('feedback failed', err);
-        buttons.forEach(b => b.classList.remove('actioned'));
+        buttons.forEach(b => b.disabled = false);
         alert('Could not save feedback: ' + err.message);
+    }}
+}}
+
+function adjustCount(panelName, delta) {{
+    const tab = document.querySelector('.tab[data-tab="' + panelName + '"] .tab-count');
+    if (!tab) return;
+    const n = parseInt(tab.textContent, 10) || 0;
+    tab.textContent = Math.max(0, n + delta);
+}}
+
+function ensureUnfileButton(card, fp, signal) {{
+    const wrap = card.querySelector('.card-feedback');
+    if (!wrap) return;
+    let unfile = wrap.querySelector('.feedback-btn[data-signal="pending"]');
+    if (signal === 'pending') {{
+        // We're moving back to pending: remove unfile button + clear active states
+        if (unfile) unfile.remove();
+        wrap.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+        return;
+    }}
+    if (!unfile) {{
+        unfile = document.createElement('button');
+        unfile.className = 'feedback-btn';
+        unfile.dataset.signal = 'pending';
+        unfile.title = 'Send back to Pending';
+        unfile.textContent = '↩ Pending';
+        unfile.addEventListener('click', () => sendFeedback(unfile, fp, 'pending'));
+        wrap.appendChild(unfile);
     }}
 }}
 </script>
@@ -658,21 +902,41 @@ async function sendFeedback(btn, fp, signal) {{
 
         fp = result.get("fingerprint", "").replace('"', "&quot;")
 
-        # If the user has previously flagged this card, render a status
-        # badge inline with the feedback buttons.
-        prior_signal = (ctx.get("feedback") or {}).get(result.get("fingerprint", ""))
-        signal_label = {
-            "integrated": "✓ Integrated",
-            "useful_later": "✓ Useful later",
-            "noise": "✓ Marked noise",
-        }.get(prior_signal, "")
-        signal_badge = (
-            f'<span class="feedback-status" data-signal="{prior_signal}">{signal_label}</span>'
-            if signal_label else ""
+        # The card carries `signal` directly when it's a filed card (came
+        # from filed_blob); otherwise look up via the feedback shim.
+        prior_signal = result.get("signal") or (ctx.get("feedback") or {}).get(
+            result.get("fingerprint", "")
         )
 
+        def _btn(target_signal: str, label: str) -> str:
+            cls = "feedback-btn"
+            if prior_signal == target_signal:
+                cls += " active"
+            return (
+                f'<button class="{cls}" data-signal="{target_signal}" '
+                f'onclick="sendFeedback(this, \'{fp}\', \'{target_signal}\')">{label}</button>'
+            )
+
+        # For filed cards (signal already set), add an Unfile action that
+        # sends the card back to Pending.
+        unfile_html = ""
+        if prior_signal:
+            unfile_html = (
+                f'<button class="feedback-btn" data-signal="pending" '
+                f'onclick="sendFeedback(this, \'{fp}\', \'pending\')" '
+                f'title="Send back to Pending">↩ Pending</button>'
+            )
+
+        # Searchable haystack: title + source + claim id, lowercase.
+        search_blob = " ".join(filter(None, [
+            item.get("title", ""),
+            item.get("source", ""),
+            claim_id,
+            claim_desc,
+        ])).lower().replace('"', "&quot;")
+
         return f"""
-<div class="card" data-fingerprint="{fp}">
+<div class="card" data-fingerprint="{fp}" data-search="{search_blob}">
     <div class="card-header">
         <div class="card-title"><a href="{item.get('url', '#')}" target="_blank" rel="noopener">{item.get('title', 'Untitled')}</a></div>
         {tag_html}
@@ -682,9 +946,9 @@ async function sendFeedback(btn, fp, signal) {{
     <div class="card-summary">{result.get('summary', '')}</div>
     {integration_html}
     <div class="card-feedback">
-        <button class="feedback-btn" onclick="sendFeedback(this, '{fp}', 'integrated')">Integrated</button>
-        <button class="feedback-btn" onclick="sendFeedback(this, '{fp}', 'useful_later')">Useful later</button>
-        <button class="feedback-btn" onclick="sendFeedback(this, '{fp}', 'noise')">Noise</button>
-        {signal_badge}
+        {_btn('integrated', 'Integrated')}
+        {_btn('useful_later', 'Useful later')}
+        {_btn('noise', 'Noise')}
+        {unfile_html}
     </div>
 </div>"""

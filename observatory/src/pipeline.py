@@ -154,36 +154,53 @@ def run_pipeline(
     else:
         logger.info("Step 3/4: No new items to score; will refresh page from existing blob")
 
-    # Step 5: Merge into the accumulator blob, prune, re-rank
+    # Step 5: Merge into the candidates blob, prune, re-rank.
+    # Anything already filed (in filed_blob) is excluded — it's no
+    # longer pending.
+    filed_blob = dedup.load_filed_blob()
+    filed_fps = {c.get("fingerprint", "") for c in filed_blob if c.get("fingerprint")}
+
     existing_blob = dedup.load_candidates_blob()
-    logger.info(f"Step 5: Loaded {len(existing_blob)} existing items from blob")
-    merged = _merge_and_rerank(
-        existing_blob, new_results,
+    logger.info(
+        f"Step 5: Loaded {len(existing_blob)} pending + {len(filed_blob)} filed "
+        f"from KV"
+    )
+    new_results_unfiled = [
+        r for r in new_results if r.get("fingerprint", "") not in filed_fps
+    ]
+    if len(new_results_unfiled) < len(new_results):
+        logger.info(
+            f"  Skipped {len(new_results) - len(new_results_unfiled)} new items "
+            f"that are already filed"
+        )
+
+    merged_candidates = _merge_and_rerank(
+        existing_blob, new_results_unfiled,
         max_total=MAX_BLOB_TOTAL,
         max_age_days=MAX_BLOB_AGE_DAYS,
     )
-    logger.info(f"  Blob after merge: {len(merged)} items")
-    dedup.save_candidates_blob(merged)
-
-    # Apply user feedback: hide "noise"; the blob still contains them so
-    # they don't re-surface, but they don't render.
-    feedback = dedup.load_feedback_map()
-    visible = [
-        r for r in merged
-        if feedback.get(r.get("fingerprint", "")) != "noise"
-    ]
-    if len(visible) < len(merged):
-        logger.info(f"  Hiding {len(merged) - len(visible)} items flagged 'noise'")
+    # Defensive: drop anything filed that snuck in.
+    merged_candidates = [c for c in merged_candidates if c.get("fingerprint", "") not in filed_fps]
+    logger.info(f"  Candidates after merge: {len(merged_candidates)} items")
+    dedup.save_candidates_blob(merged_candidates)
 
     # Step 6: Persist seen state and per-result records (latter is legacy)
     dedup.mark_seen(raw_items)
     if new_results:
         dedup.store_results(new_results)
 
-    # Step 7: Render
-    logger.info("Step 7: Rendering observatory page")
+    # Step 7: Render — passes both blobs so the renderer can split into
+    # Pending / Integrated / Useful later / Noise tabs.
+    logger.info(
+        f"Step 7: Rendering ({len(merged_candidates)} pending, "
+        f"{len(filed_blob)} filed)"
+    )
     output_path = _output_path(mode)
-    renderer.render(visible, output_path=output_path, feedback=feedback)
+    renderer.render(
+        merged_candidates,
+        output_path=output_path,
+        filed=filed_blob,
+    )
 
     if mode == "production":
         logger.info("Pushing rendered HTML to KV")
