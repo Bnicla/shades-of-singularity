@@ -124,16 +124,20 @@ def run_pipeline(mode: str = "local"):
     flagged = [r for r in results if r.get("confidence") == "medium"]
     logger.info(f"  {len(high)} top picks, {len(flagged)} flagged for review")
 
-    # Step 5: Store results
+    # Step 5: Store results + mark items seen
+    # We still keep the per-result records in KV so a future
+    # accumulator/archive view can read them; for the current page we
+    # just render this run's `results` directly because the existing
+    # KV KEYS-pattern scan in _kv_get_recent_results doesn't reliably
+    # return matches against Vercel KV.
     logger.info("Step 5: Storing results")
     dedup.mark_seen(raw_items)
     dedup.store_results(results)
 
     # Step 6: Render
     logger.info("Step 6: Rendering observatory page")
-    all_recent = dedup.get_recent_results(days=30)
     output_path = _output_path(mode)
-    renderer.render(all_recent, output_path=output_path)
+    renderer.render(results, output_path=output_path)
 
     # In production, push rendered HTML to KV for the serve function
     if mode == "production":
