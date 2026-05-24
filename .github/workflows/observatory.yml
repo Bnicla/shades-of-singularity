@@ -25,6 +25,7 @@ on:
         options:
           - weekly
           - backfill
+          - scan-essays
 
 # Prevent overlapping runs (e.g. if a long run is in progress when the next cron fires)
 concurrency:
@@ -60,6 +61,8 @@ jobs:
         run: |
           if [ "$MODE" = "backfill" ]; then
             python src/pipeline.py --production --backfill
+          elif [ "$MODE" = "scan-essays" ]; then
+            python src/scan_essays.py --production
           else
             python src/pipeline.py --production
           fi
