@@ -66,7 +66,15 @@ class handler(BaseHTTPRequestHandler):
 
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Cache-Control", "public, max-age=3600, s-maxage=3600")
+            # Short edge cache + long stale-while-revalidate. Most visits
+            # serve from cache instantly, but a pipeline run (which writes
+            # to KV) is visible within ~60s instead of being hidden for an
+            # hour. Also matters for the feedback loop: items marked
+            # 'noise' need to disappear soon after the next render.
+            self.send_header(
+                "Cache-Control",
+                "public, max-age=60, s-maxage=60, stale-while-revalidate=3600",
+            )
             self.send_header("X-Robots-Tag", "noindex, nofollow")
             self.end_headers()
             self.wfile.write(html.encode("utf-8"))
