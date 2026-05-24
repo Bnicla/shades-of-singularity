@@ -1,13 +1,19 @@
 """
 Observatory pipeline orchestrator.
 
-Runs: ingest -> dedup -> embedding relevance filter -> adjudicate -> render.
+Runs: ingest -> dedup -> TF-IDF rank -> synthesize candidate cards -> render.
 
-The relevance step uses local TF-IDF (free on Gemini free tier) to
-cosine-match each item against the 20 load-bearing claims in axes.yaml.
-That replaces what used to be a regex prefilter + an LLM-triage step,
-and it cuts the number of items that reach the expensive Gemini 2.5
-Flash adjudicator to the handful that are semantically on-topic.
+Design note: the cron does NOT invoke an LLM. We tried LLM-in-the-loop
+adjudication (Gemini 2.5 Flash, then Flash-Lite) and burned through
+free-tier daily quotas reliably enough that the cron couldn't be trusted
+to complete on any given day. The Karpathy / arxiv-sanity-lite pattern
+sidesteps the problem entirely: TF-IDF over title+abstract, cosine
+similarity against the axes.yaml claim seeds, present the top-N as
+candidates. No LLM, no network calls past ingest, no quota dependency.
+
+The LLM adjudicator remains in adjudicate.py and can be invoked
+manually via --adjudicate for deep-evaluating specific items; it's just
+not on the standing-monitor critical path.
 
 Usage:
     python pipeline.py --local          # Local dev with SQLite
@@ -33,17 +39,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger("observatory")
 
-# Cap on how many non-tier-1 items can hit the (RPD-limited) LLM
-# adjudication step per run. Top-K by TF-IDF similarity to the claim
-# seeds; bounds RPD usage no matter how noisy the upstream feeds get.
-MAX_ADJUDICATE_OTHER = 5
+# How many candidate cards to render per run. Top-N by TF-IDF score
+# across all (tier-floored) items. The first HIGH_CONFIDENCE_CUTOFF
+# of those are shown in the "clears" section, the rest in "flagged
+# for review" — a soft prioritization, not an LLM verdict.
+CANDIDATE_TOP_N = 15
+HIGH_CONFIDENCE_CUTOFF = 5
 
-# Tier-1 (named-scholar) items skip the top-K cap but must still clear a
-# minimal relevance floor. Many tracked scholars (e.g., Nussbaum)
-# publish across non-AI fields; without a floor, their literary or
-# philosophy work floods adjudication and burns through daily quota.
-# Floor of 0.02 ≈ p25 of observed score distribution; drops items with
-# essentially zero vocabulary overlap with any claim seed.
+# Tier-1 (named-scholar) items must clear this TF-IDF score before
+# being eligible for ranking. Many tracked scholars (Nussbaum, etc.)
+# publish across non-AI fields; without a floor their literary work
+# floods the candidate list. 0.02 ≈ p25 of observed distribution.
 TIER1_RELEVANCE_FLOOR = 0.02
 
 
@@ -52,15 +58,12 @@ def run_pipeline(mode: str = "local"):
     logger.info(f"Starting observatory pipeline in {mode} mode")
     start_time = datetime.now(timezone.utc)
 
-    # Initialize components
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise EnvironmentError("GEMINI_API_KEY not set")
-
+    # GEMINI_API_KEY is no longer required for the cron path — left in
+    # the environment so the manual --adjudicate mode (which does call
+    # Gemini) still works without code changes.
     dedup = DedupStore(mode=mode)
     ingester = IngestManager(config_path="config/sources.yaml")
-    relevance = EmbeddingFilter(api_key=api_key, axes_path="config/axes.yaml")
-    adjudicator = Adjudicator(api_key=api_key)
+    relevance = EmbeddingFilter(axes_path="config/axes.yaml")
     renderer = ObservatoryRenderer(template_path="templates/observatory.html")
 
     # Step 1: Ingest
@@ -81,11 +84,7 @@ def run_pipeline(mode: str = "local"):
         renderer.render(existing, output_path=_output_path(mode))
         return
 
-    # Step 3: Relevance filter (TF-IDF).
-    # Every item is scored. Non-tier-1 items pass the top-K cap.
-    # Tier-1 items skip the cap but must clear TIER1_RELEVANCE_FLOOR so
-    # off-topic output from a tracked scholar (e.g., Nussbaum's literary
-    # work) doesn't flood adjudication.
+    # Step 3: Score all items with TF-IDF, apply tier-1 floor.
     tier1_all = [item for item in new_items if item.get("tier") == 1]
     other_items = [item for item in new_items if item.get("tier") != 1]
 
@@ -105,28 +104,25 @@ def run_pipeline(mode: str = "local"):
             f"below relevance floor {TIER1_RELEVANCE_FLOOR}"
         )
 
-    top_other = EmbeddingFilter.top_k(other_items, MAX_ADJUDICATE_OTHER)
-    to_adjudicate = tier1_items + top_other
-    if to_adjudicate:
-        top_score = max(it.get("relevance_score", 0.0) for it in to_adjudicate)
-        bottom_score = min(it.get("relevance_score", 0.0) for it in to_adjudicate)
+    # Step 4: Pick top-N candidates by score and synthesize result dicts.
+    # No LLM call here — the cron is intentionally LLM-free. See the
+    # module docstring for the rationale.
+    pool = tier1_items + other_items
+    candidates = EmbeddingFilter.top_k(pool, CANDIDATE_TOP_N)
+    if candidates:
+        top_score = candidates[0].get("relevance_score", 0.0)
+        bottom_score = candidates[-1].get("relevance_score", 0.0)
         logger.info(
-            f"  Selected {len(to_adjudicate)} items for adjudication "
-            f"({len(tier1_items)} tier-1 + top-{len(top_other)} of {len(other_items)}; "
-            f"score range {bottom_score:.3f}-{top_score:.3f})"
+            f"Step 4: Synthesizing {len(candidates)} candidate cards "
+            f"(score range {bottom_score:.3f}-{top_score:.3f})"
         )
+    else:
+        logger.info("Step 4: No candidates after relevance filter")
+    results = _synthesize_candidate_results(candidates)
 
-    # Step 4: Adjudicate
-    logger.info(f"Step 4: Adjudication ({len(to_adjudicate)} items)")
-    results = adjudicator.evaluate(to_adjudicate)
-
-    high_confidence = [r for r in results if r["confidence"] == "high"]
-    medium_confidence = [r for r in results if r["confidence"] == "medium"]
-    dropped = [r for r in results if r["confidence"] == "low" or not r["clears_bar"]]
-
-    logger.info(f"  High confidence (auto-file): {len(high_confidence)}")
-    logger.info(f"  Medium confidence (flagged): {len(medium_confidence)}")
-    logger.info(f"  Dropped: {len(dropped)}")
+    high = [r for r in results if r.get("confidence") == "high"]
+    flagged = [r for r in results if r.get("confidence") == "medium"]
+    logger.info(f"  {len(high)} top picks, {len(flagged)} flagged for review")
 
     # Step 5: Store results
     logger.info("Step 5: Storing results")
@@ -181,6 +177,67 @@ def run_backfill(mode: str = "local"):
         title="Observatory Backfill: January - May 2026"
     )
     logger.info("Backfill complete")
+
+
+def _synthesize_candidate_results(items: list[dict]) -> list[dict]:
+    """
+    Turn TF-IDF scored items into result dicts that match the schema the
+    renderer expects from LLM adjudication. We populate fields from the
+    relevance signals instead of from an LLM verdict.
+
+    The first HIGH_CONFIDENCE_CUTOFF items by score are flagged
+    confidence='high' so they land in the renderer's "clears" section;
+    the rest get 'medium' and land in "flagged for review". That's
+    purely cosmetic prioritization — there is no LLM verdict here.
+    """
+    ranked = sorted(
+        items, key=lambda it: it.get("relevance_score", 0.0), reverse=True
+    )
+    results = []
+    for rank, item in enumerate(ranked):
+        abstract = item.get("abstract", "")
+        summary = abstract[:280] + ("…" if len(abstract) > 280 else "")
+        tier = item.get("tier", 0)
+        citation_quality = {
+            1: "working_paper",
+            2: "policy_report",
+            3: "blog_post",
+        }.get(tier, "blog_post")
+
+        top_matches = item.get("relevance_top") or []
+        secondary = [cid for cid, _ in top_matches[1:]]
+        score = item.get("relevance_score", 0.0)
+        claim = item.get("relevance_claim", "")
+
+        results.append({
+            "clears_bar": True,
+            "confidence": "high" if rank < HIGH_CONFIDENCE_CUTOFF else "medium",
+            "primary_claim": claim,
+            "secondary_claims": secondary,
+            "relationship": None,
+            "summary": summary,
+            "citation_quality": citation_quality,
+            "named_scholar_match": tier == 1,
+            "integration_note": (
+                f"TF-IDF candidate — surfaced because its abstract has the "
+                f"closest vocabulary overlap with claim {claim} "
+                f"(similarity {score:.3f}). Not yet adjudicated against the "
+                f"essay claims."
+            ),
+            "item": {
+                "title": item.get("title", ""),
+                "source": item.get("source", ""),
+                "authors": item.get("authors", []),
+                "date": item.get("date", ""),
+                "url": item.get("url", ""),
+                "tier": tier,
+                "named_scholar": item.get("named_scholar"),
+                "relevance_score": score,
+                "relevance_claim": claim,
+            },
+            "fingerprint": item.get("fingerprint", ""),
+        })
+    return results
 
 
 def _output_path(mode: str, suffix: str = "") -> str:
