@@ -72,15 +72,40 @@ class DedupStore:
     # ---- Public interface ----
 
     def filter_new(self, items: list[dict]) -> list[dict]:
-        """Return only items not previously seen."""
+        """Return only items not previously seen.
+
+        Also dedups within the batch — the five arXiv search-query feeds
+        can return the same paper, and they have the same canonical
+        fingerprint after ingest.py normalization, so we keep only the
+        first occurrence.
+        """
         new = []
+        seen_in_batch: set[str] = set()
         for item in items:
             fp = item.get("fingerprint", "")
-            if not fp:
+            if not fp or fp in seen_in_batch:
                 continue
             if not self._has_seen(fp):
                 new.append(item)
+                seen_in_batch.add(fp)
         return new
+
+    @staticmethod
+    def dedup_within_batch(items: list[dict]) -> list[dict]:
+        """First-occurrence dedup by fingerprint, no `seen` table check.
+
+        Used by backfill (skip_dedup=True) so the historical sweep
+        still collapses duplicates across feeds.
+        """
+        out: list[dict] = []
+        seen: set[str] = set()
+        for item in items:
+            fp = item.get("fingerprint", "")
+            if not fp or fp in seen:
+                continue
+            seen.add(fp)
+            out.append(item)
+        return out
 
     def mark_seen(self, items: list[dict]):
         """Record items as seen so they won't be processed again."""

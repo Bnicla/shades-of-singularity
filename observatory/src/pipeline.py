@@ -101,15 +101,21 @@ def run_pipeline(
     raw_items = ingester.fetch_all(lookback_days=lookback_days)
     logger.info(f"  Fetched {len(raw_items)} raw items")
 
-    # Step 2: Dedup (skipped for backfill)
+    # Step 2: Dedup
+    # Backfill skips the cross-run `seen` check but still collapses
+    # intra-batch duplicates (multiple arXiv search feeds hitting the
+    # same paper).
     if skip_dedup:
-        new_items = raw_items
-        logger.info("Step 2: Dedup skipped (backfill mode)")
+        new_items = DedupStore.dedup_within_batch(raw_items)
+        logger.info(
+            f"Step 2: {len(new_items)} items after intra-batch dedup "
+            f"(backfill mode, cross-run dedup skipped)"
+        )
     else:
         new_items = dedup.filter_new(raw_items)
         logger.info(
             f"Step 2: {len(new_items)} new items after dedup "
-            f"({len(raw_items) - len(new_items)} seen before)"
+            f"({len(raw_items) - len(new_items)} seen before or duplicate in batch)"
         )
 
     # Step 3: Score with TF-IDF, apply tier-1 floor

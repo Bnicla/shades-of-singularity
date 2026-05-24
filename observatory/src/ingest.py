@@ -19,6 +19,7 @@ Each item is normalized to:
 
 import hashlib
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from urllib.parse import quote_plus
@@ -28,6 +29,35 @@ import requests
 import yaml
 
 logger = logging.getLogger("observatory.ingest")
+
+
+# arXiv abs/pdf URLs come back in several shapes from the different
+# search-query feeds: with/without `export.` host, abs vs pdf path,
+# with/without `vN` version, with/without `.pdf` suffix. They all refer
+# to the same paper. Collapse them to `arxiv:{id}` (lowercased) so
+# dedup catches the duplicates. Handles new-style (2305.12345) and
+# old-style (cs.AI/0301001, hep-th/9901001) arXiv IDs.
+_ARXIV_URL_RE = re.compile(
+    r"https?://(?:www\.)?(?:arxiv|export\.arxiv)\.org/(?:abs|pdf)/"
+    r"(\d{4}\.\d{4,5}|[a-z\-]+(?:\.[a-z]+)?/\d+)"
+    r"(?:v\d+)?(?:\.pdf)?",
+    re.IGNORECASE,
+)
+
+
+def _canonical_url(url: str) -> str:
+    """Normalize URLs so distinct references to the same artifact match.
+
+    Currently only handles arXiv (abs/pdf, any host, any version, any
+    extension). Returns the input unchanged for URLs we don't have rules
+    for, so it's safe to apply blindly.
+    """
+    if not url:
+        return url
+    m = _ARXIV_URL_RE.search(url)
+    if m:
+        return "arxiv:" + m.group(1).lower()
+    return url
 
 
 class IngestManager:
@@ -287,7 +317,7 @@ class IngestManager:
                 continue
 
             items.append({
-                "fingerprint": entry.get("id", entry.get("link", "")),
+                "fingerprint": _canonical_url(entry.get("id") or entry.get("link", "")),
                 "title": entry.get("title", "").strip().replace("\n", " "),
                 "source": f"arXiv (author: {name})",
                 "authors": [a.get("name", "") for a in entry.get("authors", [])],
@@ -333,7 +363,7 @@ class IngestManager:
                         pass
 
                 items.append({
-                    "fingerprint": paper.get("url", paper.get("paperId", "")),
+                    "fingerprint": _canonical_url(paper.get("url") or paper.get("paperId", "")),
                     "title": paper.get("title", ""),
                     "source": f"Semantic Scholar (author: {name})",
                     "authors": [a.get("name", "") for a in paper.get("authors", [])],
@@ -388,11 +418,16 @@ class IngestManager:
     # ---- Utilities ----
 
     def _fingerprint(self, entry) -> str:
-        """Generate a stable fingerprint for deduplication."""
-        url = entry.get("link", entry.get("id", ""))
-        if url:
-            return url
-        # Fallback: hash of title
+        """Generate a stable fingerprint for deduplication.
+
+        Tries entry.link, then entry.id, both run through _canonical_url
+        so the five different arXiv search-query feeds collapse on the
+        same paper. Falls back to a title hash if neither field exists.
+        """
+        url = entry.get("link") or entry.get("id") or ""
+        canonical = _canonical_url(url)
+        if canonical:
+            return canonical
         title = entry.get("title", "")
         return hashlib.sha256(title.encode()).hexdigest()[:16]
 
