@@ -196,7 +196,17 @@ def run_pipeline(
 
 
 def run_backfill(mode: str = "local"):
-    """One-shot historical sweep: 150-day lookback, top 60 candidates."""
+    """One-shot historical sweep: 150-day lookback, top 60 candidates.
+
+    Wipes the candidates blob first. By definition a backfill is a
+    "redo from scratch" — without wiping, items written by prior runs
+    (potentially with stale fingerprints, e.g. before arXiv URL
+    canonicalization) would carry forward as duplicates of the new
+    sweep's entries.
+    """
+    dedup = DedupStore(mode=mode)
+    logger.info("Backfill: wiping observatory:candidates_blob before re-sweep")
+    dedup.save_candidates_blob([])
     run_pipeline(
         mode,
         lookback_days=150,
