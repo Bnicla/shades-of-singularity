@@ -122,6 +122,89 @@ def _title_from_url(url: str) -> Optional[str]:
     return " ".join(out)
 
 
+_FILLER_WORDS = {
+    "reported", "in", "via", "from", "the", "a", "an", "by",
+    "see", "also", "and", "or", "of", "to", "at", "on",
+}
+_MONTH_NAMES = {
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+    "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sept", "sep",
+    "oct", "nov", "dec",
+}
+
+
+def _norm_for_match(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+def _anchor_is_bare_source(title: str, url: str) -> bool:
+    """True if the title is essentially just the source name (with or
+    without a date / "reported in" / month). Used to decide whether to
+    swap a card's title for a URL-derived one even when no collision
+    forces it.
+
+    Examples that match:
+      "Fortune", "Fortune, March 2026", "*Fortune*, January 13, 2026",
+      "reported in *Fortune*, February 2026", "WEF, 2025",
+      "Carnegie Endowment"
+
+    Examples that DON'T match (kept as-is):
+      "Engels' Pause", "Michael Pearce, Oxford Economics, reported in *Fortune*",
+      "The AI Productivity Take-Off Is Finally Visible"
+    """
+    if not title or not url:
+        return False
+    # Strip markdown emphasis, years, punctuation
+    text = title.lower()
+    text = re.sub(r"[*_]", "", text)
+    text = re.sub(r"\b\d{1,4}\b", "", text)            # years and day numbers
+    text = re.sub(r"[,.;:/\-()\"'’‘]", " ", text)      # punctuation
+    tokens = [
+        t for t in text.split()
+        if t and t not in _FILLER_WORDS and t not in _MONTH_NAMES
+    ]
+    if not tokens:
+        # Anchor was purely dates/filler — definitely bare
+        return True
+
+    residual = "".join(tokens)
+    src_norm = _norm_for_match(_source_label(url))
+    if src_norm:
+        if residual == src_norm:
+            return True
+        # Acronym contained in source label (e.g., "wef" ⊂ "weforum")
+        if len(residual) <= len(src_norm) and residual and residual in src_norm:
+            return True
+    # Match against the URL's host for things _source_label doesn't normalize
+    try:
+        host = urlparse(url).netloc.lower().removeprefix("www.")
+        host_root = host.split(".")[0] if host else ""
+        host_norm = _norm_for_match(host_root)
+        if host_norm and residual == host_norm:
+            return True
+    except Exception:
+        pass
+    return False
+
+
+def _replace_bare_source_titles(cards: list[dict]) -> int:
+    """Swap bare-source-name titles for URL-derived titles (no collision
+    required). Runs after _disambiguate_titles."""
+    rewrites = 0
+    for c in cards:
+        url = c.get("item", {}).get("url", "")
+        title = c.get("item", {}).get("title", "")
+        if _anchor_is_bare_source(title, url):
+            derived = _title_from_url(url)
+            if derived and len(derived.split()) >= 2 and derived.lower() != title.lower():
+                c["item"]["title"] = derived
+                rewrites += 1
+    if rewrites:
+        logger.info(f"Rewrote {rewrites} bare-source-name titles using URL-derived titles")
+    return rewrites
+
+
 def _disambiguate_titles(cards: list[dict]) -> int:
     """Where N cards share the same title, replace each with its URL-
     derived title so they show up as visually distinct sources.
@@ -531,7 +614,12 @@ def run_scan(mode: str, root: Optional[Path] = None) -> int:
 
     now_iso = datetime.now(timezone.utc).isoformat()
     new_cards = _build_cards(scan, relevance, now_iso)
+    # Two passes:
+    #   1. Wherever titles collide, give each card a URL-derived title.
+    #   2. For any card whose remaining title is essentially just the
+    #      source name (with or without a date), do the same.
     _disambiguate_titles(new_cards)
+    _replace_bare_source_titles(new_cards)
 
     existing = dedup.load_filed_blob()
     merged = merge_into_filed(existing, new_cards)
