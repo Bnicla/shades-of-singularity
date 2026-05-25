@@ -247,11 +247,18 @@ def scan_content_dir(root: Path) -> dict:
             body = _strip_frontmatter(text)
 
             source_label = (fm.get("title") or path.stem).strip()
+            # Normalize type: essays + short-essays both publish under
+            # /essays/{slug} on the main site; scenarios → /shades/{slug}.
+            if kind == "scenarios":
+                kind_type = "shade"
+            else:
+                kind_type = "essay"
             source_meta = {
                 "file": str(path.relative_to(root)),
-                "type": kind.rstrip("s"),
+                "type": kind_type,
                 "number": fm.get("number"),
                 "title": source_label,
+                "slug": (fm.get("slug") or "").strip(),
             }
 
             for m in _MD_LINK_RE.finditer(body):
@@ -286,9 +293,15 @@ def scan_content_dir(root: Path) -> dict:
                 if len(snippet) > len(entry["snippet"]):
                     entry["snippet"] = snippet
 
-                # Avoid dup source records when same URL is cited multiple
-                # times in the same file
-                if not any(s["file"] == source_meta["file"] for s in entry["sources"]):
+                # Dedup by (type, number): the long and short versions of
+                # an essay both point at the same /essays/{slug} URL, and
+                # the user only wants to see "Essay 1" once even if it's
+                # cited from both files.
+                src_key = (source_meta["type"], source_meta.get("number"))
+                if not any(
+                    (s["type"], s.get("number")) == src_key
+                    for s in entry["sources"]
+                ):
                     entry["sources"].append(source_meta)
 
     logger.info(f"Found {len(out)} unique citations")
@@ -331,7 +344,8 @@ def _build_cards(
         else:
             url = raw_urls[0] if raw_urls else ""
 
-        # Build the integration_note from the source list
+        # Build the integration_note from the source list (fallback if
+        # the renderer doesn't know about integration_sources yet)
         source_blurb = ", ".join(
             f"{s['type'].capitalize()} {s.get('number', '?')}: {s['title']}"
             for s in entry["sources"]
@@ -349,7 +363,8 @@ def _build_cards(
             "summary": entry["snippet"] or title,
             "citation_quality": _citation_quality(url),
             "named_scholar_match": False,
-            "integration_note": f"Already cited in: {source_blurb}",
+            "integration_note": f"Cited in: {source_blurb}",
+            "integration_sources": entry["sources"],   # structured list for chips
             "source_of_truth": "essay_scan",
             "item": {
                 "title": title,
@@ -367,25 +382,48 @@ def _build_cards(
 
 def merge_into_filed(existing: list[dict], scanned: list[dict]) -> list[dict]:
     """
-    Add scanned cards to the existing filed list.
+    Merge scanned cards into the existing filed list.
 
     Rules:
-    - If a fingerprint already exists in filed_blob, the existing entry
-      wins. User curation > automated scan. (Even if you've moved a
-      cited paper to 'noise', the scan won't overwrite it.)
-    - New scanned fingerprints get appended with signal='integrated'.
+    - Brand-new fingerprints get appended.
+    - Existing fingerprints whose source_of_truth is 'essay_scan' get
+      upgraded in place (so re-running the scan picks up schema changes
+      like new integration_sources without losing user reclassifications).
+      We preserve the original filed_at and signal in case the user
+      moved it to 'noise' or 'useful_later'.
+    - Existing fingerprints from any other origin (cron-discovered cards
+      the user manually filed) are left untouched.
     """
     by_fp = {c.get("fingerprint", ""): c for c in existing if c.get("fingerprint")}
     added = 0
+    upgraded = 0
+    preserved = 0
     for card in scanned:
         fp = card.get("fingerprint", "")
         if not fp:
             continue
-        if fp in by_fp:
+        if fp not in by_fp:
+            by_fp[fp] = card
+            added += 1
             continue
-        by_fp[fp] = card
-        added += 1
-    logger.info(f"Merged: {added} new, {len(scanned) - added} already filed")
+
+        ex = by_fp[fp]
+        if ex.get("source_of_truth") == "essay_scan":
+            # Upgrade in place; keep the user's signal + original filing
+            # time if they exist on the old card.
+            upgraded_card = dict(card)
+            upgraded_card["signal"] = ex.get("signal", card.get("signal"))
+            if ex.get("filed_at"):
+                upgraded_card["filed_at"] = ex["filed_at"]
+            by_fp[fp] = upgraded_card
+            upgraded += 1
+        else:
+            preserved += 1
+
+    logger.info(
+        f"Merged: {added} new, {upgraded} upgraded in place, "
+        f"{preserved} user-curated cards preserved"
+    )
     return list(by_fp.values())
 
 

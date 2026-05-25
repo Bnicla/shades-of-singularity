@@ -629,6 +629,44 @@ header .meta {{
 
 .card.search-hidden {{ display: none; }}
 
+/* Integration source chips */
+.card-sources {{
+    margin-top: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}}
+
+.card-sources-label {{
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 0.2rem;
+}}
+
+.source-chip {{
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.65rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: border-color 0.15s, background-color 0.15s;
+    white-space: nowrap;
+}}
+
+.source-chip:hover {{
+    border-color: var(--accent);
+    background: var(--accent-light);
+}}
+
 .empty {{
     font-style: italic;
     color: var(--text-secondary);
@@ -891,8 +929,39 @@ function ensureUnfileButton(card, fp, signal) {{
         if claim_desc:
             claim_html = f'<div class="card-claim">Bears on: {claim_desc} ({essay_title})</div>'
 
+        # Structured integration_sources (from scan_essays.py) renders as
+        # a row of clickable chips. Falls back to integration_note text
+        # for cron-generated cards that don't have structured sources.
+        sources = result.get("integration_sources") or []
+        sources_html = ""
+        if sources:
+            chip_items = []
+            for s in sources:
+                stype = s.get("type", "")
+                num = s.get("number", "?")
+                slug = (s.get("slug") or "").strip()
+                title_attr = (s.get("title") or "").replace('"', "&quot;")
+                label = f"Essay {num}" if stype == "essay" else f"Shade {num}"
+                url_path = "essays" if stype == "essay" else "shades"
+                if slug:
+                    chip_items.append(
+                        f'<a class="source-chip" '
+                        f'href="https://shadesofsingularity.com/{url_path}/{slug}" '
+                        f'target="_blank" rel="noopener" title="{title_attr}">{label}</a>'
+                    )
+                else:
+                    chip_items.append(
+                        f'<span class="source-chip" title="{title_attr}">{label}</span>'
+                    )
+            sources_html = (
+                '<div class="card-sources">'
+                '<span class="card-sources-label">Cited in</span>'
+                + "".join(chip_items) +
+                '</div>'
+            )
+
         integration_html = ""
-        if result.get("integration_note"):
+        if not sources and result.get("integration_note"):
             integration_html = f'<div class="card-integration">{result["integration_note"]}</div>'
 
         source_badge = item.get("source", "")
@@ -945,6 +1014,7 @@ function ensureUnfileButton(card, fp, signal) {{
     {claim_html}
     <div class="card-summary">{result.get('summary', '')}</div>
     {integration_html}
+    {sources_html}
     <div class="card-feedback">
         {_btn('integrated', 'Integrated')}
         {_btn('useful_later', 'Useful later')}
