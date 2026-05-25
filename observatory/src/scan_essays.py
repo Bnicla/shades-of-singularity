@@ -60,6 +60,96 @@ _MD_LINK_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)]+)\)")
 _IMG_RE = re.compile(r"!\[")
 
 
+_DATE_PATH_RE = re.compile(r"^\d{4}(?:[-_]\d{1,2}){0,2}$|^\d{4}/\d{1,2}(?:/\d{1,2})?$")
+_PURE_NUM_RE = re.compile(r"^\d+$")
+_FILLER_SEGMENTS = {
+    "index.html", "index", "default", "post", "article", "articles",
+    "papers", "story", "stories", "research", "blog", "news", "view",
+    "core", "abs", "pdf", "en", "page", "p",
+}
+_ACRONYMS = {
+    "ai", "ml", "us", "uk", "eu", "un", "nato", "agi", "llm", "gpt",
+    "wsj", "nyt", "fbi", "cia", "cdc", "imf", "oecd", "gdp", "rsp",
+    "ipcc", "ngo", "ftc", "doj", "doe",
+}
+
+
+def _title_from_url(url: str) -> Optional[str]:
+    """Derive a readable title from the most informative URL path segment.
+
+    Used as a fallback when the markdown anchor text is just a bare
+    source name (e.g., 4 cards titled "Fortune" because the author
+    wrote `[Fortune](url)` four times).
+    """
+    if not url or url.startswith("arxiv:"):
+        return None
+    try:
+        from urllib.parse import unquote
+        path = unquote(urlparse(url).path)
+    except Exception:
+        return None
+    segments = [s for s in path.split("/") if s]
+    informative = []
+    for s in segments:
+        sl = s.lower()
+        if sl in _FILLER_SEGMENTS:
+            continue
+        if _DATE_PATH_RE.match(s):
+            continue
+        if _PURE_NUM_RE.match(s):
+            continue
+        if sl.endswith(".html") or sl.endswith(".pdf") or sl.endswith(".htm"):
+            s = s.rsplit(".", 1)[0]
+        informative.append(s)
+    if not informative:
+        return None
+    # The last (often most specific) informative segment usually beats
+    # the longest one — paths like /journals/foo/article/bar prefer "bar".
+    best = informative[-1]
+    # Some hosts prepend short IDs (e.g. "w12345-paper-title"); strip them.
+    best = re.sub(r"^[a-z]?\d{3,}[-_]", "", best, flags=re.IGNORECASE)
+    title = re.sub(r"[-_]+", " ", best).strip()
+    title = re.sub(r"\s+", " ", title)
+    if not title:
+        return None
+    # Title case while preserving common acronyms
+    out = []
+    for w in title.split():
+        if w.lower() in _ACRONYMS:
+            out.append(w.upper())
+        else:
+            out.append(w[0].upper() + w[1:] if w else w)
+    return " ".join(out)
+
+
+def _disambiguate_titles(cards: list[dict]) -> int:
+    """Where N cards share the same title, replace each with its URL-
+    derived title so they show up as visually distinct sources.
+
+    The fingerprints don't change; only the displayed title does.
+    Returns the count of cards whose title was rewritten.
+    """
+    from collections import defaultdict
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for c in cards:
+        t = (c.get("item", {}).get("title") or "").strip().lower()
+        if t:
+            groups[t].append(c)
+    rewrites = 0
+    for title, group in groups.items():
+        if len(group) <= 1:
+            continue
+        for c in group:
+            url = c.get("item", {}).get("url", "")
+            derived = _title_from_url(url)
+            if derived and len(derived.split()) >= 2:
+                c["item"]["title"] = derived
+                rewrites += 1
+    if rewrites:
+        logger.info(f"Disambiguated {rewrites} colliding card titles via URL-derived titles")
+    return rewrites
+
+
 def _clean_title(s: str) -> str:
     """Strip surrounding quotes/emphasis and trailing punctuation from
     anchor text so cards have presentable titles."""
@@ -441,6 +531,7 @@ def run_scan(mode: str, root: Optional[Path] = None) -> int:
 
     now_iso = datetime.now(timezone.utc).isoformat()
     new_cards = _build_cards(scan, relevance, now_iso)
+    _disambiguate_titles(new_cards)
 
     existing = dedup.load_filed_blob()
     merged = merge_into_filed(existing, new_cards)
