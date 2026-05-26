@@ -26,6 +26,29 @@ on:
           - weekly
           - backfill
           - scan-essays
+          - inject
+      inject_url:
+        description: '[inject mode] URL of the item to inject'
+        required: false
+      inject_title:
+        description: '[inject mode] Title of the card'
+        required: false
+      inject_signal:
+        description: '[inject mode] Where to file it'
+        type: choice
+        required: false
+        default: 'pending'
+        options:
+          - pending
+          - integrated
+          - useful_later
+          - noise
+      inject_summary:
+        description: '[inject mode] Summary text (optional)'
+        required: false
+      inject_source:
+        description: '[inject mode] Source label, e.g. "Vatican News" (optional)'
+        required: false
 
 # Prevent overlapping runs (e.g. if a long run is in progress when the next cron fires)
 concurrency:
@@ -58,11 +81,29 @@ jobs:
           KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
           KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
           MODE: ${{ inputs.mode || 'weekly' }}
+          INJECT_URL: ${{ inputs.inject_url }}
+          INJECT_TITLE: ${{ inputs.inject_title }}
+          INJECT_SIGNAL: ${{ inputs.inject_signal || 'pending' }}
+          INJECT_SUMMARY: ${{ inputs.inject_summary }}
+          INJECT_SOURCE: ${{ inputs.inject_source }}
         run: |
           if [ "$MODE" = "backfill" ]; then
             python src/pipeline.py --production --backfill
           elif [ "$MODE" = "scan-essays" ]; then
             python src/scan_essays.py --production
+          elif [ "$MODE" = "inject" ]; then
+            if [ -z "$INJECT_URL" ] || [ -z "$INJECT_TITLE" ]; then
+              echo "inject mode requires both inject_url and inject_title"
+              exit 1
+            fi
+            python src/inject_card.py --production \
+              --url     "$INJECT_URL" \
+              --title   "$INJECT_TITLE" \
+              --signal  "$INJECT_SIGNAL" \
+              --summary "$INJECT_SUMMARY" \
+              --source  "$INJECT_SOURCE"
+            # Re-render so the new card shows up immediately
+            python src/pipeline.py --production
           else
             python src/pipeline.py --production
           fi

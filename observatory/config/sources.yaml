@@ -156,6 +156,15 @@ tier_2_institutional:
       feed_url: "https://partnershiponai.org/feed/"
       notes: "Multi-stakeholder governance perspectives"
 
+  religious_and_ethical:
+    - name: "Vatican News"
+      feed_url: "https://www.vaticannews.va/en.rss.xml"
+      notes: |
+        High-volume general Vatican news; TF-IDF filter will only surface
+        AI/governance/labor-relevant items. Added after Pope Leo XIV's
+        "Magnifica Humanitas" encyclical (May 2026) slipped past our
+        other sources.
+
   government_regulatory:
     - name: "EU AI Act tracker"
       url: "https://artificialintelligenceact.eu"

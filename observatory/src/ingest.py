@@ -197,16 +197,23 @@ class IngestManager:
             except Exception as e:
                 logger.warning(f"Failed to fetch Brookings {feed['label']}: {e}")
 
-        # Policy institutes
-        for inst in self.config.get("tier_2_institutional", {}).get("policy_institutes", []):
-            if "feed_url" in inst:
+        # Policy institutes + religious/ethical sources — same shape,
+        # both keyed by `feed_url`, tag with their section name so the
+        # source label on cards is sensible.
+        for section, prefix in (
+            ("policy_institutes", "policy"),
+            ("religious_and_ethical", "religious"),
+        ):
+            for inst in self.config.get("tier_2_institutional", {}).get(section, []):
+                if "feed_url" not in inst:
+                    continue
                 try:
                     feed_items = self._parse_rss(
                         inst["feed_url"], inst["name"], cutoff
                     )
                     for item in feed_items:
                         item["tier"] = 2
-                        item["feed_category"] = f"policy:{inst['name'].lower()}"
+                        item["feed_category"] = f"{prefix}:{inst['name'].lower()}"
                     items.extend(feed_items)
                 except Exception as e:
                     logger.warning(f"Failed to fetch {inst['name']}: {e}")
