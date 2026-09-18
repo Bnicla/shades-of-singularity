@@ -83,4 +83,4 @@ Shade numbers are stable identifiers; display order follows likelihood and is re
 2. **Transcendence (#30): Unknown** -- Beyond our ability to evaluate or govern from this side.
 3. **Stasis (#29): 1 pt** -- If AI plateaus, stakes are lower and conventional governance suffices.
 
-The scenarios where governance matters most are overwhelmingly the *probable* ones (Tiers 1-3), not the speculative ones (Tiers 4-5). The crisis is not waiting for a dramatic singularity event. It is already here, and the governance dividend is already on the table.
+The scenarios where governance matters most are overwhelmingly the probable ones (Tiers 1 through 3) rather than the speculative ones (Tiers 4 and 5). The governance dividend is largest in the shades that are already underway.
