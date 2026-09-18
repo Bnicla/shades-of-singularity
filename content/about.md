@@ -19,6 +19,8 @@ The AI conversation is dominated by two camps: those who see limitless promise a
 
 The collection is built in layers. The shades are the evidence base: concrete scenarios, each examining what happens when AI meets a specific human system. The full essays synthesize those shades into arguments, tracing how different dynamics interact and where the road forks. The short essays distill each argument into a form you can read in ten minutes. Together they form a single case for institutional design at the scale the moment demands.
 
+The collection is revised in editions rather than continuously. Each edition captures the state of the argument at a specific moment, and prior editions are preserved so a reader can return to what the author thought before subsequent events. The [Early 2026 edition](/archive/2026-early/) is the version as it stood before the events of July through September 2026, and the [Changelog](/changelog/) records what changed in the current edition. The author's earlier thinking is preserved on purpose.
+
 ## Why Now
 
 I wrote this with a sense of urgency that I want to be honest about.

@@ -163,7 +163,7 @@ Whether provenance standards are mandated before the synthetic flood becomes the
 
 **Question it answers:** Can self-governing societies survive AI, or does the technology's speed, concentration, and manipulation potential make democratic governance structurally unviable?
 
-**Shades it synthesizes:** #2 (Concentration), #4 (Surveillance), #7 (Arms Race), #8 (Governance Obsolescence), #11 (Foreign Subversion), #14 (Digital Authoritarianism), #15 (Digital Authoritarianism as Global Norm), #20 (Democratic AI), #22 (Singleton)
+**Shades it synthesizes:** #2 (Concentration), #4 (Surveillance), #7 (Arms Race), #8 (Governance Obsolescence), #11 (Foreign Subversion), #14 (Digital Authoritarianism), #15 (Digital Authoritarianism as Global Norm), #20 (Democratic AI), #22 (Singleton), #32 (Autonomous Lethal Weapons, added September 2026)
 
 **What the essay does that no shade can:** It shows that concentration, surveillance, governance paralysis, foreign manipulation, and authoritarian drift are not independent threats to democracy but a single systemic pressure operating through multiple channels simultaneously.
 
@@ -307,7 +307,7 @@ This essay has the highest potential to move people who are unmoved by abstract 
 
 **Question it answers:** What institutional infrastructure would need to exist for the AI transition to be managed rather than catastrophic, and is it being built fast enough?
 
-**Shades it synthesizes:** #14 (Alignment Failure), #21 (Intelligence Explosion), #22 (Singleton), #23 (Bioweapons), #28 (Human Extinction)
+**Shades it synthesizes:** #14 (Alignment Failure), #21 (Intelligence Explosion), #22 (Singleton), #23 (Bioweapons), #28 (Human Extinction), #31 (The Swarm, added September 2026)
 
 **What the essay does that no shade can:** Each shade treats its risk individually. The essay shows these are not independent risks with separate probabilities but a causal chain where each step makes the next more likely.
 
@@ -394,3 +394,33 @@ The final essay's closing argument creates a structural loop: the catastrophic r
 ---
 
 *Last updated: April 6, 2026*
+
+---
+
+## September 2026 edition summary
+
+The September 2026 edition was cut on the branch `edition-2026-09` and preserves the Early 2026 edition in `/archive/2026-early/`.
+
+### Structural additions
+
+- **Shade #31 The Swarm.** Collective-behavior failure mode of merely-capable agents at operational scale. Tier 2, likelihood ~70%, unmanaged -4, governed +1, dividend 5. Filed under Essay 6's synthesized shades.
+- **Shade #32 Autonomous Lethal Weapons.** Removal of the human from the kill decision. Tier 1, likelihood ~85%, unmanaged -4, governed +1, dividend 5. Split from #7 (which retains capability competition, chips, distillation, diplomacy). Filed under Essay 3's synthesized shades.
+
+### Score revisions
+
+- #2 unmanaged -3 -> -4 (dividend 5 -> 6): documented executive capture by three CEOs (WSJ Dawsey and Ramkumar) and OpenAI's decision to charge the federal government fifty percent of retail.
+- #6 governed +1 -> +2 (dividend 4 -> 5): MIT Ad Hoc Committee on AI Use adopts the developmental-scaffolding approach as institutional policy.
+- #7 likelihood ~80% -> ~90% (moves to Tier 1): distillation war, chip controls, Xi visit, MSS statement.
+- #13 likelihood ~60% -> ~65%: capex channel supersedes labor-displacement channel as the primary transmission mechanism for AI risk to credit markets.
+- #14 likelihood ~55% -> ~65%: alignment failure has caused real-world harm at sub-superintelligence scale (Hugging Face swarm) and the monitorability picture is worse than the shade's earlier prose treated it as (Astra system card, Apollo evaluation-awareness finding, February 2026 Claude CoT concealment).
+- #21 likelihood ~25% -> ~35% (per Addendum 2, not the initially-proposed 45%): three-tier RSI definition. Tier 1 (automated AI research) is met; tier 2 (component self-improvement) has demonstrated measurement (AlphaEvolve 23% / 1%); tier 3 (true RSI) is undemonstrated.
+- #23 summary line superseded: Anthropic's September 10 threat report states that the company can no longer rely on a capability gap between its latest models and the expertise needed to meaningfully assist bioweapons development.
+
+### Primary sources for the edition
+
+METR/Redwood August 26 investigation; OpenAI August 26 Hugging Face incident report; OpenAI August 18 pacing post; Dario Amodei September 12 essay; Anthropic Economics Team Working Paper 2026-02 (September 10); Anthropic threat report September 10; OpenAI misalignment reporting framework September 16 (Addendum 1); Van Hollen letter to Altman September 10; Pope Leo XIV *Magnifica Humanitas* May 25; MIT Ad Hoc Committee on AI Use August 13; Google Gemini 3.8 Flash release note September 2026 (Addendum 2); *TIME* September 15 cover.
+
+### Deferred from Phase 2
+
+Master instructions items #4a, #4b, #5, #9 (see /review/phase2_audit.md) had insertion targets that no longer existed in the current essays. Per Section 0's "live page wins" rule they were absorbed by the September 2026 revisions rather than force-applied. Master #4b (Glasswing $100M paragraph) was not carried into the edition on the basis that the September incidents (RSP v3.0, Hugging Face swarm, Pacing letter) supersede Glasswing as illustrative material; a compressed reference can be added in a future edition if the material becomes load-bearing again.
+
