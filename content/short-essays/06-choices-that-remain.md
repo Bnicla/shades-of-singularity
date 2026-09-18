@@ -16,6 +16,9 @@ relatedShades:
   - number: 23
     title: "AI-Enabled Bioweapons / Catastrophic Misuse"
     slug: "ai-enabled-bioweapons"
+  - number: 31
+    title: "The Swarm"
+    slug: "the-swarm"
 ---
 
 On February 24, 2026, Anthropic released version 3.0 of its Responsible Scaling Policy. The document removed the restraint mechanism entirely. Earlier revisions had adjusted thresholds and refined evaluation criteria within the same conditional-slowdown framework; v3.0 shifted the policy from conditional restraint to continuous deployment with post-hoc evaluation, eliminating the commitment to pause training if the company could not demonstrate adequate safety at higher capability thresholds. The same week, Defense Secretary Pete Hegseth summoned the company's CEO to the Pentagon with an ultimatum. OpenAI had already deployed ChatGPT into the Department of War's GenAI.mil platform. Google had already reversed the 2018 ban on AI for weapons its own employees had once forced through protest. xAI had already signed a deal placing Grok in classified military systems without conditions. The company that tried hardest to maintain voluntary constraint, under the most sustained external pressure, concluded that voluntary constraint could no longer hold. What happened next is the part that matters. The company published a section of its policy document describing what government regulation should look like instead, an FDA-inspired regime in which developers make an affirmative case that catastrophic risks are low, subject to external review and enforcement. The company that dropped its own pause trigger is now asking government to impose the constraint it could not sustain on its own.

@@ -16,6 +16,9 @@ relatedShades:
   - number: 15
     title: "Digital Authoritarianism as Global Norm"
     slug: "digital-authoritarianism"
+  - number: 32
+    title: "Autonomous Lethal Weapons"
+    slug: "autonomous-lethal-weapons"
 ---
 
 In February 2026, a defense secretary gave the CEO of an AI company a deadline. By Friday, Anthropic would let the Pentagon use its technology for any lawful purpose, or face cancellation of its contract, designation as a supply chain risk to national security, and possible invocation of the Defense Production Act to seize the technology. Anthropic's red lines were two: no mass surveillance of American citizens, no fully autonomous weapons without human decision-making. Three of the four frontier AI labs with Pentagon contracts had already accepted unrestricted access. Anthropic refused.

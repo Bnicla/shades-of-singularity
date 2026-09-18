@@ -6,8 +6,8 @@ tier: 1
 tierLabel: "Near-Certain"
 likelihood: "~85%"
 unmanaged: -3
-governed: 1
-dividend: 4
+governed: 2
+dividend: 5
 summary: "Each act of cognitive delegation to AI is individually rational; the aggregate effect is a population losing the capacity for independent judgment."
 ---
 
@@ -30,3 +30,11 @@ This concern is ancient, and the honest response to it deserves space. Socrates 
 The governance response is education reform. Finland's national media literacy curriculum, integrating critical thinking about information sources from primary school onward, has been cited as a model ([Frontiers in Communication, 2025](https://public-pages-files-2025.frontiersin.org/journals/communication/articles/10.3389/fcomm.2025.1560936/xml/nlm)). The deeper challenge is institutional: schools and professional training must distinguish between AI-assisted thinking, where the human retains evaluative control, and AI-replaced thinking, where the human accepts outputs without engaging the cognitive processes that produced them. The governed outcome is modest (+1) because every employer, platform, and productivity incentive pushes toward more delegation, and the cognitive costs are invisible until they accumulate.
 
 **Key tension:** Every employer, platform, and productivity incentive pushes toward more cognitive delegation to AI. The costs are invisible until they accumulate, and by then the capacity to recognize the loss may itself have atrophied.
+
+## September 2026
+
+The MIT Ad Hoc Committee on AI Use released its final report on August 13, 2026 and published the public summary on August 25. The committee's finding is that generative AI "can produce credible solutions and provide reasonable responses to almost any written assignment in our undergraduate curriculum, including essays, math and science problems, proofs, and coding assignments." The report documents "diminishing critical thinking, weakening memory, eroding confidence, and undermining mastery," names the phenomenon "cognitive surrender," and finds AI "accelerating isolation" through reduced office hours and fewer study groups. The committee adopted as an institutional principle that "productive struggle is essential to learning" and that the goal of AI in education is "augmentation, not automation, of human thinking." The report cites a 2026 systematic review of 67 studies that concluded structured AI use in inquiry supports critical and creative thinking, while unstructured use produces cognitive offloading and weaker thinking, giving the shade's earlier developmental-versus-substitutive distinction a peer-reviewed evidence base ([MIT Ad Hoc Committee on AI Use, Final Report, August 13, 2026](https://sites.mit.edu/ai-use/files/2026/08/AI-Committee-Final-Report-Aug-13.pdf); [Forbes, August 25, 2026](https://www.forbes.com/sites/ronschmelzer/2026/08/25/mit-says-ai-is-forcing-a-rethink-of-college-itself/)).
+
+The atrophy has reached the builders. Anthropic's Jack Clark returned from paternity leave in February 2026 to find that colleagues "hardly wrote code anymore" but instead managed five or six Claude instances, "which sometimes managed several more Claudes." OpenAI researcher roon (Tarun Gogineni) wrote in September that "corrigibility has become a matter of faith" because Astra's code uses "crazy meta-programming and abstruse primitives" that its own creators cannot readily follow: "we have really no choice but to ask another astra to read/use the outputs of astra 1." Aryaman Arora, another OpenAI researcher, described Astra's code as "uniquely unreadable." The pattern that the shade earlier described for students and junior workers has now reached the people who build the systems. This is a recursive form of the metacognition problem: the population capable of correcting the substitutive pattern is itself losing the capacity to read what the systems produce ([TIME, "Inside the Race to Make AI Build Itself," August 7, 2026](https://time.com/article/2026/08/07/ai-recursive-self-improvement-anthropic-openai/); Zvi AI #186, September 17).
+
+The shade's governed score moves from plus one to plus two on the basis that MIT's response is an operating institutional example of the developmental-scaffolding approach the shade's governance-side prose calls for.

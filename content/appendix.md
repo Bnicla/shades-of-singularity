@@ -10,26 +10,28 @@ subtitle: "Outcome matrix for the AI future"
 | # | Scenario | Likelihood | Unmanaged | Governed | Dividend |
 |---|----------|-----------|-----------|----------|----------|
 | 1 | The Gradual Erosion of Human Labor Value | ~95% | -3 | +3 | 6 |
-| 2 | The Concentration of AI Power | ~90% | -3 | +2 | 5 |
+| 2 | The Concentration of AI Power | ~90% | -4 | +2 | 6 |
 | 3 | The Drowning of the Internet | ~90% | -3 | 0 | 3 |
+| 7 | The Geopolitical AI Arms Race | ~90% | -4 | +1 | 5 |
 | 4 | The Surveillance Singularity | ~85% | -4 | +1 | 5 |
 | 5 | Information Collapse | ~85% | -3 | +1 | 4 |
-| 6 | The Cognitive Atrophy Trap | ~85% | -3 | +1 | 4 |
-| 7 | The Geopolitical AI Arms Race | ~80% | -4 | +1 | 5 |
+| 6 | The Cognitive Atrophy Trap | ~85% | -3 | +2 | 5 |
+| 32 | Autonomous Lethal Weapons | ~85% | -4 | +1 | 5 |
 | 8 | Governance Obsolescence | ~80% | -3 | +2 | 5 |
 | 9 | The Meaning Crisis | ~80% | -2 | +2 | 4 |
 | 10 | The Ecological Reckoning | ~75% | -3 | +3 | 6 |
 | 11 | Foreign AI Subversion | ~75% | -4 | +1 | 5 |
 | 12 | The Synthetic Persons Economy | ~70% | -2 | +1 | 3 |
-| 13 | The Financial Chain Reaction | ~60% | -3 | +1 | 4 |
-| 14 | Alignment Failure (Misaligned Superintelligence) | ~55% | -5 | -1 | 4 |
+| 31 | The Swarm | ~70% | -4 | +1 | 5 |
+| 13 | The Financial Chain Reaction | ~65% | -3 | +1 | 4 |
+| 14 | Alignment Failure (Misaligned Superintelligence) | ~65% | -5 | -1 | 4 |
 | 15 | Digital Authoritarianism as Global Norm | ~55% | -4 | +1 | 5 |
 | 16 | The Creative Extraction | ~55% | -2 | +3 | 5 |
 | 17 | Permanent Underclass / Neo-Feudalism | ~50% | -4 | +2 | 6 |
 | 18 | The Fragmentation of Reality | ~45% | -3 | 0 | 3 |
+| 21 | The Intelligence Explosion (Hard Takeoff) | ~35% | -5 | +5 | 10 |
 | 19 | The Cognitive Enhancement Divide | ~35% | -3 | +4 | 7 |
 | 20 | The Democratic AI / Cognitive Bill of Rights | ~30% | N/A | +4 | Active creation |
-| 21 | The Intelligence Explosion (Hard Takeoff) | ~25% | -5 | +5 | 10 |
 | 22 | The Singleton | ~25% | -5 | +4 | 9 |
 | 23 | AI-Enabled Bioweapons / Catastrophic Misuse | ~25% | -5 | -2 | 3 |
 | 24 | The Post-Scarcity Transition | ~20% | N/A | +5 | Active creation |
@@ -62,6 +64,8 @@ subtitle: "Outcome matrix for the AI future"
 
 The two outcome columns capture the central argument of the collection: the gap between "Unmanaged" and "Governed" is the **Governance Dividend**, and it is enormous for precisely the scenarios that are most likely.
 
+Shade numbers are stable identifiers; display order follows likelihood and is revised with each edition. The September 2026 edition adds The Swarm (#31) and Autonomous Lethal Weapons (#32) and applies the score revisions confirmed for #2, #6, #7, #13, #14, and #21.
+
 ---
 
 ### What the Matrix Reveals
@@ -71,7 +75,7 @@ The two outcome columns capture the central argument of the collection: the gap 
 1. **Intelligence Explosion (#21): 10 pts** -- Outcome swings from extinction to transcendence based entirely on whether alignment is solved first.
 2. **The Singleton (#22): 9 pts** -- Whether a dominant AI power becomes benevolent governance or permanent tyranny is a pure governance question.
 3. **Cognitive Enhancement (#19): 7 pts** -- Universal access transforms this from the deepest inequality ever into the greatest equalizer ever. The difference is policy.
-4. **Labor Erosion (#1) / Neo-Feudalism (#17) / Ecological Reckoning (#10): 6 pts each** -- Where economic and environmental governance can flip outcomes from severely negative to positive.
+4. **Labor Erosion (#1) / Concentration of AI Power (#2) / Ecological Reckoning (#10) / Neo-Feudalism (#17): 6 pts each** -- Where economic and environmental governance can flip outcomes from severely negative to positive. The September 2026 edition raises Concentration's unmanaged score, which widens the gap between drift and design at that shade.
 
 **Lowest Governance Dividends** (limited institutional leverage):
 
