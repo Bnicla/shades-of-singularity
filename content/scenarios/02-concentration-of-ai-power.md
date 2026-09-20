@@ -7,7 +7,7 @@ tierLabel: "Near-Certain"
 likelihood: "~90%"
 unmanaged: -4
 governed: 2
-dividend: 5
+dividend: 6
 summary: "A dozen labs set the frontier, five hyperscalers fund the infrastructure, and everyone else builds on what they release."
 ---
 
