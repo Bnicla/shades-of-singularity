@@ -31,7 +31,7 @@ But the optimistic case assumes that meaning-making institutions will exist to r
 
 ## September 2026
 
-The shade's earlier prose treated the meaning crisis primarily as a consequence of labor displacement and cognitive substitution. September 2026 adds an elite variant.
+This shade has treated the meaning crisis primarily as a consequence of labor displacement and cognitive substitution. September 2026 adds an elite variant.
 
 Jacob Coxon, a 27-year-old who had spent three years on pretraining teams at OpenAI and Anthropic, resigned from Anthropic on September 8, two months before his equity vested, and posted publicly. The post received 153 million views in 36 hours. Coxon: "my main personal selfish concern is whether I'm gonna get killed by AI." He described the atmosphere among colleagues as "almost resignation." A DeepSeek engineer's essay titled "I Have No Choice but to Bury My Talent in Yesterday" circulated widely inside Chinese AI in September and was translated into English. The MIT commencement backlash of summer 2026, noted in the MIT Ad Hoc Committee report on AI Use, involved a specific pattern of student and faculty responses to AI-focused speakers ([TIME, "The AI Tipping Point," September 15, 2026](https://time.com/article/2026/09/15/ai-anthropic-researcher-quits-coxon-slowdown/)).
 

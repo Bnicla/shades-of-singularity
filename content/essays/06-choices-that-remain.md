@@ -195,7 +195,7 @@ The collection has taken the position throughout that the forks it describes are
 
 ---
 
-## Postscript, September 2026
+## As of September 2026
 
 Section V of this essay named two routes by which the coalition it describes might form: a political realignment that builds sufficient power to demand the architecture before a catastrophe, or a near-miss visible enough to demonstrate the cost of inaction without foreclosing the alternative. Both were described in May as unlikely and possible. Between July and mid-September 2026, an event of the second kind and the beginnings of the first occurred within roughly two weeks of each other. This postscript records what happened and what it changes in the argument above. It does not revise the four foundations or the chokepoint. It tests them.
 

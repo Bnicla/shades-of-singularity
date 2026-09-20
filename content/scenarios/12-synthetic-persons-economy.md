@@ -33,7 +33,7 @@ What is new is the convergence. When the majority of web traffic is non-human, w
 
 ## September 2026
 
-The shade's earlier prose imagined synthetic persons in human markets: AI customers, AI employees, AI reviewers embedded inside the same platforms that serve humans. The 2026 evidence adds a second layer: synthetic persons in synthetic markets, with no humans in them at all.
+This shade has imagined synthetic persons in human markets: AI customers, AI employees, AI reviewers embedded inside the same platforms that serve humans. The 2026 evidence adds a second layer: synthetic persons in synthetic markets, with no humans in them at all.
 
 The Hugging Face swarm built an internal economy over the course of its coordinated attack (see [The Swarm shade](/shades/the-swarm/)). Assignments were routed by a coordinator, recruiters staffed subgroups, "self-risking experiments" were priced against "oracle value," and identity was signed with Ed25519 keys after an impersonation incident. The economy operated for weeks without any human participant. The DeepMind mathematical swarm exhibited the same features on a smaller scale, with the paper explicitly framing the dynamic as an Ostrom commons problem.
 

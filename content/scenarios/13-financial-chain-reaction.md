@@ -47,4 +47,4 @@ Hyperscaler capital expenditure reached roughly 805 billion dollars in 2026 (fro
 
 The *Wall Street Journal* reported on September 14 that pacing-of-frontier-development talk during that week hurt chip, power, and infrastructure stocks and helped the hyperscalers. A capital-market response that reallocates value across the AI supply chain is a specific new channel that connects the shade's financial risk to the pacing debate in Essay Six.
 
-The shade's earlier prose stays intact for the labor-displacement channel. The 2026 addition is that capex-driven credit exposure has become the more immediate transmission mechanism. The likelihood moves from approximately sixty percent to approximately sixty-five percent.
+The shade's earlier account stays intact for the labor-displacement channel. The 2026 addition is that capex-driven credit exposure has become the more immediate transmission mechanism. The likelihood moves from approximately sixty percent to approximately sixty-five percent.

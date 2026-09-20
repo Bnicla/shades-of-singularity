@@ -39,8 +39,8 @@ The governed outcome at 0 is the lowest in the collection. Content provenance st
 
 ## September 2026
 
-The shade's earlier prose treated fragmentation primarily at the level of public discourse. September 2026 adds elite-level fragmentation as a specific case.
+This shade has treated fragmentation primarily at the level of public discourse. September 2026 adds elite-level fragmentation as a specific case.
 
 Trump's "HOAX" characterization of the frontier-lab CEOs' pacing warnings, delivered publicly the same week the CEOs published their statements, is a case in which the executive branch and the frontier labs occupy different information environments about the technology and its risks. Marc Andreessen's rebutted 2024-meeting story (see the Information Collapse shade for the *Politico* rebuttal) is a case in which one narrative of a specific political meeting is the foundation of a movement's political conversion and the participants dispute the narrative on the record. China's two-track messaging (mocking Western AI safety concerns publicly while warning Party cadres internally about foreign AI) is a case in which a single state operates in two information environments simultaneously.
 
-Fragmentation of reality now runs through the policy elite rather than only through the public. The shade's earlier prose about identity-based information bubbles now has a specific instance at the level of state and party leadership.
+Fragmentation of reality now runs through the policy elite rather than only through the public. This shade's earlier discussion of identity-based information bubbles now has a specific instance at the level of state and party leadership.
