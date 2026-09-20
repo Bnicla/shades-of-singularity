@@ -7,7 +7,7 @@ tierLabel: "Near-Certain"
 likelihood: "~90%"
 unmanaged: -4
 governed: 2
-dividend: 5
+dividend: 6
 summary: "A dozen labs set the frontier, five hyperscalers fund the infrastructure, and everyone else builds on what they release."
 ---
 
@@ -27,8 +27,7 @@ The analogy to hereditary aristocracy is structural. When economic power transla
 
 Three developments during 2026 strengthen the concentration case beyond what the shade previously documented.
 
-The financing structure has become circular in a way that concentrates control at the chip layer. Nvidia has taken equity stakes in the frontier labs, the labs buy compute from the clouds, and the clouds buy Nvidia. The "600 billion dollar" Nvidia-OpenAI headline of mid-2026 resolved into a signed 105 billion dollar guarantee. Nvidia's September 2 agreement to acquire Hugging Face for 12.9 billion dollars, if confirmed against a primary source, would place the largest open-model repository inside the chip monopolist. Boris to verify against a Reuters or Bloomberg confirmation before publication; if unverifiable, omit the specific acquisition detail while retaining the equity-and-compute concentration point.
-
+The financing structure has become circular in a way that concentrates control at the chip layer. Nvidia has taken equity stakes in the frontier labs, the labs buy compute from the clouds, and the clouds buy Nvidia. The "600 billion dollar" Nvidia-OpenAI headline of mid-2026 resolved into a signed 105 billion dollar guarantee. Nvidia's September 2 agreement to acquire Hugging Face for 12.9 billion dollars, if confirmed against a primary source, would place the largest open-model repository inside the chip monopolist.
 Executive access has become a documented mechanism of governance capture. The *Wall Street Journal* account by Dawsey and Ramkumar reports that Zuckerberg, Huang, and Musk personally spoke to President Trump and stalled an industry-funded regulator proposal; the White House officials pushing the other way (Wiles, Bessent, and Cyber Director Cairncross) lost the internal debate. OpenAI has ended free federal-government access to its models and now charges the government fifty percent of retail, forcing agencies to ration token budgets. The federal government's dependence on a small number of private providers, with pricing set by the providers, is a specific configuration of the concentration the shade describes ([WSJ, "Inside the White House Tussle to Sway Trump on AI"](https://www.wsj.com/tech/ai/inside-the-white-house-tussle-to-sway-trump-on-ai-0043d567); Zvi via TIME, September 15).
 
 The shade's Concentration score of "unmanaged" moves from minus three to minus four to reflect these developments. The final new element is intelligence: Anthropic's Threat Intelligence team detected a Yemeni missile-guidance program, Iranian naval-targeting handbooks, Chinese anti-torpedo fire-control specifications, and Uyghur-hunting through Claude usage before those cases were visible to state intelligence services. The labs now hold private visibility into weapons and surveillance programs that the state's own intelligence services do not. This is a new configuration of structural power ([Anthropic threat report, September 10, 2026](https://www.anthropic.com/threat-intelligence-report-september-2026); [Axios, September 12, 2026](https://www.axios.com/2026/09/12/anthropic-ai-threat-report-russia-iran-china)).

@@ -8,7 +8,7 @@ likelihood: "~35%"
 unmanaged: -5
 governed: 5
 dividend: 10
-summary: "This scenario matters less for its probability than for its consequence. The expected value calculation justifies enormous preventive investment even at 25%, given the magnitude of the outcome."
+summary: "This scenario matters less for its probability than for its consequence. The expected value calculation justifies enormous preventive investment even at 35%, given the magnitude of the outcome."
 ---
 
 I. J. Good's 1965 insight remains the most important sentence ever written about artificial intelligence: "An ultraintelligent machine could design even better machines; there would then unquestionably be an intelligence explosion, and the intelligence of man would be left far behind." For sixty years, this was a philosophical thought experiment. It is now an engineering objective. At the World Economic Forum in January 2026, Google DeepMind CEO Demis Hassabis stated directly that closing the self-improvement loop is what all major labs are working on, acknowledging "missing capabilities" and "risks" before the subject was [changed by the interviewer](https://www.foommagazine.org/is-research-into-recursive-self-improvement-becoming-a-safety-hazard/). OpenAI's Chief Scientist Jakub Pachocki has described the company's priority as automating scientific discovery, with a plan to build [automated researchers that improve AI capabilities further](https://arxiv.org/html/2603.03338). ICML 2026, one of the largest machine learning conferences, is hosting a formal workshop on "AI with Recursive Self-Improvement." The intelligence explosion is no longer a scenario that might happen to us. It is a scenario the leading AI laboratories are actively attempting to create.

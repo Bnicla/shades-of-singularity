@@ -225,7 +225,7 @@ Alex Tabarrok's September correction to regulatory-capture theory complicates th
 
 The pro-industry super PAC Leading the Future reports that nearly every backed candidate won their primary; Representative Casar has said Democratic consultants are advising clients to stay silent on AI to avoid attracting hostile money. Texas Governor Abbott issued a moratorium on new data-center grid approvals on August 3, "halting up to 1,800 projects," which is the first mass-political constraint on the buildout and it comes from the right ([Texas Tribune, August 3, 2026](https://www.texastribune.org/2026/08/03/texas-data-center-project-audit-greg-abbott/)). Xi is scheduled to visit Washington on September 24 with AI on the agenda, and Bessent led a formal AI dialogue in early September; Seth Center's *New York Times* piece on September 16 documents how China steered the 2024 Geneva talks away from safety and toward chips. The international dimension the essay describes is now under active negotiation.
 
-## Notes
+## Footnotes
 
 [^1]: CNN, ["Anthropic sues the Trump administration after it was designated a supply chain risk,"](https://www.cnn.com/2026/03/09/tech/anthropic-sues-pentagon) March 9, 2026. Also TechPolicy.Press, ["A Timeline of the Anthropic-Pentagon Dispute,"](https://www.techpolicy.press/a-timeline-of-the-anthropic-pentagon-dispute/) March 2026.
 
