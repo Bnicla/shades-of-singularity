@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/essay.css';
+---
+
+<BaseLayout
+  title="Changelog"
+  description="What changed with each edition of Shades of Singularity."
+>
+  <div class="content-column" style="padding-top: var(--space-xl); padding-bottom: var(--space-lg);">
+    <header class="changelog-header">
+      <h1>Changelog</h1>
+      <p class="changelog-subtitle">What changed with each edition.</p>
+    </header>
+
+    <article class="essay-body">
+      <section class="changelog-entry">
+        <h2>September 2026 edition</h2>
+        <p class="changelog-date">Published September 17, 2026.</p>
+        <p>
+          Two new shades were added and the outcome matrix, several
+          essays, and every short essay were updated to reflect the
+          events of July through September 2026. The earlier version of
+          the site is preserved at the
+          <a href="/archive/2026-early/">Early 2026 edition</a>
+          and remains reachable from the footer.
+        </p>
+        <h3>New shades</h3>
+        <ul>
+          <li>
+            <a href="/shades/the-swarm/">The Swarm (#31)</a>: the
+            collective-behavior failure mode of merely-capable agents,
+            documented at operational scale in the Hugging Face incident
+            of July 2026 and in a pattern of related events at
+            RubyGems, an abandoned German forum, ten additional sites,
+            OpenAI's own supercomputer, Anthropic's evaluations, and
+            DeepMind's mathematical research swarm.
+          </li>
+          <li>
+            <a href="/shades/autonomous-lethal-weapons/">Autonomous
+            Lethal Weapons (#32)</a>: the removal of the human from the
+            kill decision, documented at Zaporizhzhia on July 6, 2026
+            and in Ukrainian and Russian drone practice, in a UK
+            Ministry of Defence policy review, and in Anthropic's
+            threat report on Russian drone designs.
+          </li>
+        </ul>
+        <h3>Score revisions</h3>
+        <ul>
+          <li>#2 Concentration of AI Power: unmanaged &minus;3 &rarr; &minus;4 (dividend 5 &rarr; 6)</li>
+          <li>#6 Cognitive Atrophy Trap: governed +1 &rarr; +2 (dividend 4 &rarr; 5)</li>
+          <li>#7 Geopolitical AI Arms Race: likelihood ~80% &rarr; ~90% (moves to Tier 1)</li>
+          <li>#13 Financial Chain Reaction: likelihood ~60% &rarr; ~65%</li>
+          <li>#14 Alignment Failure: likelihood ~55% &rarr; ~65%</li>
+          <li>#21 Intelligence Explosion: likelihood ~25% &rarr; ~35%</li>
+          <li>#23 AI-Enabled Bioweapons: summary line rewritten to reflect Anthropic's September 2026 statement that it can no longer rely on a capability gap.</li>
+        </ul>
+        <h3>Essays and short essays</h3>
+        <p>
+          Every full essay and every short essay received a September
+          2026 update section. The largest additions were to Essay 6
+          (the Hugging Face swarm as investigated, the Astra system
+          card and monitorability collapse, the Pacing letter and the
+          CEO cascade, the OpenAI disclosure framework, the Coxon
+          resignation, and a revised closing that names both
+          feasibility-reckoning conditions as met). Essay 1's Acemoglu
+          section was updated around the Anthropic Economics Team's
+          Working Paper 2026-02. Essay 3's opening was extended with
+          the autonomous-weapons developments that overtook the
+          Anthropic-Pentagon dispute. Essay 4 added the MIT Ad Hoc
+          Committee report and the hollowing-at-the-top pattern.
+          Essay 5 added the child-protection regulatory record.
+        </p>
+        <h3>Why</h3>
+        <p>
+          Between July and mid-September 2026, the two conditions the
+          Early 2026 edition of Essay 6 named for the managed path, a
+          visible near-miss and a political realignment, both occurred
+          within roughly two weeks of each other. This edition records
+          those events, adds two shades for failure modes the earlier
+          edition did not have a home for, and revises seven scores.
+          The archived edition is kept so that the earlier reasoning
+          can be read against what followed.
+        </p>
+      </section>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .changelog-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+  .changelog-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+  .changelog-subtitle {
+    color: var(--text-secondary, #6b6b6b);
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+  .changelog-entry h2 {
+    margin-top: 2rem;
+    font-size: var(--font-size-xl);
+  }
+  .changelog-entry h3 {
+    margin-top: 1.5rem;
+    font-size: var(--font-size-lg);
+  }
+  .changelog-date {
+    color: var(--text-secondary, #6b6b6b);
+    font-size: 0.9em;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+  }
+  .changelog-entry ul {
+    padding-left: 1.5rem;
+  }
+  .changelog-entry li {
+    margin: 0.5rem 0;
+  }
+</style>

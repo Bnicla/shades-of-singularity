@@ -22,3 +22,11 @@ It is also the most dangerous framing, because it invites the conclusion that th
 The adversarial point has genuine force: if capabilities plateau, resources spent on alignment research for superintelligent systems were misallocated. They should have been spent on labor market policy, antitrust enforcement, privacy regulation, and democratic governance of actually existing AI. This criticism reinforces rather than undermines the collection's central argument. It means the institutional response is even more urgent than the singularity scenarios suggest, because the harms are arriving on the current capability curve, and the excuse that "everything will change when AGI arrives" is the primary obstacle to addressing them.
 
 **Key tension:** Whether or not the singularity arrives, the institutional response to current AI capabilities is already overdue. The stasis scenario removes the excuse for delay. It does not remove the need for action.
+
+## September 2026
+
+The stasis case in labor data is intact and coexists with rapid capability progress in specific domains. Yale Budget Lab's finding that occupational mix is shifting no faster than during the PC or internet eras remains the strongest statistical evidence for the shade. Google's Q3 2026 analysis of its own model usage found AI touching sixty-eight percent of occupations and automating "almost none yet." These are the shade's evidence base for the "singularity that wasn't."
+
+The capability side has moved. Navier-Stokes was proved in 88 hours. Astra was released. Recursive self-improvement (at tiers one and two, see [Intelligence Explosion (#21)](/shades/intelligence-explosion/)) is now the object of stated corporate strategy at Google. The shade should state explicitly that stasis in the economy is not stasis in capability, and that the two can coexist over an extended period. Yudkowsky's older prediction (that AI's economic footprint would remain small until the phase transition) is a specific version of the same observation from an unusual source.
+
+The shade's likelihood is unchanged. The addition is the specific note that the two forms of stasis need to be separated; the labor-data stasis is real, and the capability stasis is not.

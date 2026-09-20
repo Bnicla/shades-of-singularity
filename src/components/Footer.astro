@@ -10,8 +10,24 @@ const year = new Date().getFullYear();
       <a href="/shades/">The Shades</a>
       <a href="/about/">About</a>
     </nav>
+    <p class="footer-archive">
+      September 2026 edition. <a href="/archive/2026-early/">Early 2026 edition</a> · <a href="/changelog/">Changelog</a>
+    </p>
     <p class="footer-copyright">
       &copy; {year} B.E.N. All rights reserved.
     </p>
   </div>
 </footer>
+
+<style>
+  .footer-archive {
+    margin: 0.5rem 0 0;
+    font-size: 0.85em;
+    opacity: 0.65;
+    text-align: center;
+  }
+  .footer-archive a {
+    color: inherit;
+    text-decoration: underline;
+  }
+</style>
